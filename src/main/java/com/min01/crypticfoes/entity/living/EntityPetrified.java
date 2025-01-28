@@ -59,7 +59,7 @@ public class EntityPetrified extends AbstractAnimatableMonster
     @Override
     protected void registerGoals() 
     {
-        this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Player.class, 6.0F, 2.0D, 2.2D)
+        this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Player.class, 6.0F, 1.5D, 1.7D)
         {
         	@Override
         	public boolean canUse()
@@ -153,7 +153,7 @@ public class EntityPetrified extends AbstractAnimatableMonster
     		}
 			if(this.canMove())
 			{
-				if(this.hasStone() && this.distanceTo(this.getTarget()) >= 6.0F)
+				if(this.hasStone() && this.distanceTo(this.getTarget()) >= 12.0F)
 				{
 					this.getNavigation().moveTo(this.getTarget(), 1.0F);
 				}
@@ -162,12 +162,21 @@ public class EntityPetrified extends AbstractAnimatableMonster
     	
     	if(!this.hasStone())
     	{
-    		if(this.getAnimationTick() <= 0 && this.getAnimationState() == 0)
-    		{
-	  			this.setAnimationState(2);
-	  			this.setAnimationTick(34);
-				this.setHasStone(true);
-    		}
+			if(this.getAnimationState() == 0)
+			{
+	    		if(this.getAnimationTick() <= 0)
+	    		{	  			
+	    			this.setAnimationState(2);
+	    			this.setAnimationTick(34);
+	    		}
+			}
+			if(this.getAnimationState() == 2)
+			{
+	    		if(this.getAnimationTick() <= 24)
+	    		{
+					this.setHasStone(true);
+	    		}
+			}
     	}
     }
     
