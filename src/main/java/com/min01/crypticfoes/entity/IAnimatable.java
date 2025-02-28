@@ -10,10 +10,6 @@ public interface IAnimatable
 	
 	int getAnimationTick();
 	
-	int getMoveStopDelay();
-	
-	int getPrevAnimationTick();
-	
 	boolean canMove();
 	
 	void setCanMove(boolean value);
