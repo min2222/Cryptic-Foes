@@ -59,7 +59,7 @@ public class EntityBrancher extends AbstractAnimatableCreature
     {
         return Mob.createMobAttributes()
     			.add(Attributes.MAX_HEALTH, 30.0F)
-    			.add(Attributes.MOVEMENT_SPEED, 0.7F);
+    			.add(Attributes.MOVEMENT_SPEED, 0.8F);
     }
     
     @Override
