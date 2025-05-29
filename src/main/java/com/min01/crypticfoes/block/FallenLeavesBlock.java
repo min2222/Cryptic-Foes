@@ -25,7 +25,7 @@ public class FallenLeavesBlock extends BushBlock
 	
 	public FallenLeavesBlock() 
 	{
-		super(BlockBehaviour.Properties.copy(Blocks.DARK_OAK_LEAVES).sound(CrypticSounds.FALLEN_LEAVES).noCollission().instabreak());
+		super(BlockBehaviour.Properties.copy(Blocks.DARK_OAK_LEAVES).sound(CrypticSounds.FALLEN_LEAVES).instabreak());
 	}
 	
 	@Override

@@ -169,7 +169,7 @@ public class EntityBrancher extends AbstractAnimatableCreature
         	        this.playSound(CrypticSounds.BRANCHER_HEARTBEAT.get());
     			}
     		}
-    		else
+    		else if(this.isAlive())
     		{
     			this.brancherExplode(this.position(), 2.0F);
     	        this.playSound(CrypticSounds.BRANCHER_HISS.get());

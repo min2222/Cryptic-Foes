@@ -178,6 +178,10 @@ public class EntityPetrified extends AbstractAnimatableMonster
 	    		{
 					this.setHasStone(true);
 	    		}
+	    		if(this.getAnimationTick() <= 0)
+	    		{
+	    			this.setAnimationState(0);
+	    		}
 			}
     	}
     }
