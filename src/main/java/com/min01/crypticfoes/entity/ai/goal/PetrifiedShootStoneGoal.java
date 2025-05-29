@@ -3,9 +3,6 @@ package com.min01.crypticfoes.entity.ai.goal;
 import com.min01.crypticfoes.entity.CrypticEntities;
 import com.min01.crypticfoes.entity.living.EntityPetrified;
 import com.min01.crypticfoes.entity.projectile.EntityPetrifiedStone;
-import com.min01.crypticfoes.util.CrypticUtil;
-
-import net.minecraft.world.phys.Vec3;
 
 public class PetrifiedShootStoneGoal extends BasicAnimationSkillGoal<EntityPetrified>
 {
@@ -30,13 +27,12 @@ public class PetrifiedShootStoneGoal extends BasicAnimationSkillGoal<EntityPetri
 	@Override
 	protected void performSkill() 
 	{
-		if(this.mob.posArray[0] != null)
+		if(this.mob.posArray[0] != null && this.mob.getTarget() != null)
 		{
 			EntityPetrifiedStone stone = new EntityPetrifiedStone(CrypticEntities.PETRIFIED_STONE.get(), this.mob.level);
 			stone.setPos(this.mob.posArray[0]);
 			stone.setOwner(this.mob);
-			Vec3 lookPos = CrypticUtil.getLookPos(this.mob.getRotationVector(), this.mob.posArray[0], 0.0F, 2.5F, 2.0F);
-			stone.setDeltaMovement(CrypticUtil.fromToVector(stone.position(), lookPos, 0.65F));
+			stone.setDeltaMovement((this.mob.getTarget().getX() - stone.getX()) * 0.035D, 0.5D, (this.mob.getTarget().getZ() - stone.getZ()) * 0.035D);
 			this.mob.level.addFreshEntity(stone);
 			this.mob.setHasStone(false);
 		}
@@ -53,7 +49,7 @@ public class PetrifiedShootStoneGoal extends BasicAnimationSkillGoal<EntityPetri
 	@Override
 	protected int getSkillUsingTime()
 	{
-		return 18;
+		return 17;
 	}
 
 	@Override

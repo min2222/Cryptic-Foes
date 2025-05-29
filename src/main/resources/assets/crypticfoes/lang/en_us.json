@@ -1,5 +1,5 @@
 {
-	"itemGroup.crypticfoes.crypticfoes": "Cryptic Foes",
+	"itemGroup.crypticfoes": "Cryptic Foes",
 	"entity.crypticfoes.petrified": "Petrified",
 	"entity.crypticfoes.petrified_stone": "Petrified Stone",
 	"entity.crypticfoes.brancher": "Brancher",
@@ -19,6 +19,8 @@
 	"block.crypticfoes.pile_of_fragile_bones_slab": "Pile of Fragile Bones Slab",
 	"block.crypticfoes.polished_pile_of_fragile_bones_slab": "Polished Pile of Fragile Bones Slab",
 	"block.crypticfoes.block_of_fragile_bones": "Block of Fragile Bones",
+	"painting.crypticfoes.mountain_holder.title": "Mountain Holder",
+	"painting.crypticfoes.mountain_holder.author": "Rofoo",
 	"effect.crypticfoes.fragility": "Fragility",
 	"effect.crypticfoes.description": "reduce armor point"
 }

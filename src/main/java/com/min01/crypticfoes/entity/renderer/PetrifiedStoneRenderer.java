@@ -4,6 +4,7 @@ import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.entity.model.ModelPetrifiedStone;
 import com.min01.crypticfoes.entity.projectile.EntityPetrifiedStone;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -27,6 +28,7 @@ public class PetrifiedStoneRenderer extends EntityRenderer<EntityPetrifiedStone>
 		p_114488_.pushPose();
 		p_114488_.scale(-1.0F, -1.0F, 1.0F);
 		p_114488_.translate(0.0F, -1.5F, 0.0F);
+		p_114488_.mulPose(Axis.XP.rotationDegrees(p_114485_.tickCount * 0.01F));
 		this.model.renderToBuffer(p_114488_, p_114489_.getBuffer(RenderType.entityCutoutNoCull(this.getTextureLocation(p_114485_))), p_114490_, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 		p_114488_.popPose();
 	}

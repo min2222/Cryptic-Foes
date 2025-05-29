@@ -6,6 +6,7 @@ import com.min01.crypticfoes.entity.CrypticEntities;
 import com.min01.crypticfoes.item.CrypticItems;
 import com.min01.crypticfoes.misc.CrypticCreativeTabs;
 import com.min01.crypticfoes.misc.CrypticEntityDataSerializers;
+import com.min01.crypticfoes.misc.CrypticPaintings;
 import com.min01.crypticfoes.network.CrypticNetwork;
 import com.min01.crypticfoes.particle.CrypticParticles;
 import com.min01.crypticfoes.sound.CrypticSounds;
@@ -32,6 +33,7 @@ public class CrypticFoes
 		CrypticCreativeTabs.CREATIVE_MODE_TAB.register(bus);
 		CrypticParticles.PARTICLES.register(bus);
 		CrypticSounds.SOUNDS.register(bus);
+		CrypticPaintings.PAINTING_VARIANTS.register(bus);
 		
 		CrypticNetwork.registerMessages();
 	}

@@ -15,7 +15,7 @@ public class CrypticCreativeTabs
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TAB = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, CrypticFoes.MODID);
 
     public static final RegistryObject<CreativeModeTab> CRYPTIC_FOES = CREATIVE_MODE_TAB.register("crypticfoes", () -> CreativeModeTab.builder()
-    		.title(Component.translatable("itemGroup.crypticfoes.crypticfoes"))
+    		.title(Component.translatable("itemGroup.crypticfoes"))
     		.icon(() -> new ItemStack(CrypticItems.FRAGILE_BONE.get()))
     		.displayItems((enabledFeatures, output) -> 
     		{

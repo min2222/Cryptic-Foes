@@ -7,6 +7,7 @@ import com.min01.crypticfoes.sound.CrypticSounds;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -24,7 +25,7 @@ public class FallenLeavesBlock extends BushBlock
 	
 	public FallenLeavesBlock() 
 	{
-		super(BlockBehaviour.Properties.copy(Blocks.DARK_OAK_LEAVES).sound(CrypticSounds.FALLEN_LEAVES).instabreak());
+		super(BlockBehaviour.Properties.copy(Blocks.DARK_OAK_LEAVES).sound(CrypticSounds.FALLEN_LEAVES).noCollission().instabreak());
 	}
 	
 	@Override
@@ -33,17 +34,18 @@ public class FallenLeavesBlock extends BushBlock
 		return AABB;
 	}
 	
-	//TODO only trigger once
 	@Override
-	public void entityInside(BlockState p_60495_, Level p_60496_, BlockPos p_60497_, Entity p_60498_)
+	public void stepOn(Level p_152431_, BlockPos p_152432_, BlockState p_152433_, Entity p_152434_)
 	{
-		if(!p_60498_.isShiftKeyDown() && p_60498_ instanceof LivingEntity living)
+		if(!p_152434_.isSteppingCarefully() && p_152434_ instanceof LivingEntity living)
 		{
 			if(!(living instanceof EntityBrancher))
 			{
-				List<EntityBrancher> list = p_60496_.getEntitiesOfClass(EntityBrancher.class, living.getBoundingBox().inflate(12.5F), t -> !t.isAngry());
+				living.playSound(CrypticSounds.FALLEN_LEAVES_STEP.get());
+				List<EntityBrancher> list = p_152431_.getEntitiesOfClass(EntityBrancher.class, living.getBoundingBox().inflate(12.5F), t -> EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(t) && !t.isAngry() && t.getAnimationState() != 1 && t.getAnimationTick() <= 0);
 				list.forEach(t -> 
 				{
+					t.setTarget(living);
 					t.setAngerCount(t.getAngerCount() + 1);
 					t.setAnimationState(1);
 					t.setAnimationTick(20);
@@ -55,6 +57,6 @@ public class FallenLeavesBlock extends BushBlock
 	@Override
 	protected boolean mayPlaceOn(BlockState p_51042_, BlockGetter p_51043_, BlockPos p_51044_) 
 	{
-		return true;
+		return super.mayPlaceOn(p_51042_, p_51043_, p_51044_) || p_51042_.is(Blocks.GRASS_BLOCK);
 	}
 }

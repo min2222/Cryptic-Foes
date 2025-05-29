@@ -80,7 +80,7 @@ public class EntityBrancher extends AbstractAnimatableCreature
         	@Override
         	public boolean canUse() 
         	{
-        		return super.canUse() && EntityBrancher.this.isAngry();
+        		return super.canUse() && EntityBrancher.this.isAngry() && EntityBrancher.this.getTarget() == null;
         	}
         });
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this)
