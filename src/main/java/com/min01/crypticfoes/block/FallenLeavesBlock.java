@@ -42,14 +42,17 @@ public class FallenLeavesBlock extends BushBlock
 			if(!(living instanceof EntityBrancher))
 			{
 				living.playSound(CrypticSounds.FALLEN_LEAVES_STEP.get());
-				List<EntityBrancher> list = p_152431_.getEntitiesOfClass(EntityBrancher.class, living.getBoundingBox().inflate(12.5F), t -> EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(t) && !t.isAngry() && t.getAnimationState() != 1 && t.getAnimationTick() <= 0);
-				list.forEach(t -> 
+				if(EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(living))
 				{
-					t.setTarget(living);
-					t.setAngerCount(t.getAngerCount() + 1);
-					t.setAnimationState(1);
-					t.setAnimationTick(20);
-				});
+					List<EntityBrancher> list = p_152431_.getEntitiesOfClass(EntityBrancher.class, living.getBoundingBox().inflate(12.5F), t -> !t.isAngry() && t.getAnimationState() != 1 && t.getAnimationTick() <= 0);
+					list.forEach(t -> 
+					{
+						t.setTarget(living);
+						t.setAngerCount(t.getAngerCount() + 1);
+						t.setAnimationState(1);
+						t.setAnimationTick(20);
+					});
+				}
 			}
 		}
 	}
