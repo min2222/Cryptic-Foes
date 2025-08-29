@@ -81,11 +81,6 @@ public class CrypticUtil
 		return new Vec3(vec3.x + d0, vec3.y + d1, vec3.z + d2);
 	}
 	
-	public static boolean isMoving(Entity entity) 
-	{
-		return entity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-6D;
-	}
-	
 	@SuppressWarnings("unchecked")
 	public static <T extends Entity> T getEntityByUUID(Level level, UUID uuid)
 	{

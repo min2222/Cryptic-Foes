@@ -2,7 +2,7 @@ package com.min01.crypticfoes.entity.living;
 
 import com.min01.crypticfoes.entity.AbstractAnimatableMonster;
 import com.min01.crypticfoes.entity.ai.goal.PetrifiedShootStoneGoal;
-import com.min01.crypticfoes.util.CrypticUtil;
+import com.min01.crypticfoes.misc.SmoothAnimationState;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -11,7 +11,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -31,10 +30,11 @@ public class EntityPetrified extends AbstractAnimatableMonster
 {
 	public static final EntityDataAccessor<Boolean> HAS_STONE = SynchedEntityData.defineId(EntityPetrified.class, EntityDataSerializers.BOOLEAN);
 	
-	public final AnimationState idleAnimationState = new AnimationState();
-	public final AnimationState idleNoneAnimationState = new AnimationState();
-	public final AnimationState throwAnimationState = new AnimationState();
-	public final AnimationState reloadingAnimationState = new AnimationState();
+	public final SmoothAnimationState idleAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState idleNoneAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState throwAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState reloadingAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState runAnimationState = new SmoothAnimationState();
 	
 	public EntityPetrified(EntityType<? extends Monster> p_33002_, Level p_33003_) 
 	{
@@ -98,49 +98,17 @@ public class EntityPetrified extends AbstractAnimatableMonster
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
     }
     
-	@Override
-	public void onSyncedDataUpdated(EntityDataAccessor<?> p_219422_) 
-	{
-        if(ANIMATION_STATE.equals(p_219422_) && this.level.isClientSide) 
-        {
-            switch(this.getAnimationState()) 
-            {
-        		case 0: 
-        		{
-        			this.stopAllAnimationStates();
-        			break;
-        		}
-        		case 1: 
-        		{
-        			this.stopAllAnimationStates();
-        			this.throwAnimationState.start(this.tickCount);
-        			break;
-        		}
-        		case 2: 
-        		{
-        			this.stopAllAnimationStates();
-        			this.reloadingAnimationState.start(this.tickCount);
-        			break;
-        		}
-            }
-        }
-	}
-	
-	@Override
-	public void stopAllAnimationStates()
-	{
-		this.throwAnimationState.stop();
-		this.reloadingAnimationState.stop();
-	}
-    
     @Override
     public void tick()
     {
     	super.tick();
     	if(this.level.isClientSide)
     	{
-    		this.idleAnimationState.animateWhen(this.hasStone() && !CrypticUtil.isMoving(this) && this.getAnimationState() == 0, this.tickCount);
-    		this.idleNoneAnimationState.animateWhen(!this.hasStone() && !CrypticUtil.isMoving(this) && this.getAnimationState() == 0, this.tickCount);
+    		this.idleAnimationState.updateWhen(this.hasStone() && this.getAnimationState() == 0, this.tickCount);
+    		this.idleNoneAnimationState.updateWhen(!this.hasStone() && this.getAnimationState() == 0, this.tickCount);
+    		this.throwAnimationState.updateWhen(this.isUsingSkill(1), this.tickCount);
+    		this.reloadingAnimationState.updateWhen(this.getAnimationState() == 2, this.tickCount);
+    		this.runAnimationState.updateWhen(this.hasStone(), this.tickCount);
     	}
     	
     	if(this.getTarget() != null)

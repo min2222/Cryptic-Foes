@@ -4,8 +4,6 @@ public interface IAnimatable
 {
 	boolean isUsingSkill();
 	
-	void setUsingSkill(boolean value);
-	
 	void setAnimationTick(int value);
 	
 	int getAnimationTick();

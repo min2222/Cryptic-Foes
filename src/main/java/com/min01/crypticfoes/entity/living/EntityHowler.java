@@ -6,6 +6,7 @@ import com.min01.crypticfoes.effect.CrypticEffects;
 import com.min01.crypticfoes.entity.AbstractAnimatableMonster;
 import com.min01.crypticfoes.entity.ai.goal.HowlerPunchGoal;
 import com.min01.crypticfoes.entity.ai.goal.HowlerRoarGoal;
+import com.min01.crypticfoes.misc.SmoothAnimationState;
 import com.min01.crypticfoes.util.CrypticUtil;
 
 import net.minecraft.core.BlockPos;
@@ -15,10 +16,8 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -40,19 +39,20 @@ public class EntityHowler extends AbstractAnimatableMonster
 	public static final EntityDataAccessor<Boolean> IS_FALLING = SynchedEntityData.defineId(EntityHowler.class, EntityDataSerializers.BOOLEAN);
 	public static final EntityDataAccessor<BlockPos> SLEEP_POS = SynchedEntityData.defineId(EntityHowler.class, EntityDataSerializers.BLOCK_POS);
 
-	public final AnimationState idleAnimationState = new AnimationState();
-	public final AnimationState sleepAnimationState = new AnimationState();
-	public final AnimationState awakeAnimationState = new AnimationState();
-	public final AnimationState fallAnimationState = new AnimationState();
-	public final AnimationState landAnimationState = new AnimationState();
-	public final AnimationState roarAnimationState = new AnimationState();
-	public final AnimationState blinkAnimationState = new AnimationState();
-	public final AnimationState punchAnimationState = new AnimationState();
+	public final SmoothAnimationState idleAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState sleepAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState awakeAnimationState = new SmoothAnimationState(0.999F);
+	public final SmoothAnimationState fallAnimationState = new SmoothAnimationState(0.999F);
+	public final SmoothAnimationState landAnimationState = new SmoothAnimationState(0.999F);
+	public final SmoothAnimationState roarAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState blinkAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState punchAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState flyAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState flyStartAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState flyEndAnimationState = new SmoothAnimationState(0.999F);
 	
 	public int ambientTick;
 	public int targetTick = 200;
-	
-	public float factor;
 	
 	public EntityHowler(EntityType<? extends Monster> p_33002_, Level p_33003_) 
 	{
@@ -134,62 +134,6 @@ public class EntityHowler extends AbstractAnimatableMonster
     	this.entityData.define(SLEEP_POS, BlockPos.ZERO);
     }
     
-	@Override
-	public void onSyncedDataUpdated(EntityDataAccessor<?> p_219422_) 
-	{
-        if(ANIMATION_STATE.equals(p_219422_) && this.level.isClientSide) 
-        {
-            switch(this.getAnimationState()) 
-            {
-        		case 0: 
-        		{
-        			this.stopAllAnimationStates();
-        			break;
-        		}
-        		case 1: 
-        		{
-        			this.stopAllAnimationStates();
-        			this.sleepAnimationState.start(this.tickCount);
-        			break;
-        		}
-        		case 2: 
-        		{
-        			this.stopAllAnimationStates();
-        			this.awakeAnimationState.start(this.tickCount);
-        			break;
-        		}
-        		case 3: 
-        		{
-        			this.stopAllAnimationStates();
-        			this.landAnimationState.start(this.tickCount);
-        			break;
-        		}
-        		case 4: 
-        		{
-        			this.stopAllAnimationStates();
-        			this.roarAnimationState.start(this.tickCount);
-        			break;
-        		}
-        		case 5: 
-        		{
-        			this.stopAllAnimationStates();
-        			this.punchAnimationState.start(this.tickCount);
-        			break;
-        		}
-            }
-        }
-	}
-	
-	@Override
-	public void stopAllAnimationStates()
-	{
-		this.sleepAnimationState.stop();
-		this.awakeAnimationState.stop();
-		this.landAnimationState.stop();
-		this.roarAnimationState.stop();
-		this.punchAnimationState.stop();
-	}
-    
     @Override
     public void tick() 
     {
@@ -198,22 +142,19 @@ public class EntityHowler extends AbstractAnimatableMonster
     	
     	if(this.level.isClientSide)
     	{
-    		this.idleAnimationState.animateWhen(!this.isHowlerSleeping() && (this.getAnimationState() == 0 || this.getAnimationState() == 4), this.tickCount);
-    		this.blinkAnimationState.animateWhen(!this.isHowlerSleeping() && this.ambientTick > 0, this.tickCount);
-    		this.fallAnimationState.animateWhen(!this.isHowlerSleeping() && this.isFalling(), this.tickCount);
-        	
-        	//TODO
-        	if(this.getAnimationState() == 4)
-        	{
-        		this.factor += 0.1F;
-        	}
-        	else
-        	{
-        		this.factor -= 0.1F;
-        	}
-        	
-        	this.factor = Mth.clamp(this.factor, 0.0F, 1.0F);
+    		this.idleAnimationState.updateWhen(!this.isHowlerSleeping() && this.getAnimationState() == 0, this.tickCount);
+    		this.sleepAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 1, this.tickCount);
+    		this.awakeAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 2, this.tickCount);
+    		this.fallAnimationState.updateWhen(!this.isHowlerSleeping() && this.isFalling() && this.getAnimationState() == 0, this.tickCount);
+    		this.landAnimationState.updateWhen(!this.isHowlerSleeping() && this.getAnimationState() == 3, this.tickCount);
+    		this.roarAnimationState.updateWhen(!this.isHowlerSleeping() && this.isUsingSkill(4), this.tickCount);
+    		this.blinkAnimationState.updateWhen(!this.isHowlerSleeping() && this.ambientTick > 0, this.tickCount);
+    		this.punchAnimationState.updateWhen(!this.isHowlerSleeping() && this.isUsingSkill(5), this.tickCount);
+    		this.flyAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 6, this.tickCount);
+    		this.flyStartAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 7, this.tickCount);
+    		this.flyEndAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 8, this.tickCount);
     	}
+    	
     	if(this.ambientTick > 0)
     	{
 			this.ambientTick--;
@@ -244,8 +185,6 @@ public class EntityHowler extends AbstractAnimatableMonster
         			if(!this.level.canSeeSky(ceilingPos))
         			{
             			this.setSleepPos(ceilingPos);
-            			this.setAnimationState(1);
-            			this.setAnimationTick(40);
             			this.setCanMove(false);
             			this.setCanLook(false);
             			this.setHowlerSleeping(true);
@@ -273,8 +212,52 @@ public class EntityHowler extends AbstractAnimatableMonster
     		if(!this.isFalling() && !this.hasEffect(CrypticEffects.STUNNED.get()))
     		{
         		BlockPos pos = this.getSleepPos();
-        		this.setPos(pos.getX(), pos.getY(), pos.getZ());
-        		this.setNoGravity(true);
+        		if(this.horizontalDist(pos, this.getX(), this.getZ()) <= 1.5F)
+        		{
+        			if(this.getAnimationState() == 0)
+        			{
+            			this.setAnimationState(7);
+            			this.setAnimationTick(46);
+                		this.setNoGravity(true);
+        			}
+            		
+            		if(this.getAnimationState() == 6)
+            		{
+            			if(pos.distToCenterSqr(this.position()) <= 1.5F)
+            			{
+            				this.setAnimationState(8);
+            				this.setAnimationTick(35);
+            			}
+            			else
+            			{
+                			this.addDeltaMovement(new Vec3(0.0F, 0.05F, 0.0F));
+            			}
+            		}
+            		
+            		if(this.getAnimationTick() <= 0)
+            		{
+            			if(this.getAnimationState() == 7)
+            			{
+                			this.setAnimationState(6);
+                			this.setAnimationTick(45);
+            			}
+            			if(this.getAnimationState() == 8)
+            			{
+                			this.setAnimationState(1);
+                			this.setAnimationTick(40);
+            			}
+            		}
+        		}
+        		else
+        		{
+            		this.getNavigation().moveTo(pos.getX(), this.getY(), pos.getZ(), 0.5F);
+        		}
+        		
+        		if(this.getAnimationState() == 1)
+        		{
+        			this.setDeltaMovement(Vec3.ZERO);
+        		}
+        		
         		if(this.getAnimationState() == 2 && this.getAnimationTick() <= 0)
         		{
             		this.setHowlerSleeping(false);
@@ -290,6 +273,13 @@ public class EntityHowler extends AbstractAnimatableMonster
 			this.setAnimationState(2);
 			this.setAnimationTick(60);
     	}
+    }
+    
+    public double horizontalDist(BlockPos pos, double x, double z) 
+    {
+    	double xDist = (double)pos.getX() + 0.5D - x;
+    	double zDist = (double)pos.getZ() + 0.5D - z;
+    	return Math.sqrt(xDist * xDist + zDist * zDist);
     }
     
     @Override

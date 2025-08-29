@@ -105,28 +105,24 @@ public class ModelHowler extends HierarchicalModel<EntityHowler>
 	public void setupAnim(EntityHowler entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) 
 	{
 		this.root().getAllParts().forEach(ModelPart::resetPose);
+		
 		if(!entity.isHowlerSleeping())
 		{
 			CrypticClientUtil.animateHead(this.head, netHeadYaw, headPitch);
-			this.animateWalk(HowlerAnimation.HOWLER_WALK, limbSwing, limbSwingAmount, 2.5F, 2.5F);
 		}
-		
-		entity.idleAnimationState.ifStarted(t ->
-		{
-			this.animateWalk(HowlerAnimation.HOWLER_IDLE, ageInTicks, 1.0F - limbSwingAmount - entity.factor, 1.0F, 1.0F);
-		});
-		
-		entity.sleepAnimationState.ifStarted(t ->
-		{
-			this.animateWalk(HowlerAnimation.HOWLER_SLEEP, ageInTicks, 1.0F - limbSwingAmount, 1.0F, 1.0F);
-		});
-		
-		this.animate(entity.awakeAnimationState, HowlerAnimation.HOWLER_AWAKE, ageInTicks);
-		this.animate(entity.fallAnimationState, HowlerAnimation.HOWLER_FALL, ageInTicks);
-		this.animate(entity.landAnimationState, HowlerAnimation.HOWLER_LAND, ageInTicks);
-		this.animate(entity.roarAnimationState, HowlerAnimation.HOWLER_ROAR, ageInTicks);
-		this.animate(entity.blinkAnimationState, HowlerAnimation.HOWLER_BLINK, ageInTicks);
-		this.animate(entity.punchAnimationState, HowlerAnimation.HOWLER_PUNCH, ageInTicks);
+
+		this.animateWalk(HowlerAnimation.HOWLER_WALK, limbSwing, limbSwingAmount, 2.5F, 2.5F);
+		entity.idleAnimationState.animate(this, HowlerAnimation.HOWLER_IDLE, ageInTicks, limbSwingAmount);
+		entity.sleepAnimationState.animate(this, HowlerAnimation.HOWLER_SLEEP, ageInTicks);
+		entity.awakeAnimationState.animate(this, HowlerAnimation.HOWLER_AWAKE, ageInTicks);
+		entity.fallAnimationState.animate(this, HowlerAnimation.HOWLER_FALL, ageInTicks);
+		entity.landAnimationState.animate(this, HowlerAnimation.HOWLER_LAND, ageInTicks);
+		entity.roarAnimationState.animate(this, HowlerAnimation.HOWLER_ROAR, ageInTicks);
+		entity.blinkAnimationState.animate(this, HowlerAnimation.HOWLER_BLINK, ageInTicks);
+		entity.punchAnimationState.animate(this, HowlerAnimation.HOWLER_PUNCH, ageInTicks);
+		entity.flyAnimationState.animate(this, HowlerAnimation.HOWLER_FLY, ageInTicks);
+		entity.flyStartAnimationState.animate(this, HowlerAnimation.HOWLER_FLY_START, ageInTicks);
+		entity.flyEndAnimationState.animate(this, HowlerAnimation.HOWLER_FLY_END, ageInTicks);
 	}
 	
 	@Override

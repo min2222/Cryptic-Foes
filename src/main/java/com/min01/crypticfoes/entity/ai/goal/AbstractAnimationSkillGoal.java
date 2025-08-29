@@ -61,8 +61,6 @@ public abstract class AbstractAnimationSkillGoal<T extends Mob & IAnimatable> ex
     	this.skillWarmupDelay = this.adjustedTickDelay(this.getSkillWarmupTime());
     	this.getMob().setAnimationTick(this.getSkillUsingTime());
     	this.nextSkillTickCount = this.getMob().tickCount + this.getSkillUsingInterval();
-    	
-    	this.getMob().setUsingSkill(true);
     }
     
     public boolean stopMovingWhenStart()
@@ -78,7 +76,6 @@ public abstract class AbstractAnimationSkillGoal<T extends Mob & IAnimatable> ex
 			this.getMob().setCanMove(true);
 		}
 		this.getMob().setAggressive(false);
-    	this.getMob().setUsingSkill(false);
 	}
 	
     @Override

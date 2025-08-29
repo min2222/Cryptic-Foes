@@ -2,9 +2,9 @@ package com.min01.crypticfoes.entity.living;
 
 import com.min01.crypticfoes.entity.AbstractAnimatableCreature;
 import com.min01.crypticfoes.misc.CrypticExplosion;
+import com.min01.crypticfoes.misc.SmoothAnimationState;
 import com.min01.crypticfoes.particle.CrypticParticles;
 import com.min01.crypticfoes.sound.CrypticSounds;
-import com.min01.crypticfoes.util.CrypticUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -15,7 +15,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
@@ -38,9 +37,10 @@ public class EntityBrancher extends AbstractAnimatableCreature
 	public static final EntityDataAccessor<Integer> EXPLOSION_MAX_TICK = SynchedEntityData.defineId(EntityBrancher.class, EntityDataSerializers.INT);
 	public static final EntityDataAccessor<Boolean> IS_RUNNING = SynchedEntityData.defineId(EntityBrancher.class, EntityDataSerializers.BOOLEAN);
 	
-	public final AnimationState idleAnimationState = new AnimationState();
-	public final AnimationState shiverAnimationState = new AnimationState();
-	public final AnimationState explosionAnimationState = new AnimationState();
+	public final SmoothAnimationState idleAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState shiverAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState explosionAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState runAnimationState = new SmoothAnimationState();
 	
     public float brightness;
     public float brightnessOld;
@@ -95,47 +95,16 @@ public class EntityBrancher extends AbstractAnimatableCreature
         });
     }
     
-	@Override
-	public void onSyncedDataUpdated(EntityDataAccessor<?> p_219422_) 
-	{
-        if(ANIMATION_STATE.equals(p_219422_) && this.level.isClientSide) 
-        {
-            switch(this.getAnimationState()) 
-            {
-        		case 0: 
-        		{
-        			this.stopAllAnimationStates();
-        			break;
-        		}
-        		case 1: 
-        		{
-        			this.stopAllAnimationStates();
-        			this.shiverAnimationState.start(this.tickCount);
-        			break;
-        		}
-        		case 2: 
-        		{
-        			this.stopAllAnimationStates();
-        			this.explosionAnimationState.start(this.tickCount);
-        			break;
-        		}
-            }
-        }
-	}
-	
-	@Override
-	public void stopAllAnimationStates() 
-	{
-		this.shiverAnimationState.stop();
-	}
-    
     @Override
     public void tick() 
     {
     	super.tick();
     	if(this.level.isClientSide)
     	{
-    		this.idleAnimationState.animateWhen(!CrypticUtil.isMoving(this), this.tickCount);
+    		this.idleAnimationState.updateWhen(this.getAnimationState() == 0, this.tickCount);
+    		this.shiverAnimationState.updateWhen(this.getAnimationState() == 1, this.tickCount);
+    		this.explosionAnimationState.updateWhen(this.getAnimationState() == 2, this.tickCount);
+    		this.runAnimationState.updateWhen(this.isRunning(), this.tickCount);
     		
             ++this.glowingTicks;
             this.brightness += (0.0F - this.brightness) * 0.8F;
