@@ -212,7 +212,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     		if(!this.isFalling() && !this.hasEffect(CrypticEffects.STUNNED.get()))
     		{
         		BlockPos pos = this.getSleepPos();
-        		if(this.horizontalDist(pos, this.getX(), this.getZ()) <= 1.5F)
+        		if(this.horizontalDist(pos, this.getX(), this.getZ()) <= 2.0F)
         		{
         			if(this.getAnimationState() == 0)
         			{
@@ -224,7 +224,7 @@ public class EntityHowler extends AbstractAnimatableMonster
             		if(this.getAnimationState() == 6)
             		{
             			Vec3 sleepPos = Vec3.atBottomCenterOf(pos);
-            			if(sleepPos.subtract(this.getEyePosition()).length() <= 1.5F)
+            			if(sleepPos.subtract(this.getEyePosition()).length() <= 2.0F)
             			{
             				this.setAnimationState(8);
             				this.setAnimationTick(35);
@@ -267,6 +267,10 @@ public class EntityHowler extends AbstractAnimatableMonster
         			this.setAnimationState(0);
         		}
     		}
+    	}
+    	if(this.getAnimationState() == 1)
+    	{
+    		this.setDeltaMovement(Vec3.ZERO);
     	}
     	if(this.isHowlerSleeping() && this.getAnimationState() == 1 && this.getTarget() != null)
     	{
