@@ -26,6 +26,7 @@ public class CrypticCreativeTabs
     			output.accept(CrypticItems.UNSTABLE_RESIN.get());
     			output.accept(CrypticItems.HOWLER_MEMBRANE.get());
     			output.accept(CrypticItems.MONSTROUS_HORN.get());
+    			output.accept(CrypticItems.SILENCING_BLEND.get());
     			output.accept(CrypticItems.FALLEN_LEAVES.get());
     			output.accept(CrypticItems.BLOCK_OF_FRAGILE_BONES.get());
     			output.accept(CrypticItems.PILE_OF_FRAGILE_BONES.get());

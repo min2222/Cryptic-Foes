@@ -11,7 +11,6 @@ import com.min01.crypticfoes.effect.CrypticEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -22,12 +21,6 @@ import net.minecraftforge.fml.common.Mod;
 public class EventHandlerForge 
 {
 	public static final Map<UUID, BlockPos> LEAVES_POS = new WeakHashMap<>();
-	
-	@SubscribeEvent
-	public static void onEntityJoinLevel(EntityJoinLevelEvent event)
-	{
-		
-	}
 
 	@SubscribeEvent
 	public static void onLivingTick(LivingTickEvent event)

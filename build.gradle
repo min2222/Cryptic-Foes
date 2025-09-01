@@ -36,8 +36,6 @@ mixin {
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-jarJar.enable()
-
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
     // The mappings can be changed at any time and must be in the following format.
@@ -140,9 +138,9 @@ repositories {
 
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:flat_dir_resolver
-    flatDir {
-   		dir 'libs'
-    }
+    // flatDir {
+    //     dir 'libs'
+    // }
 	
 	maven {
         url "https://cursemaven.com"
@@ -160,8 +158,6 @@ dependencies {
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 	annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
-	implementation fg.deobf("com.min01.crypticdep:cryptic-dep:1.0.0")
-    jarJar(group: 'com.min01.crypticdep', name: 'cryptic-dep', version: '[1.0.0]')
 
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime

@@ -16,6 +16,7 @@ import com.min01.crypticfoes.item.MonstrousHornItem;
 import com.min01.crypticfoes.particle.BrancherExplosionParticle;
 import com.min01.crypticfoes.particle.BrancherExplosionSeedParticle;
 import com.min01.crypticfoes.particle.CrypticParticles;
+import com.min01.crypticfoes.particle.SilencingParticle;
 
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
@@ -63,5 +64,6 @@ public class ClientEventHandler
 	{
 		event.registerSpriteSet(CrypticParticles.BRANCHER_EXPLOSION.get(), BrancherExplosionParticle.Provider::new);
 		event.registerSpecial(CrypticParticles.BRANCHER_EXPLOSION_SEED.get(), new BrancherExplosionSeedParticle.Provider());
+		event.registerSpriteSet(CrypticParticles.SILENCING.get(), SilencingParticle.Provider::new);
 	}
 }

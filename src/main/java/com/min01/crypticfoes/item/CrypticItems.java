@@ -28,6 +28,7 @@ public class CrypticItems
 	public static final RegistryObject<Item> UNSTABLE_RESIN = ITEMS.register("unstable_resin", () -> new Item(new Item.Properties()));
 	public static final RegistryObject<Item> HOWLER_MEMBRANE = ITEMS.register("howler_membrane", () -> new Item(new Item.Properties()));
 	public static final RegistryObject<Item> MONSTROUS_HORN = ITEMS.register("monstrous_horn", () -> new MonstrousHornItem());
+	public static final RegistryObject<Item> SILENCING_BLEND = ITEMS.register("silencing_blend", () -> new SilencingBlendItem());
 	
 	public static final RegistryObject<Item> FALLEN_LEAVES = registerBlockItem("fallen_leaves", () -> CrypticBlocks.FALLEN_LEAVES.get(), new Item.Properties());
 	public static final RegistryObject<Item> BLOCK_OF_FRAGILE_BONES = registerBlockItem("block_of_fragile_bones", () -> CrypticBlocks.BLOCK_OF_FRAGILE_BONES.get(), new Item.Properties());
