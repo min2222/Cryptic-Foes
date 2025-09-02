@@ -29,7 +29,6 @@ base {
 
 mixin {
     add sourceSets.main, "crypticfoes.refmap.json"
-
     config "crypticfoes.mixin.json"
 }
 

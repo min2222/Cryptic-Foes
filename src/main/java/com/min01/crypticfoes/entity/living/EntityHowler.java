@@ -25,10 +25,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
@@ -79,31 +75,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     @Override
     protected void registerGoals() 
     {
-		this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D)
-        {
-        	@Override
-        	public boolean canUse() 
-        	{
-        		return super.canUse() && !EntityHowler.this.isHowlerSleeping() && !EntityHowler.this.isUsingSkill();
-        	}
-        });
-        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F)
-        {
-        	@Override
-        	public boolean canUse() 
-        	{
-        		return super.canUse() && !EntityHowler.this.isHowlerSleeping() && !EntityHowler.this.isUsingSkill();
-        	}
-        });
-        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this)
-        {
-        	@Override
-        	public boolean canUse() 
-        	{
-        		return super.canUse() && !EntityHowler.this.isHowlerSleeping() && !EntityHowler.this.isUsingSkill();
-        	}
-        });
+    	super.registerGoals();
         this.goalSelector.addGoal(0, new HowlerPunchGoal(this));
         this.goalSelector.addGoal(0, new HowlerRoarGoal(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true) 
@@ -129,6 +101,18 @@ public class EntityHowler extends AbstractAnimatableMonster
         	}
         });
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+    }
+    
+    @Override
+    public boolean canRandomStroll() 
+    {
+    	return super.canRandomStroll() && !this.isHowlerSleeping();
+    }
+    
+    @Override
+    public boolean canLookAround() 
+    {
+    	return super.canLookAround() && !this.isHowlerSleeping();
     }
     
     @Override

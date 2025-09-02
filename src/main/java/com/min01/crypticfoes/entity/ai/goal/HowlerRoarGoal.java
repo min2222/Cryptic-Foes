@@ -19,9 +19,9 @@ public class HowlerRoarGoal extends BasicAnimationSkillGoal<EntityHowler>
 	}
 	
 	@Override
-	public boolean additionalStartCondition() 
+	public boolean canUse() 
 	{
-		return !this.mob.isHowlerSleeping() && !this.mob.isFalling();
+		return super.canUse() && !this.mob.isHowlerSleeping() && !this.mob.isFalling();
 	}
 	
 	@Override

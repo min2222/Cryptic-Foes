@@ -11,16 +11,11 @@ public abstract class AbstractAnimationSkillGoal<T extends Mob & IAnimatable> ex
 	protected int skillWarmupDelay;
 	protected int nextSkillTickCount;
 	
-	public AbstractAnimationSkillGoal() 
-	{
-		
-	}
-	
     @Override
     public boolean canUse() 
     {
-    	LivingEntity livingentity = this.getMob().getTarget();
-    	if(livingentity != null && livingentity.isAlive()) 
+    	LivingEntity target = this.getMob().getTarget();
+    	if(target != null && target.isAlive()) 
     	{
     		if(this.getMob().isUsingSkill())
     		{
@@ -28,18 +23,13 @@ public abstract class AbstractAnimationSkillGoal<T extends Mob & IAnimatable> ex
     		}
     		else 
     		{
-    			return this.getMob().tickCount >= this.nextSkillTickCount && this.additionalStartCondition();
+    			return this.getMob().tickCount >= this.nextSkillTickCount;
     		}
     	}
     	else 
     	{
     		return false;
     	}
-    }
-    
-    public boolean additionalStartCondition()
-    {
-    	return true;
     }
     
     @Override
@@ -58,6 +48,7 @@ public abstract class AbstractAnimationSkillGoal<T extends Mob & IAnimatable> ex
     	}
     	
     	this.getMob().setAggressive(true);
+    	this.getMob().setUsingSkill(true);
     	this.skillWarmupDelay = this.adjustedTickDelay(this.getSkillWarmupTime());
     	this.getMob().setAnimationTick(this.getSkillUsingTime());
     	this.nextSkillTickCount = this.getMob().tickCount + this.getSkillUsingInterval();
@@ -76,6 +67,7 @@ public abstract class AbstractAnimationSkillGoal<T extends Mob & IAnimatable> ex
 			this.getMob().setCanMove(true);
 		}
 		this.getMob().setAggressive(false);
+    	this.getMob().setUsingSkill(false);
 	}
 	
     @Override
@@ -87,15 +79,9 @@ public abstract class AbstractAnimationSkillGoal<T extends Mob & IAnimatable> ex
     		this.performSkill();
     	}
     }
-    
-    public void perfomSkillAfterMove()
-    {
-    	
-    }
 
     protected abstract void performSkill();
 
-    //wait specific tick before use skill
     protected int getSkillWarmupTime()
     {
     	return 20;

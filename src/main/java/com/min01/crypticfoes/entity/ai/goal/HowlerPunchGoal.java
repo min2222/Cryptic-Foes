@@ -17,9 +17,9 @@ public class HowlerPunchGoal extends BasicAnimationSkillGoal<EntityHowler>
 	}
 	
 	@Override
-	public boolean additionalStartCondition() 
+	public boolean canUse() 
 	{
-		return this.mob.isWithinMeleeAttackRange(this.mob.getTarget()) && !this.mob.isHowlerSleeping() && !this.mob.isFalling();
+		return super.canUse() && this.mob.isWithinMeleeAttackRange(this.mob.getTarget()) && !this.mob.isHowlerSleeping() && !this.mob.isFalling();
 	}
 	
 	@Override

@@ -19,9 +19,9 @@ public class PetrifiedShootStoneGoal extends BasicAnimationSkillGoal<EntityPetri
 	}
 	
 	@Override
-	public boolean additionalStartCondition() 
+	public boolean canUse() 
 	{
-		return this.mob.distanceTo(this.mob.getTarget()) <= 40.0F && this.mob.distanceTo(this.mob.getTarget()) >= 6.0F && this.mob.hasStone();
+		return super.canUse() && this.mob.distanceTo(this.mob.getTarget()) <= 40.0F && this.mob.distanceTo(this.mob.getTarget()) >= 6.0F && this.mob.hasStone();
 	}
 	
 	@Override
