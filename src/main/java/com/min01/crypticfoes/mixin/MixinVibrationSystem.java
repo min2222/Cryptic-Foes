@@ -40,11 +40,10 @@ public interface MixinVibrationSystem extends VibrationSystem.User
 					}
 					return false;
 				}
-				if(entity.dampensVibrations())
+				if(entity.dampensVibrations() || CrypticUtil.isBlockSilenced(entity.level, entity.getOnPos()))
 				{
 					return false;
 				}
-				return CrypticUtil.isBlockSilenced(entity.level, entity.getOnPos());
 			}
 			if(p_283373_.affectedState() != null)
 			{

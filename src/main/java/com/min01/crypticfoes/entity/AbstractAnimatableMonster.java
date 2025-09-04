@@ -59,7 +59,7 @@ public abstract class AbstractAnimatableMonster extends Monster implements IAnim
 				return super.canUse() && AbstractAnimatableMonster.this.canLookAround();
 			}
 		});
-		this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 1.0F)
+		this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 0.5F)
 		{
 			@Override
 			public boolean canUse()

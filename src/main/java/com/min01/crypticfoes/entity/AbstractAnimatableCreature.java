@@ -59,7 +59,7 @@ public abstract class AbstractAnimatableCreature extends PathfinderMob implement
 				return super.canUse() && AbstractAnimatableCreature.this.canLookAround();
 			}
 		});
-		this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 1.0F)
+		this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 0.5F)
 		{
 			@Override
 			public boolean canUse()
