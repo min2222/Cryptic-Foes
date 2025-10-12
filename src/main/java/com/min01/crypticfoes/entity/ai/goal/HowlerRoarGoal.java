@@ -3,6 +3,7 @@ package com.min01.crypticfoes.entity.ai.goal;
 import com.min01.crypticfoes.entity.CrypticEntities;
 import com.min01.crypticfoes.entity.living.EntityHowler;
 import com.min01.crypticfoes.entity.projectile.EntityHowlerScream;
+import com.min01.crypticfoes.sound.CrypticSounds;
 
 public class HowlerRoarGoal extends BasicAnimationSkillGoal<EntityHowler>
 {
@@ -45,7 +46,7 @@ public class HowlerRoarGoal extends BasicAnimationSkillGoal<EntityHowler>
 	@Override
 	protected void performSkill() 
 	{
-
+		this.mob.playSound(CrypticSounds.HOWLER_SCREAM.get());
 	}
 	
 	@Override

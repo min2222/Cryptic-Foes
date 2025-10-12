@@ -2,11 +2,11 @@ package com.min01.crypticfoes.entity.living;
 
 import java.util.List;
 
-import com.min01.crypticfoes.effect.CrypticEffects;
 import com.min01.crypticfoes.entity.AbstractAnimatableMonster;
 import com.min01.crypticfoes.entity.ai.goal.HowlerPunchGoal;
 import com.min01.crypticfoes.entity.ai.goal.HowlerRoarGoal;
 import com.min01.crypticfoes.misc.SmoothAnimationState;
+import com.min01.crypticfoes.sound.CrypticSounds;
 import com.min01.crypticfoes.util.CrypticUtil;
 
 import net.minecraft.core.BlockPos;
@@ -15,6 +15,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
@@ -200,7 +201,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     	}
     	else if(!this.getSleepPos().equals(BlockPos.ZERO))
     	{
-    		if(!this.isFalling() && !this.hasEffect(CrypticEffects.STUNNED.get()))
+    		if(!this.isFalling())
     		{
         		BlockPos pos = this.getSleepPos();
         		if(this.horizontalDist(pos, this.getX(), this.getZ()) <= 2.0F)
@@ -210,6 +211,7 @@ public class EntityHowler extends AbstractAnimatableMonster
             			this.setAnimationState(7);
             			this.setAnimationTick(46);
                 		this.setNoGravity(true);
+                		this.setDeltaMovement(Vec3.ZERO);
         			}
             		
             		if(this.getAnimationState() == 6)
@@ -361,6 +363,12 @@ public class EntityHowler extends AbstractAnimatableMonster
     	p_21484_.putBoolean("isHowlerSleeping", this.isHowlerSleeping());
     	p_21484_.putBoolean("isFalling", this.isFalling());
     	p_21484_.put("SleepPos", NbtUtils.writeBlockPos(this.getSleepPos()));
+    }
+    
+    @Override
+    protected SoundEvent getAmbientSound() 
+    {
+    	return CrypticSounds.HOWLER_IDLE.get();
     }
     
     public void setHowlerSleeping(boolean value)

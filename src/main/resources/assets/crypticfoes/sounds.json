@@ -68,5 +68,20 @@
 			"crypticfoes:block/fallen_leaves_step5",
 			"crypticfoes:block/fallen_leaves_step6"
 		]
+	},
+	"howler_idle": {
+		"sounds": [
+			"crypticfoes:entity/howler_idle1",
+			"crypticfoes:entity/howler_idle2",
+			"crypticfoes:entity/howler_idle3"
+		]
+	},
+	"howler_scream": {
+		"sounds": [
+			{
+				"name": "crypticfoes:entity/howler_scream",
+				"stream": true
+			}
+		]
 	}
 }

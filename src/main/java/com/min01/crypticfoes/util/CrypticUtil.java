@@ -15,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.LevelEntityGetter;
@@ -54,6 +55,19 @@ public class CrypticUtil
 		else
 		{
 			SILENCED_BLOCKS.removeIf(t -> level.getBlockState(t).isAir());
+		}
+	}
+	
+	public static void removeSilencedBlock(Level level, BlockPos pos)
+	{
+		CrypticSavedData data = CrypticSavedData.get(level);
+		if(data != null)
+		{
+			data.getSilencedBlocks().removeIf(t -> t.equals(pos));
+		}
+		else
+		{
+			SILENCED_BLOCKS.removeIf(t -> t.equals(pos));
 		}
 	}
 	
@@ -100,6 +114,28 @@ public class CrypticUtil
 			consumer.accept(level);
 		});
 	}
+	
+    public static double getMeleeAttackRangeSqr(float width, LivingEntity target, float multiplier)
+    {
+    	return (double)(width * multiplier * width * multiplier + target.getBbWidth());
+    }
+    
+    public static double getMeleeAttackRangeSqr(Entity owner, LivingEntity target, float multiplier)
+    {
+    	return (double)(owner.getBbWidth() * multiplier * owner.getBbWidth() * multiplier + target.getBbWidth());
+    }
+    
+    public static boolean isWithinMeleeAttackRange(Vec3 pos, float width, LivingEntity target, float multiplier)
+    {
+    	double d0 = pos.distanceToSqr(target.getX(), target.getY(), target.getZ());
+    	return d0 <= getMeleeAttackRangeSqr(width, target, multiplier);
+    }
+
+    public static boolean isWithinMeleeAttackRange(Entity owner, LivingEntity target, float multiplier)
+    {
+    	double d0 = owner.distanceToSqr(target.getX(), target.getY(), target.getZ());
+    	return d0 <= getMeleeAttackRangeSqr(owner, target, multiplier);
+    }
 	
 	public static Vec3 fromToVector(Vec3 from, Vec3 to, float scale)
 	{

@@ -12,10 +12,16 @@ import com.min01.crypticfoes.network.UpdateSilencedBlocksPacket;
 import com.min01.crypticfoes.util.CrypticUtil;
 import com.min01.crypticfoes.world.CrypticSavedData;
 
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.event.PlayLevelSoundEvent;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -23,6 +29,7 @@ import net.minecraftforge.event.TickEvent.Type;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.BlockEvent.BlockToolModificationEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -104,6 +111,30 @@ public class EventHandlerForge
 		if(entity.hasEffect(CrypticEffects.STUNNED.get()))
 		{
 			event.setCanceled(true);
+		}
+	}
+	
+	@SubscribeEvent
+	public static void onBlockToolModification(BlockToolModificationEvent event)
+	{
+		Level level = (Level) event.getLevel();
+		BlockPos pos = event.getPos();
+		Player player = event.getPlayer();
+		ItemStack stack = event.getHeldItemStack();
+		if(player != null && CrypticUtil.isBlockSilenced(level, pos) && event.getToolAction() == ToolActions.AXE_WAX_OFF)
+		{
+			CrypticUtil.removeSilencedBlock(level, pos);
+			level.playSound(player, pos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
+			level.levelEvent(player, 3004, pos, 0);
+			if(player instanceof ServerPlayer)
+			{
+				CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer)player, pos, stack);
+			}
+			stack.hurtAndBreak(1, player, (p_150686_) -> 
+			{	 
+				p_150686_.broadcastBreakEvent(player.getUsedItemHand());
+			});
+			player.swing(player.getUsedItemHand());
 		}
 	}
 	

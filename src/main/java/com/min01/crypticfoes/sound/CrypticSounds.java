@@ -24,6 +24,8 @@ public class CrypticSounds
 	public static final RegistryObject<SoundEvent> FALLEN_LEAVES_BREAK = registerSound("fallen_leaves_break");
 	public static final RegistryObject<SoundEvent> FALLEN_LEAVES_PLACE = registerSound("fallen_leaves_place");
 	public static final RegistryObject<SoundEvent> FALLEN_LEAVES_STEP = registerSound("fallen_leaves_step");
+	public static final RegistryObject<SoundEvent> HOWLER_IDLE = registerSound("howler_idle");
+	public static final RegistryObject<SoundEvent> HOWLER_SCREAM = registerSound("howler_scream");
 	
 	public static final SoundType FALLEN_LEAVES = new ForgeSoundType(1.0F, 1.0F, () -> FALLEN_LEAVES_BREAK.get(), () -> FALLEN_LEAVES_STEP.get(), () -> FALLEN_LEAVES_PLACE.get(), () -> SoundEvents.GRASS_HIT, () -> SoundEvents.GRASS_FALL);
 	

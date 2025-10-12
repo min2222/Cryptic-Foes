@@ -1,6 +1,7 @@
 package com.min01.crypticfoes.entity.ai.goal;
 
 import com.min01.crypticfoes.entity.living.EntityHowler;
+import com.min01.crypticfoes.util.CrypticUtil;
 
 public class HowlerPunchGoal extends BasicAnimationSkillGoal<EntityHowler>
 {
@@ -19,7 +20,7 @@ public class HowlerPunchGoal extends BasicAnimationSkillGoal<EntityHowler>
 	@Override
 	public boolean canUse() 
 	{
-		return super.canUse() && this.mob.isWithinMeleeAttackRange(this.mob.getTarget()) && !this.mob.isHowlerSleeping() && !this.mob.isFalling();
+		return super.canUse() && CrypticUtil.isWithinMeleeAttackRange(this.mob, this.mob.getTarget(), 5.0F) && !this.mob.isHowlerSleeping() && !this.mob.isFalling();
 	}
 	
 	@Override
@@ -27,7 +28,7 @@ public class HowlerPunchGoal extends BasicAnimationSkillGoal<EntityHowler>
 	{
 		if(this.mob.getTarget() != null)
 		{
-			if(this.mob.isWithinMeleeAttackRange(this.mob.getTarget()))
+			if(CrypticUtil.isWithinMeleeAttackRange(this.mob, this.mob.getTarget(), 5.0F))
 			{
 				this.mob.doHurtTarget(this.mob.getTarget());
 			}

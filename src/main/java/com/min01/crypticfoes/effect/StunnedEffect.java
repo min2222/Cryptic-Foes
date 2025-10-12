@@ -1,5 +1,7 @@
 package com.min01.crypticfoes.effect;
 
+import com.min01.crypticfoes.misc.CrypticTags;
+
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,6 +18,10 @@ public class StunnedEffect extends MobEffect
 	@Override
 	public void applyEffectTick(LivingEntity p_19467_, int p_19468_) 
 	{
+		if(p_19467_.getType().is(CrypticTags.CrypticEntity.RESIST_TO_STUN))
+		{
+			return;
+		}
 		if(p_19467_ instanceof PathfinderMob mob)
 		{
 			mob.getNavigation().stop();
@@ -25,9 +31,14 @@ public class StunnedEffect extends MobEffect
 				goal.stop();
 			}
 		}
+		p_19467_.stopUsingItem();
 		p_19467_.xxa = 0.0F;
 		p_19467_.yya = 0.0F;
 		p_19467_.zza = 0.0F;
+		p_19467_.setXRot(p_19467_.xRotO);
+		p_19467_.setYRot(p_19467_.yRotO);
+		p_19467_.setYHeadRot(p_19467_.yHeadRotO);
+		p_19467_.setYBodyRot(p_19467_.yBodyRotO);
 	}
 	
 	@Override

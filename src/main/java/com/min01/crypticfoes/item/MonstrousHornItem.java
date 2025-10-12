@@ -67,7 +67,7 @@ public class MonstrousHornItem extends Item
 				if(tick > 0)
 				{
 					setScreamTick(p_41404_, tick - 1);
-					if(tick % 10 == 0)
+					if(tick % 20 == 0)
 					{
 						int charge = getHornCharge(p_41404_);
 						EntityHowlerScream scream = new EntityHowlerScream(CrypticEntities.HOWLER_SCREAM.get(), p_41405_);
@@ -85,14 +85,22 @@ public class MonstrousHornItem extends Item
 					setScream(p_41404_, false);
 					setHornCharge(p_41404_, 0);
 					setScreamTick(p_41404_, 0);
+					if(p_41406_ instanceof Player player)
+					{
+						player.getCooldowns().addCooldown(p_41404_.getItem(), 140);
+					}
 				}
 			}
 		}
-		else
+		else if(isScream)
 		{
 			setScream(p_41404_, false);
 			setHornCharge(p_41404_, 0);
 			setScreamTick(p_41404_, 0);
+			if(p_41406_ instanceof Player player)
+			{
+				player.getCooldowns().addCooldown(p_41404_.getItem(), 140);
+			}
 		}
 	}
 	

@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.min01.crypticfoes.effect.CrypticEffects;
+import com.min01.crypticfoes.misc.CrypticTags;
 import com.min01.crypticfoes.util.CrypticUtil;
 
 import net.minecraft.core.BlockPos;
@@ -21,7 +22,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.PointedDripstoneBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -63,7 +63,10 @@ public class EntityHowlerScream extends ThrowableProjectile
 			List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(scale), t -> !t.isAlliedTo(this.getOwner()) && t != this.getOwner() && !t.hasEffect(CrypticEffects.STUNNED.get()));
 			list.forEach(t -> 
 			{
-				t.addEffect(new MobEffectInstance(CrypticEffects.STUNNED.get(), this.getStunDuration()));
+				if(!t.getType().is(CrypticTags.CrypticEntity.RESIST_TO_STUN))
+				{
+					t.addEffect(new MobEffectInstance(CrypticEffects.STUNNED.get(), this.getStunDuration()));
+				}
 			});
 		}
 	}
@@ -74,7 +77,7 @@ public class EntityHowlerScream extends ThrowableProjectile
 		super.onHitBlock(p_37258_);
 		BlockPos blockPos = p_37258_.getBlockPos();
 		BlockState state = this.level.getBlockState(blockPos);
-		if(state.getBlock() instanceof PointedDripstoneBlock && !this.level.isClientSide && this.mayInteract(this.level, blockPos) && this.getDeltaMovement().length() > 0.6D) 
+		if(state.is(CrypticTags.CrypticBlocks.BREAKABLE_BY_SCREAM) && !this.level.isClientSide && this.mayInteract(this.level, blockPos) && this.getDeltaMovement().length() > 0.6D) 
 		{
 			this.level.destroyBlock(blockPos, true);
 		}
