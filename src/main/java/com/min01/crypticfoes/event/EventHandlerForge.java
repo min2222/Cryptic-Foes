@@ -17,10 +17,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -32,7 +32,6 @@ import net.minecraftforge.event.TickEvent.Type;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.level.BlockEvent.BlockToolModificationEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -118,14 +117,17 @@ public class EventHandlerForge
 	}
 	
 	@SubscribeEvent
-	public static void onBlockToolModification(BlockToolModificationEvent event)
+	public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event)
 	{
-		Level level = (Level) event.getLevel();
+		Player player = event.getEntity();
+		Level level = event.getLevel();
 		BlockPos pos = event.getPos();
-		Player player = event.getPlayer();
-		UseOnContext ctx = event.getContext();
-		ItemStack stack = ctx.getItemInHand();
-		if(player != null && CrypticUtil.isBlockSilenced(level, pos) && event.getToolAction() == ToolActions.AXE_WAX_OFF)
+		ItemStack stack = event.getItemStack();
+		if(player.hasEffect(CrypticEffects.STUNNED.get()))
+		{
+			event.setCanceled(true);
+		}
+		if(CrypticUtil.isBlockSilenced(level, pos) && stack.canPerformAction(ToolActions.AXE_WAX_OFF))
 		{
 			CrypticUtil.removeSilencedBlock(level, pos);
 			BlockState state = level.getBlockState(pos);
@@ -138,19 +140,11 @@ public class EventHandlerForge
 			level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, state));
 			stack.hurtAndBreak(1, player, (p_150686_) ->
 			{
-				p_150686_.broadcastBreakEvent(ctx.getHand());
+				p_150686_.broadcastBreakEvent(event.getHand());
 			});
-			player.swing(ctx.getHand());
-		}
-	}
-	
-	@SubscribeEvent
-	public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event)
-	{
-		LivingEntity entity = event.getEntity();
-		if(entity.hasEffect(CrypticEffects.STUNNED.get()))
-		{
+			player.swing(event.getHand());
 			event.setCanceled(true);
+			event.setCancellationResult(InteractionResult.sidedSuccess(player.level.isClientSide));
 		}
 	}
 }
