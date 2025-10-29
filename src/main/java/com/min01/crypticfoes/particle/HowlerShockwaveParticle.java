@@ -21,11 +21,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class HowlerShockwaveParticle extends TextureSheetParticle
 {
-	protected HowlerShockwaveParticle(ClientLevel p_107647_, double p_107648_, double p_107649_, double p_107650_, SpriteSet p_107651_) 
+	protected HowlerShockwaveParticle(ClientLevel p_107647_, double p_107648_, double p_107649_, double p_107650_, int lifeTime, SpriteSet p_107651_) 
 	{
 		super(p_107647_, p_107648_, p_107649_, p_107650_, 0.0D, 0.0D, 0.0D);
 		this.quadSize = 0.0F;
-		this.lifetime = 20;
+		this.lifetime = lifeTime;
 		this.pickSprite(p_107651_);
 	}
 	
@@ -99,7 +99,7 @@ public class HowlerShockwaveParticle extends TextureSheetParticle
 		@Override
 		public Particle createParticle(SimpleParticleType p_107421_, ClientLevel p_107422_, double p_107423_, double p_107424_, double p_107425_, double p_107426_, double p_107427_, double p_107428_) 
 		{
-			return new HowlerShockwaveParticle(p_107422_, p_107423_, p_107424_, p_107425_, this.sprites);
+			return new HowlerShockwaveParticle(p_107422_, p_107423_, p_107424_, p_107425_, (int) p_107426_, this.sprites);
 		}
 	}
 }

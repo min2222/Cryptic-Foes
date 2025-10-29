@@ -13,7 +13,6 @@ import com.min01.crypticfoes.util.CrypticUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntitySelector;
@@ -48,15 +47,15 @@ public class ScreamerBlockEntity extends BlockEntity
 		{
 			block.animationTick = 45;
 		}
-
-		if(block.animationTick == 15)
+		
+		if(block.animationTick == 10)
 		{
 			boolean charged = state.getValue(ScreamerBlock.CHARGED);
 	    	List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, new AABB(-6.0F, 0.0F, -6.0F, 6.0F, 6.0F, 6.0F).move(pos), EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(t -> !(t instanceof EntityHowler)));
 	    	list.forEach(t -> 
 	    	{
 	    		Vec3 motion = CrypticUtil.fromToVector(Vec3.atBottomCenterOf(pos), t.position().add(0, 1, 0), 1.0F);
-	    		t.push(motion.x, motion.y, motion.z);
+	    		t.setDeltaMovement(motion.x, motion.y, motion.z);
 	    		if(t instanceof ServerPlayer player)
 	    		{
 	    			player.connection.send(new ClientboundSetEntityMotionPacket(t));
@@ -66,10 +65,7 @@ public class ScreamerBlockEntity extends BlockEntity
 					t.addEffect(new MobEffectInstance(CrypticEffects.STUNNED.get(), 100));
 				}
 	    	});
-	    	if(level instanceof ServerLevel serverLevel)
-	    	{
-	    		serverLevel.sendParticles(CrypticParticles.HOWLER_SHOCKWAVE.get(), pos.getX() + 0.5F, pos.getY() + 0.01F, pos.getZ() + 0.5F, 1, 0.0F, 0.0F, 0.0F, 0.0F);
-	    	}
+    		level.addParticle(CrypticParticles.HOWLER_SHOCKWAVE.get(), pos.getX() + 0.5F, pos.getY() + 0.01F, pos.getZ() + 0.5F, 40.0F, 0.0F, 0.0F);
 			if(charged)
 			{
 				level.setBlockAndUpdate(pos, state.setValue(ScreamerBlock.CHARGED, false));

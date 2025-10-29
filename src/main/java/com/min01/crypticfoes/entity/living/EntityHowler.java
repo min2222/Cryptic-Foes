@@ -79,7 +79,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     			.add(Attributes.ATTACK_DAMAGE, 10.0F)
     			.add(Attributes.KNOCKBACK_RESISTANCE, 100.0F)
     			.add(Attributes.MOVEMENT_SPEED, 0.35F)
-    			.add(Attributes.FOLLOW_RANGE, 32.0F);
+    			.add(Attributes.FOLLOW_RANGE, 16.0F);
     }
     
     @Override
@@ -323,7 +323,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     	if(!this.level.isClientSide)
     	{
     		ServerLevel level = (ServerLevel) this.level;
-    		level.sendParticles(CrypticParticles.HOWLER_SHOCKWAVE.get(), this.getX(), this.getY(0.01F), this.getZ(), 1, 0.0F, 0.0F, 0.0F, 0.0F);
+    		level.broadcastEntityEvent(this, (byte) 99);
     		for(int i = 0; i < 50; i++)
     		{
                 double spread1 = this.random.nextGaussian() * 1.0F;
@@ -345,6 +345,16 @@ public class EntityHowler extends AbstractAnimatableMonster
     	double xDist = (double)pos.getX() + 0.5D - x;
     	double zDist = (double)pos.getZ() + 0.5D - z;
     	return Math.sqrt(xDist * xDist + zDist * zDist);
+    }
+    
+    @Override
+    public void handleEntityEvent(byte p_21375_) 
+    {
+    	super.handleEntityEvent(p_21375_);
+    	if(p_21375_ == 99)
+    	{
+    		this.level.addParticle(CrypticParticles.HOWLER_SHOCKWAVE.get(), this.getX(), this.getY(0.01F), this.getZ(), 20.0F, 0.0F, 0.0F);
+    	}
     }
     
     @Override
