@@ -79,7 +79,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     			.add(Attributes.ATTACK_DAMAGE, 10.0F)
     			.add(Attributes.KNOCKBACK_RESISTANCE, 100.0F)
     			.add(Attributes.MOVEMENT_SPEED, 0.35F)
-    			.add(Attributes.FOLLOW_RANGE, 16.0F);
+    			.add(Attributes.FOLLOW_RANGE, 25.0F);
     }
     
     @Override
@@ -91,13 +91,22 @@ public class EntityHowler extends AbstractAnimatableMonster
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true) 
         {
         	@Override
+        	protected void findTarget() 
+        	{
+                this.target = this.mob.level.getNearestEntity(this.mob.level.getEntitiesOfClass(this.targetType, this.getTargetSearchArea(this.getFollowDistance()), (p_148152_) -> 
+                {
+                    return true;
+                }), this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
+        	}
+        	
+        	@Override
         	protected AABB getTargetSearchArea(double p_26069_)
         	{
         		if(((EntityHowler) this.mob).isHowlerSleeping())
         		{
-            		return this.mob.getBoundingBox().inflate(7.5D, 64.0D, 7.5D);
+            		return this.mob.getBoundingBox().inflate(15.0D, 128.0D, 15.0D);
         		}
-        		return this.mob.getBoundingBox().inflate(12.5D, 64.0D, 12.5D);
+        		return super.getTargetSearchArea(p_26069_);
         	}
         });
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
@@ -106,13 +115,13 @@ public class EntityHowler extends AbstractAnimatableMonster
     @Override
     public boolean canRandomStroll() 
     {
-    	return super.canRandomStroll() && !this.isHowlerSleeping();
+    	return super.canRandomStroll() && !this.isHowlerSleeping() && !this.isUsingSkill();
     }
     
     @Override
     public boolean canLookAround() 
     {
-    	return super.canLookAround() && !this.isHowlerSleeping();
+    	return super.canLookAround() && !this.isHowlerSleeping() && !this.isUsingSkill();
     }
     
     @Override
@@ -353,7 +362,8 @@ public class EntityHowler extends AbstractAnimatableMonster
     	super.handleEntityEvent(p_21375_);
     	if(p_21375_ == 99)
     	{
-    		this.level.addParticle(CrypticParticles.HOWLER_SHOCKWAVE.get(), this.getX(), this.getY(0.01F), this.getZ(), 20.0F, 0.0F, 0.0F);
+    		BlockPos groundPos = CrypticUtil.getGroundPos(this.level, this.getX(), this.getY() + 1, this.getZ(), -2);
+    		this.level.addParticle(CrypticParticles.HOWLER_SHOCKWAVE.get(), this.getX(), groundPos.getY() + 0.5F, this.getZ(), 20.0F, 0.0F, 0.0F);
     	}
     }
     

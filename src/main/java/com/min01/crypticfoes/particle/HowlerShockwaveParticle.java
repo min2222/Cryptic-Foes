@@ -47,10 +47,22 @@ public class HowlerShockwaveParticle extends TextureSheetParticle
 		}
 		else
 		{
-			this.quadSize += 0.15F;
-			if(this.alpha > 0.0F)
+			if(this.lifetime >= 60)
 			{
-				this.alpha -= 0.05F;
+				this.quadSize += 0.15F;
+				if(this.alpha > 0.0F)
+				{
+					this.alpha -= 0.03F;
+				}
+				this.alpha = Math.max(this.alpha, 0.0F);
+			}
+			else
+			{
+				this.quadSize += 0.15F;
+				if(this.alpha > 0.0F)
+				{
+					this.alpha -= 0.05F;
+				}
 			}
 		}
 	}

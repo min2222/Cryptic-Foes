@@ -32,12 +32,13 @@ public class ScreamerBlock extends BaseEntityBlock
 {
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	public static final BooleanProperty CHARGED = BooleanProperty.create("charged");
+	public static final BooleanProperty ACTIVATE = BooleanProperty.create("activate");
 	public static final VoxelShape SHAPE = Shapes.or(Block.box(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D), Block.box(3.0D, 4.0D, 3.0D, 13.0D, 13.0D, 13.0D));
 	
 	public ScreamerBlock() 
 	{
 		super(BlockBehaviour.Properties.copy(Blocks.DEEPSLATE).requiresCorrectToolForDrops().noOcclusion());
-		this.registerDefaultState(this.stateDefinition.any().setValue(CHARGED, false));
+		this.registerDefaultState(this.stateDefinition.any().setValue(CHARGED, false).setValue(ACTIVATE, false));
 	}
 	
 	@Override
@@ -61,7 +62,7 @@ public class ScreamerBlock extends BaseEntityBlock
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> p_49915_) 
 	{
-		p_49915_.add(CHARGED, FACING);
+		p_49915_.add(CHARGED, FACING, ACTIVATE);
 	}
 	
 	@Override
