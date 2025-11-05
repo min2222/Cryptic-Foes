@@ -32,9 +32,9 @@ public class CrypticCreativeTabs
     			output.accept(CrypticItems.MONSTROUS_HORN.get());
     			output.accept(CrypticItems.SCREAMER.get());
     			output.accept(CrypticItems.HOWLER_HEAD.get());
-    			output.accept(createPainting(enabledFeatures, CrypticPaintings.MOUNTAIN_HOLDER_KEY));
-    			output.accept(createPainting(enabledFeatures, CrypticPaintings.DWELLERS_KEY));
     			output.accept(createPainting(enabledFeatures, CrypticPaintings.RESIN_KEY));
+    			output.accept(createPainting(enabledFeatures, CrypticPaintings.DWELLERS_KEY));
+    			output.accept(createPainting(enabledFeatures, CrypticPaintings.MOUNTAIN_HOLDER_KEY));
     		}).build());
     
     public static ItemStack createPainting(CreativeModeTab.ItemDisplayParameters enabledFeatures, ResourceKey<PaintingVariant> key)

@@ -363,7 +363,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     	if(p_21375_ == 99)
     	{
     		BlockPos groundPos = CrypticUtil.getGroundPos(this.level, this.getX(), this.getY() + 1, this.getZ(), -2);
-    		this.level.addParticle(CrypticParticles.HOWLER_SHOCKWAVE.get(), this.getX(), groundPos.getY() + 0.5F, this.getZ(), 20.0F, 0.0F, 0.0F);
+    		this.level.addParticle(CrypticParticles.HOWLER_SHOCKWAVE.get(), this.getX(), groundPos.getY() + 0.01F, this.getZ(), 20.0F, 0.0F, 0.0F);
     	}
     }
     
