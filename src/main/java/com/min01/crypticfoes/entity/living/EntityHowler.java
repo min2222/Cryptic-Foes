@@ -235,6 +235,7 @@ public class EntityHowler extends AbstractAnimatableMonster
             			{
             				this.setAnimationState(8);
             				this.setAnimationTick(35);
+            				this.setDeltaMovement(Vec3.ZERO);
             			}
             			else
             			{
