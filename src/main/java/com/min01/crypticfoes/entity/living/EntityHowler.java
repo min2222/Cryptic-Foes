@@ -3,6 +3,7 @@ package com.min01.crypticfoes.entity.living;
 import java.util.List;
 
 import com.min01.crypticfoes.entity.AbstractAnimatableMonster;
+import com.min01.crypticfoes.entity.EntityCameraShake;
 import com.min01.crypticfoes.entity.ai.goal.HowlerPunchGoal;
 import com.min01.crypticfoes.entity.ai.goal.HowlerRoarGoal;
 import com.min01.crypticfoes.item.CrypticItems;
@@ -287,19 +288,24 @@ public class EntityHowler extends AbstractAnimatableMonster
     	{
     		if(this.getTarget() != null && this.getTarget().isAlive())
     		{
-    			this.targetTick = 0;
-    			this.setAnimationState(2);
-    			this.setAnimationTick(60);
+    			this.awake();
     		}
     		else if(this.level.getBlockState(this.getSleepPos()).isAir())
     		{
     			this.targetTick = 0;
-        		this.setHowlerSleeping(false);
+    			this.setHowlerSleeping(false);
     			this.setNoGravity(false);
     			this.setFalling(true);
     			this.setAnimationState(0);
     		}
     	}
+    }
+    
+    public void awake()
+    {
+		this.targetTick = 0;
+		this.setAnimationState(2);
+		this.setAnimationTick(60);
     }
     
     @Override
@@ -319,6 +325,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     
     public void createShockwave()
     {
+    	EntityCameraShake.cameraShake(this.level, this.position(), 15.0F, 0.25F, 0, 20);
     	List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(3.0F), t -> !(t instanceof EntityHowler));
     	list.forEach(t -> 
     	{

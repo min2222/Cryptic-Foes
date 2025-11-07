@@ -7,6 +7,7 @@ import java.util.WeakHashMap;
 import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.block.FallenLeavesBlock;
 import com.min01.crypticfoes.effect.CrypticEffects;
+import com.min01.crypticfoes.entity.living.EntityHowler;
 import com.min01.crypticfoes.network.CrypticNetwork;
 import com.min01.crypticfoes.network.UpdateSilencedBlocksPacket;
 import com.min01.crypticfoes.util.CrypticUtil;
@@ -14,10 +15,13 @@ import com.min01.crypticfoes.world.CrypticSavedData;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -44,11 +48,42 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onPlayLevelSoundAtPosition(PlayLevelSoundEvent.AtPosition event)
 	{
+		Holder<SoundEvent> sound = event.getSound();
 		Level level = event.getLevel();
 		BlockPos blockPos = BlockPos.containing(event.getPosition());
 		if(CrypticUtil.isBlockSilenced(level, blockPos))
 		{
 			event.setCanceled(true);
+		}
+		else if(sound != null);
+		{
+			for(Entity entity : CrypticUtil.getAllEntities(level))
+			{
+				if(sound.get() != SoundEvents.BELL_BLOCK || !blockPos.closerToCenterThan(entity.position(), 40) || !(entity instanceof EntityHowler howler) || !howler.isHowlerSleeping() || howler.getAnimationState() != 1 || howler.level.dimension() != level.dimension())
+				{
+					continue;
+				}
+	    		howler.awake();
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public static void onPlayLevelSoundAtEntity(PlayLevelSoundEvent.AtEntity event)
+	{
+		Holder<SoundEvent> sound = event.getSound();
+		Level level = event.getLevel();
+		BlockPos blockPos = event.getEntity().blockPosition();
+		if(sound != null);
+		{
+			for(Entity entity : CrypticUtil.getAllEntities(level))
+			{
+				if(!sound.get().getLocation().toString().contains("goat_horn") || !blockPos.closerToCenterThan(entity.position(), 40) || !(entity instanceof EntityHowler howler) || !howler.isHowlerSleeping() || howler.getAnimationState() != 1 || howler.level.dimension() != level.dimension())
+				{
+					continue;
+				}
+	    		howler.awake();
+			}
 		}
 	}
 	

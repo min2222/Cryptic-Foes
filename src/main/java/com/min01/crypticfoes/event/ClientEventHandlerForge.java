@@ -2,15 +2,19 @@ package com.min01.crypticfoes.event;
 
 import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.effect.CrypticEffects;
+import com.min01.crypticfoes.entity.EntityCameraShake;
 import com.min01.crypticfoes.util.CrypticClientUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ComputeFovModifierEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -30,6 +34,32 @@ public class ClientEventHandlerForge
 			event.setNewFovModifier(fov - 0.5F);
 		}
 	}
+	
+    @SubscribeEvent
+    public static void onSetupCamera(ViewportEvent.ComputeCameraAngles event) 
+    {
+        Player player = CrypticClientUtil.MC.player;
+        float delta = Minecraft.getInstance().getFrameTime();
+        float ticksExistedDelta = player.tickCount + delta;
+        if(player != null)
+        {
+            float shakeAmplitude = 0.0F;
+            for(EntityCameraShake cameraShake : player.level.getEntitiesOfClass(EntityCameraShake.class, player.getBoundingBox().inflate(100.0F))) 
+            {
+                if(cameraShake.distanceTo(player) < cameraShake.getRadius())
+                {
+                    shakeAmplitude += cameraShake.getShakeAmount(player, delta);
+                }
+            }
+            if(shakeAmplitude > 1.0F)
+            {
+                shakeAmplitude = 1.0F;
+            }
+            event.setPitch((float)(event.getPitch() + shakeAmplitude * Math.cos(ticksExistedDelta * 3.0F + 2.0F) * 25.0));
+            event.setYaw((float)(event.getYaw() + shakeAmplitude * Math.cos(ticksExistedDelta * 5.0F + 1.0F) * 25.0));
+            event.setRoll((float)(event.getRoll() + shakeAmplitude * Math.cos(ticksExistedDelta * 4.0F) * 25.0));
+        }
+    }
 	
 	@SubscribeEvent
     public static void onMouseButtonInput(InputEvent.MouseButton.Pre event)

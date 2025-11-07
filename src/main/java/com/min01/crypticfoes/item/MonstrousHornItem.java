@@ -26,8 +26,13 @@ public class MonstrousHornItem extends Item
 	public InteractionResultHolder<ItemStack> use(Level p_41432_, Player p_41433_, InteractionHand p_41434_)
 	{
 		ItemStack stack = p_41433_.getItemInHand(p_41434_);
-		p_41433_.startUsingItem(p_41434_);
-		return InteractionResultHolder.consume(stack);
+		boolean isScream = isScream(stack);
+		if(!isScream)
+		{
+			p_41433_.startUsingItem(p_41434_);
+			return InteractionResultHolder.consume(stack);
+		}
+		return InteractionResultHolder.pass(stack);
 	}
 	
 	@Override

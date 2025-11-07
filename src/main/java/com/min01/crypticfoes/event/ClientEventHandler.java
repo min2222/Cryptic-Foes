@@ -14,6 +14,7 @@ import com.min01.crypticfoes.entity.model.ModelPetrifiedStone;
 import com.min01.crypticfoes.entity.renderer.BrancherRenderer;
 import com.min01.crypticfoes.entity.renderer.HowlerRenderer;
 import com.min01.crypticfoes.entity.renderer.HowlerScreamRenderer;
+import com.min01.crypticfoes.entity.renderer.NoneRenderer;
 import com.min01.crypticfoes.entity.renderer.PetrifiedRenderer;
 import com.min01.crypticfoes.entity.renderer.PetrifiedStoneRenderer;
 import com.min01.crypticfoes.item.CrypticItems;
@@ -65,6 +66,7 @@ public class ClientEventHandler
 		event.registerEntityRenderer(CrypticEntities.BRANCHER.get(), BrancherRenderer::new);
 		event.registerEntityRenderer(CrypticEntities.HOWLER.get(), HowlerRenderer::new);
 		event.registerEntityRenderer(CrypticEntities.HOWLER_SCREAM.get(), HowlerScreamRenderer::new);
+		event.registerEntityRenderer(CrypticEntities.CAMERA_SHAKE.get(), NoneRenderer::new);
 	}
 	
 	@SubscribeEvent
