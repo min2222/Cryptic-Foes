@@ -10,6 +10,7 @@ import com.min01.crypticfoes.effect.CrypticEffects;
 import com.min01.crypticfoes.entity.living.EntityHowler;
 import com.min01.crypticfoes.network.CrypticNetwork;
 import com.min01.crypticfoes.network.UpdateSilencedBlocksPacket;
+import com.min01.crypticfoes.sound.CrypticSounds;
 import com.min01.crypticfoes.util.CrypticUtil;
 import com.min01.crypticfoes.world.CrypticSavedData;
 
@@ -63,7 +64,10 @@ public class EventHandlerForge
 				{
 					continue;
 				}
-	    		howler.awake();
+				if(!CrypticUtil.isBlockSilenced(level, blockPos))
+				{
+		    		howler.awake();
+				}
 			}
 		}
 	}
@@ -170,7 +174,7 @@ public class EventHandlerForge
 			{
 				CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer)player, pos, stack);
 			}
-			level.playSound(player, pos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
+			level.playSound(player, pos, CrypticSounds.SILENCING_BLEND_OFF.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
 			level.levelEvent(player, 3004, pos, 0);
 			level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, state));
 			stack.hurtAndBreak(1, player, (p_150686_) ->

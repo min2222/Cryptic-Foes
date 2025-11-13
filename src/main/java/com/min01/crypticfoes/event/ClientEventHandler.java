@@ -26,6 +26,7 @@ import com.min01.crypticfoes.particle.CrypticParticles;
 import com.min01.crypticfoes.particle.DustPillarParticle;
 import com.min01.crypticfoes.particle.HowlerShockwaveParticle;
 import com.min01.crypticfoes.particle.SilencingParticle;
+import com.min01.crypticfoes.particle.StunnedParticle;
 
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
@@ -94,5 +95,6 @@ public class ClientEventHandler
 		event.registerSpriteSet(CrypticParticles.SILENCING.get(), SilencingParticle.Provider::new);
 		event.registerSpriteSet(CrypticParticles.HOWLER_SHOCKWAVE.get(), HowlerShockwaveParticle.Provider::new);
 		event.registerSpecial(CrypticParticles.DUST_PILLAR.get(), new DustPillarParticle.Provider());
+		event.registerSpriteSet(CrypticParticles.STUNNED.get(), StunnedParticle.Provider::new);
 	}
 }

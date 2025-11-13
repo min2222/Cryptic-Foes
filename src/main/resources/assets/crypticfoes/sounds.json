@@ -83,5 +83,46 @@
 				"stream": true
 			}
 		]
+	},
+	"cave_salad_burp": {
+		"sounds": [
+			{
+				"name": "crypticfoes:item/cave_salad_burp",
+				"stream": true
+			}
+		]
+	},
+	"monstrous_horn_inhale": {
+		"sounds": [
+			"crypticfoes:item/monstrous_horn_inhale1",
+			"crypticfoes:item/monstrous_horn_inhale2"
+		]
+	},
+	"monstrous_horn_scream": {
+		"sounds": [
+			"crypticfoes:item/monstrous_horn_scream1",
+			"crypticfoes:item/monstrous_horn_scream2",
+			"crypticfoes:item/monstrous_horn_scream3"
+		]
+	},
+	"screamer_work": {
+		"sounds": [
+			{
+				"name": "crypticfoes:block/screamer_work",
+				"stream": true
+			}
+		]
+	},
+	"silencing_blend_off": {
+		"sounds": [
+			"crypticfoes:block/silencing_blend_off1",
+			"crypticfoes:block/silencing_blend_off2"
+		]
+	},
+	"silencing_blend_on": {
+		"sounds": [
+			"crypticfoes:block/silencing_blend_on1",
+			"crypticfoes:block/silencing_blend_on2"
+		]
 	}
 }

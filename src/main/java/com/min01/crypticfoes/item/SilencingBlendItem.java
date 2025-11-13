@@ -1,5 +1,6 @@
 package com.min01.crypticfoes.item;
 
+import com.min01.crypticfoes.sound.CrypticSounds;
 import com.min01.crypticfoes.util.CrypticUtil;
 
 import net.minecraft.core.BlockPos;
@@ -30,6 +31,7 @@ public class SilencingBlendItem extends Item
 			{
 				stack.shrink(1);
 			}
+			player.playSound(CrypticSounds.SILENCING_BLEND_ON.get());
 			CrypticUtil.setBlockSilence(level, pos);
 			return InteractionResult.SUCCESS;
 		}

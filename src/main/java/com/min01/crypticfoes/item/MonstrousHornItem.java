@@ -2,9 +2,9 @@ package com.min01.crypticfoes.item;
 
 import com.min01.crypticfoes.entity.CrypticEntities;
 import com.min01.crypticfoes.entity.projectile.EntityHowlerScream;
+import com.min01.crypticfoes.sound.CrypticSounds;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -45,7 +45,7 @@ public class MonstrousHornItem extends Item
 			{
 				setHornCharge(p_41430_, charge + 1);
 				setCurrentHornCharge(p_41430_, charge + 1);
-				p_41429_.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP);
+				p_41429_.playSound(CrypticSounds.MONSTROUS_HORN_INHALE.get());
 			}
 		}
 	}
@@ -75,6 +75,10 @@ public class MonstrousHornItem extends Item
 						scream.setRange(0.06F - (charge * 0.0005F));
 						p_41405_.addFreshEntity(scream);
 						setHornChargeTick(p_41404_, chargeTick + 1);
+						if(Math.random() <= 0.5F)
+						{
+							p_41406_.playSound(CrypticSounds.MONSTROUS_HORN_SCREAM.get());
+						}
 					}
 				}
 				else

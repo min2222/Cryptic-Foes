@@ -1,6 +1,7 @@
 package com.min01.crypticfoes.effect;
 
 import com.min01.crypticfoes.misc.CrypticTags;
+import com.min01.crypticfoes.particle.CrypticParticles;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -39,6 +40,10 @@ public class StunnedEffect extends MobEffect
 		p_19467_.xxa = 0.0F;
 		p_19467_.yya = 0.0F;
 		p_19467_.zza = 0.0F;
+		if(p_19467_.tickCount % 5 == 0)
+		{
+			p_19467_.level.addParticle(CrypticParticles.STUNNED.get(), p_19467_.getRandomX(1.0F), p_19467_.getEyeY(), p_19467_.getRandomZ(1.0F), 0.0F, 0.0F, 0.0F);
+		}
 	}
 	
 	@Override

@@ -14,7 +14,7 @@ public class CaveSaladItem extends BowlFoodItem
 {
 	public CaveSaladItem() 
 	{
-		super(new Item.Properties().food(CrypticFoods.CAVE_SALAD));
+		super(new Item.Properties().food(CrypticFoods.CAVE_SALAD).stacksTo(1));
 	}
 	
 	@Override
