@@ -10,6 +10,7 @@ import com.min01.crypticfoes.effect.CrypticEffects;
 import com.min01.crypticfoes.entity.living.EntityHowler;
 import com.min01.crypticfoes.network.CrypticNetwork;
 import com.min01.crypticfoes.network.UpdateSilencedBlocksPacket;
+import com.min01.crypticfoes.network.UpdateStunnedEffectPacket;
 import com.min01.crypticfoes.sound.CrypticSounds;
 import com.min01.crypticfoes.util.CrypticUtil;
 import com.min01.crypticfoes.world.CrypticSavedData;
@@ -22,6 +23,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -36,6 +38,7 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.Type;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
+import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -144,6 +147,39 @@ public class EventHandlerForge
 			entity.removeEffect(CrypticEffects.STUNNED.get());
 		}
 	}
+	
+    @SubscribeEvent
+    public static void onMobEffectAdded(MobEffectEvent.Added event) 
+    {
+    	LivingEntity living = event.getEntity();
+    	MobEffectInstance instance = event.getEffectInstance();
+    	if(instance.getEffect() == CrypticEffects.STUNNED.get() && !living.level.isClientSide)
+    	{
+    		CrypticNetwork.sendToAll(new UpdateStunnedEffectPacket(living.getUUID(), instance.getAmplifier(), instance.getDuration(), false));
+    	}
+    }
+    
+    @SubscribeEvent
+    public static void onMobEffectRemove(MobEffectEvent.Remove event) 
+    {
+    	LivingEntity living = event.getEntity();
+    	MobEffectInstance instance = event.getEffectInstance();
+    	if(instance.getEffect() == CrypticEffects.STUNNED.get() && !living.level.isClientSide)
+    	{
+    		CrypticNetwork.sendToAll(new UpdateStunnedEffectPacket(living.getUUID(), instance.getAmplifier(), instance.getDuration(), true));
+    	}
+    }
+    
+    @SubscribeEvent
+    public static void onMobEffectExpired(MobEffectEvent.Expired event) 
+    {
+    	LivingEntity living = event.getEntity();
+    	MobEffectInstance instance = event.getEffectInstance();
+    	if(instance.getEffect() == CrypticEffects.STUNNED.get() && !living.level.isClientSide)
+    	{
+    		CrypticNetwork.sendToAll(new UpdateStunnedEffectPacket(living.getUUID(), instance.getAmplifier(), instance.getDuration(), true));
+    	}
+    }
 	
 	@SubscribeEvent
 	public static void onRightClickItem(PlayerInteractEvent.RightClickItem event)

@@ -23,6 +23,7 @@ public class CrypticNetwork
 	{
 		CHANNEL.registerMessage(ID++, UpdatePosArrayPacket.class, UpdatePosArrayPacket::encode, UpdatePosArrayPacket::new, UpdatePosArrayPacket.Handler::onMessage);
 		CHANNEL.registerMessage(ID++, AddSilencingParticlePacket.class, AddSilencingParticlePacket::encode, AddSilencingParticlePacket::new, AddSilencingParticlePacket.Handler::onMessage);
+		CHANNEL.registerMessage(ID++, UpdateStunnedEffectPacket.class, UpdateStunnedEffectPacket::encode, UpdateStunnedEffectPacket::new, UpdateStunnedEffectPacket.Handler::onMessage);
 	}
 	
     public static <MSG> void sendToServer(MSG message) 
