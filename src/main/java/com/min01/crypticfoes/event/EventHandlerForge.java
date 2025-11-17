@@ -153,7 +153,7 @@ public class EventHandlerForge
     {
     	LivingEntity living = event.getEntity();
     	MobEffectInstance instance = event.getEffectInstance();
-    	if(instance.getEffect() == CrypticEffects.STUNNED.get() && !living.level.isClientSide)
+    	if(instance != null && instance.getEffect() == CrypticEffects.STUNNED.get() && !living.level.isClientSide)
     	{
     		CrypticNetwork.sendToAll(new UpdateStunnedEffectPacket(living.getUUID(), instance.getAmplifier(), instance.getDuration(), false));
     	}
@@ -164,7 +164,7 @@ public class EventHandlerForge
     {
     	LivingEntity living = event.getEntity();
     	MobEffectInstance instance = event.getEffectInstance();
-    	if(instance.getEffect() == CrypticEffects.STUNNED.get() && !living.level.isClientSide)
+    	if(instance != null && instance.getEffect() == CrypticEffects.STUNNED.get() && !living.level.isClientSide)
     	{
     		CrypticNetwork.sendToAll(new UpdateStunnedEffectPacket(living.getUUID(), instance.getAmplifier(), instance.getDuration(), true));
     	}
@@ -175,7 +175,7 @@ public class EventHandlerForge
     {
     	LivingEntity living = event.getEntity();
     	MobEffectInstance instance = event.getEffectInstance();
-    	if(instance.getEffect() == CrypticEffects.STUNNED.get() && !living.level.isClientSide)
+    	if(instance != null && instance.getEffect() == CrypticEffects.STUNNED.get() && !living.level.isClientSide)
     	{
     		CrypticNetwork.sendToAll(new UpdateStunnedEffectPacket(living.getUUID(), instance.getAmplifier(), instance.getDuration(), true));
     	}
