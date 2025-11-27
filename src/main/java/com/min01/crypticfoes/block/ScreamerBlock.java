@@ -64,10 +64,9 @@ public class ScreamerBlock extends BaseEntityBlock
 	@Override
 	public void neighborChanged(BlockState p_60509_, Level p_60510_, BlockPos p_60511_, Block p_60512_, BlockPos p_60513_, boolean p_60514_) 
 	{
-		if(p_60510_.hasNeighborSignal(p_60511_))
+		if(p_60510_.hasNeighborSignal(p_60513_))
 		{
 			p_60510_.setBlockAndUpdate(p_60511_, p_60509_.setValue(ACTIVATE, true));
-			p_60510_.playSound(null, p_60511_, CrypticSounds.SCREAMER_WORK.get(), SoundSource.BLOCKS, 0.7F, 1.0F);
 		}
 	}
 	

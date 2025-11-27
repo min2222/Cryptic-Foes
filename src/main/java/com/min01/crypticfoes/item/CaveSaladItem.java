@@ -30,16 +30,21 @@ public class CaveSaladItem extends Item
 		scream.setStunDuration(20);
 		scream.setRange(0.06F - 0.0005F);
 		p_41410_.addFreshEntity(scream);
-		if(p_41411_ instanceof Player player && !player.getAbilities().instabuild)
+		ItemStack stack = super.finishUsingItem(p_41409_, p_41410_, p_41411_);
+		if(stack.getCount() > 1)
 		{
-			p_41409_.shrink(1);
-			player.getInventory().add(new ItemStack(Items.BOWL));
+			if(p_41411_ instanceof Player player && !player.getAbilities().instabuild)
+			{
+				stack.shrink(1);
+				player.getInventory().add(new ItemStack(Items.BOWL));
+			}
+			return stack;
 		}
-		return super.finishUsingItem(p_41409_, p_41410_, p_41411_);
+		return p_41411_ instanceof Player player && player.getAbilities().instabuild ? stack : new ItemStack(Items.BOWL);
 	}
 	
 	@Override
-	public int getMaxStackSize(ItemStack stack)
+	public int getMaxStackSize(ItemStack stack) 
 	{
 		if(ModList.get().isLoaded("farmersdelight"))
 		{
