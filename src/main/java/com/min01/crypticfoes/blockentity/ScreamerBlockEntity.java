@@ -8,14 +8,12 @@ import com.min01.crypticfoes.effect.CrypticEffects;
 import com.min01.crypticfoes.entity.living.EntityHowler;
 import com.min01.crypticfoes.misc.SmoothAnimationState;
 import com.min01.crypticfoes.particle.CrypticParticles;
-import com.min01.crypticfoes.sound.CrypticSounds;
 import com.min01.crypticfoes.util.CrypticUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
@@ -43,18 +41,9 @@ public class ScreamerBlockEntity extends BlockEntity
 		{
 			block.screamAnimationState.updateWhen(activate, block.tickCount);
 		}
-
-		if(level.hasNeighborSignal(pos) && !activate)
-		{
-			level.setBlockAndUpdate(pos, state.setValue(ScreamerBlock.ACTIVATE, true));
-		}
 		
 		if(activate)
 		{
-			if(block.tickCount % 45 == 0)
-			{
-	    		level.playSound(null, pos, CrypticSounds.SCREAMER_WORK.get(), SoundSource.BLOCKS, 0.7F, 1.0F);
-			}
 			block.tickCount++;
 			if(block.tickCount == 30)
 			{

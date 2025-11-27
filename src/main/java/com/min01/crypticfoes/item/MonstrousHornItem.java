@@ -45,7 +45,7 @@ public class MonstrousHornItem extends Item
 			{
 				setHornCharge(p_41430_, charge + 1);
 				setCurrentHornCharge(p_41430_, charge + 1);
-				p_41429_.playSound(CrypticSounds.MONSTROUS_HORN_INHALE.get(), 1.0F, charge);
+				p_41429_.playSound(CrypticSounds.MONSTROUS_HORN_INHALE.get(), 1.0F, charge / 2.0F);
 			}
 		}
 	}
@@ -95,7 +95,7 @@ public class MonstrousHornItem extends Item
 				}
 			}
 		}
-		else if(isScream)
+		else if(getHornCharge(p_41404_) > 0)
 		{
 			setScream(p_41404_, false);
 			setScreamTick(p_41404_, 0);

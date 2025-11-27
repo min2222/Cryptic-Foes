@@ -49,8 +49,8 @@ public class HowlerShockwaveParticle extends TextureSheetParticle
 		{
 			if(this.lifetime >= 60)
 			{
-				this.quadSize += 0.15F;
-				this.alpha = Mth.lerp(this.age / 200.0F, this.alpha, 0.0F);
+				this.quadSize += 0.25F;
+				this.alpha = Mth.lerp(this.age / 100.0F, this.alpha, 0.0F);
 			}
 			else
 			{

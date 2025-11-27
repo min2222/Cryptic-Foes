@@ -35,6 +35,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterEntitySpectatorShadersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -57,6 +58,12 @@ public class ClientEventHandler
         	return Mth.floor(MonstrousHornItem.getHornCharge(p_174585_) / 2);
         });
         SkullBlockRenderer.SKIN_BY_TYPE.put(CrypticSkullTypes.HOWLER, new ResourceLocation(CrypticFoes.MODID, "textures/entity/howler.png"));
+	}
+	
+	@SubscribeEvent
+	public static void onRegisterEntitySpectatorShaders(RegisterEntitySpectatorShadersEvent event)
+	{
+		event.register(CrypticEntities.HOWLER.get(), new ResourceLocation(CrypticFoes.MODID, "shaders/post/howler.json"));
 	}
 	
 	@SubscribeEvent

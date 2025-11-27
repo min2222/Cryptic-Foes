@@ -105,7 +105,7 @@ public class EntityHowler extends AbstractAnimatableMonster
         	{
         		if(((EntityHowler) this.mob).isHowlerSleeping())
         		{
-            		return this.mob.getBoundingBox().inflate(15.0D, 128.0D, 15.0D);
+            		return this.mob.getBoundingBox().inflate(15.0D, this.mob.level.getMaxBuildHeight(), 15.0D);
         		}
         		return super.getTargetSearchArea(p_26069_);
         	}

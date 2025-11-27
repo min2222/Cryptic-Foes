@@ -62,6 +62,16 @@ public class ScreamerBlock extends BaseEntityBlock
 	}
 	
 	@Override
+	public void neighborChanged(BlockState p_60509_, Level p_60510_, BlockPos p_60511_, Block p_60512_, BlockPos p_60513_, boolean p_60514_) 
+	{
+		if(p_60510_.hasNeighborSignal(p_60511_))
+		{
+			p_60510_.setBlockAndUpdate(p_60511_, p_60509_.setValue(ACTIVATE, true));
+			p_60510_.playSound(null, p_60511_, CrypticSounds.SCREAMER_WORK.get(), SoundSource.BLOCKS, 0.7F, 1.0F);
+		}
+	}
+	
+	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> p_49915_) 
 	{
 		p_49915_.add(CHARGED, FACING, ACTIVATE);
@@ -90,7 +100,7 @@ public class ScreamerBlock extends BaseEntityBlock
 	@Override
 	public void onProjectileHit(Level p_60453_, BlockState p_60454_, BlockHitResult p_60455_, Projectile p_60456_) 
 	{
-		if(p_60456_ instanceof EntityHowlerScream)
+		if(p_60456_ instanceof EntityHowlerScream && !p_60454_.getValue(CHARGED))
 		{
 			p_60453_.playSound(null, p_60455_.getBlockPos(), CrypticSounds.SCREAMER_SWITCH.get(), SoundSource.BLOCKS, 0.7F, 1.0F);
 			p_60453_.setBlockAndUpdate(p_60455_.getBlockPos(), p_60454_.setValue(CHARGED, true));

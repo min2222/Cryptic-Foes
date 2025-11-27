@@ -1,0 +1,42 @@
+{
+	"molding": "json",
+	"remolder": [
+		{
+			"type": "add",
+			"target": "overrides",
+			"value": [
+			]
+		},
+		{
+			"type": "add",
+			"target": "overrides[]",
+			"value": {
+				"model": "crypticfoes:item/painting/dwellers",
+				"predicate": {
+					"crypticfoes:dwellers": 1.0
+				}
+			}
+		},
+		{
+			"type": "add",
+			"target": "overrides[]",
+			"value": {
+				"model": "crypticfoes:item/painting/mountain_holder",
+				"predicate": {
+					"crypticfoes:mountain_holder": 1.0
+				}
+			}
+		},
+		{
+			"type": "add",
+			"target": "overrides[]",
+			"value": {
+				"model": "crypticfoes:item/painting/resin",
+				"predicate": {
+					"crypticfoes:resin": 1.0
+				}
+			}
+		}
+	],
+	"selector": "minecraft:models/item/painting"
+}

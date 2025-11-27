@@ -5,12 +5,14 @@ import com.min01.crypticfoes.entity.projectile.EntityHowlerScream;
 import com.min01.crypticfoes.misc.CrypticFoods;
 
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.BowlFoodItem;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fml.ModList;
 
-public class CaveSaladItem extends BowlFoodItem
+public class CaveSaladItem extends Item
 {
 	public CaveSaladItem() 
 	{
@@ -28,6 +30,21 @@ public class CaveSaladItem extends BowlFoodItem
 		scream.setStunDuration(20);
 		scream.setRange(0.06F - 0.0005F);
 		p_41410_.addFreshEntity(scream);
+		if(p_41411_ instanceof Player player && !player.getAbilities().instabuild)
+		{
+			p_41409_.shrink(1);
+			player.getInventory().add(new ItemStack(Items.BOWL));
+		}
 		return super.finishUsingItem(p_41409_, p_41410_, p_41411_);
+	}
+	
+	@Override
+	public int getMaxStackSize(ItemStack stack)
+	{
+		if(ModList.get().isLoaded("farmersdelight"))
+		{
+			return 16;
+		}
+		return super.getMaxStackSize(stack);
 	}
 }
