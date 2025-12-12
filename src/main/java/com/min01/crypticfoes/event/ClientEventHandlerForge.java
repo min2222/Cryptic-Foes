@@ -6,7 +6,6 @@ import com.min01.crypticfoes.entity.EntityCameraShake;
 import com.min01.crypticfoes.util.CrypticClientUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -36,10 +35,10 @@ public class ClientEventHandlerForge
 	}
 	
     @SubscribeEvent
-    public static void onSetupCamera(ViewportEvent.ComputeCameraAngles event) 
+    public static void onComputeCameraAngles(ViewportEvent.ComputeCameraAngles event) 
     {
         Player player = CrypticClientUtil.MC.player;
-        float delta = Minecraft.getInstance().getFrameTime();
+        float delta = CrypticClientUtil.MC.getFrameTime();
         float ticksExistedDelta = player.tickCount + delta;
         if(player != null)
         {
