@@ -11,20 +11,12 @@ import com.min01.crypticfoes.entity.CrypticEntities;
 import com.min01.crypticfoes.entity.living.EntityBrancher;
 import com.min01.crypticfoes.entity.living.EntityHowler;
 import com.min01.crypticfoes.entity.living.EntityPetrified;
-import com.min01.crypticfoes.item.CrypticItems;
 
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.item.HoneycombItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent.Operation;
@@ -38,15 +30,11 @@ public class EventHandler
 	@SubscribeEvent
 	public static void onFMLCommonSetup(FMLCommonSetupEvent event)
 	{
-		ItemStack awkward = PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.AWKWARD);
-		ItemStack fragility = PotionUtils.setPotion(new ItemStack(Items.POTION), CrypticEffects.FRAGILITY_POTION.get());
-		BrewingRecipeRegistry.addRecipe(Ingredient.of(awkward), Ingredient.of(CrypticItems.FRAGILE_BONE.get()), fragility);
+		CrypticEffects.init();
+		CrypticCriteriaTriggers.init();
 		
 		BiMap<Block, Block> waxables = HoneycombItem.WAXABLES.get();
 		HoneycombItem.WAXABLES = Suppliers.memoize(() -> ImmutableBiMap.<Block, Block>builder().putAll(waxables).put(CrypticBlocks.PILE_OF_FRAGILE_BONES.get(), CrypticBlocks.WAXED_PILE_OF_FRAGILE_BONES.get()).put(CrypticBlocks.POLISHED_PILE_OF_FRAGILE_BONES.get(), CrypticBlocks.WAXED_POLISHED_PILE_OF_FRAGILE_BONES.get()).build());
-	
-		CriteriaTriggers.register(CrypticCriteriaTriggers.ITEM_USED_ON_SILENCED_BLOCK);
-		CriteriaTriggers.register(CrypticCriteriaTriggers.STUNNING_SPEECH);
 	}
 	
     @SubscribeEvent

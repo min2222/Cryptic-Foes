@@ -42,7 +42,6 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -354,8 +353,8 @@ public class EntityHowler extends AbstractAnimatableMonster
     public static boolean checkHowlerSpawnRules(EntityType<? extends Monster> p_219014_, ServerLevelAccessor p_219015_, MobSpawnType p_219016_, BlockPos p_219017_, RandomSource p_219018_)
     {
     	BlockPos ceilingPos = CrypticUtil.getCeilingPos(p_219015_, p_219017_.getX(), p_219017_.getY(), p_219017_.getZ(), 0);
-    	BlockPos groundPos = p_219015_.getHeightmapPos(Types.WORLD_SURFACE_WG, p_219017_);
-    	return CrypticUtil.distanceToY(p_219017_, ceilingPos) >= 8.0F && ceilingPos.getY() < groundPos.getY() && !p_219015_.canSeeSky(ceilingPos) && p_219015_.getDifficulty() != Difficulty.PEACEFUL && isDarkEnoughToSpawn(p_219015_, p_219017_, p_219018_) && checkMobSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
+    	BlockPos groundPos = CrypticUtil.getGroundPos(p_219015_,  p_219017_.getX(), p_219017_.getY(), p_219017_.getZ(), -1);
+    	return p_219017_.getY() < 0 && CrypticUtil.distanceToY(p_219017_, ceilingPos) >= 8.0F && !p_219015_.canSeeSky(ceilingPos) && !p_219015_.canSeeSky(groundPos) && p_219015_.getDifficulty() != Difficulty.PEACEFUL && isDarkEnoughToSpawn(p_219015_, p_219017_, p_219018_) && checkMobSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
     }
     
     public double horizontalDist(BlockPos pos, double x, double z) 

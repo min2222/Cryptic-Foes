@@ -2,24 +2,7 @@
 	"parent": "minecraft:husbandry/safely_harvest_honey",
 	"criteria": {
 		"use_silencing_blend": {
-			"trigger": "minecraft:item_used_on_block",
-			"conditions": {
-				"location": [
-					{
-						"condition": "minecraft:match_tool",
-						"predicate": {
-							"items": [
-								"crypticfoes:silencing_blend"
-							]
-						}
-					},
-					{
-						"condition": "minecraft:location_check",
-						"predicate": {
-						}
-					}
-				]
-			}
+			"trigger": "crypticfoes:silencing_blend"
 		}
 	},
 	"display": {

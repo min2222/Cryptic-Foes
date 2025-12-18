@@ -8,6 +8,7 @@ import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.advancements.CrypticCriteriaTriggers;
 import com.min01.crypticfoes.block.FallenLeavesBlock;
 import com.min01.crypticfoes.effect.CrypticEffects;
+import com.min01.crypticfoes.entity.AbstractAnimatableMonster;
 import com.min01.crypticfoes.entity.living.EntityHowler;
 import com.min01.crypticfoes.network.CrypticNetwork;
 import com.min01.crypticfoes.network.UpdateSilencedBlocksPacket;
@@ -24,6 +25,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -38,10 +40,12 @@ import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.Type;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -91,6 +95,21 @@ public class EventHandlerForge
 					continue;
 				}
 	    		howler.awake();
+			}
+		}
+	}
+	
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public static void onLivingDeath(LivingDeathEvent event)
+	{
+		LivingEntity living = event.getEntity();
+		DamageSource source = event.getSource();
+		Entity entity = source.getEntity();
+		if(entity instanceof ServerPlayer player && living instanceof AbstractAnimatableMonster)
+		{
+			if(!CrypticUtil.isDone(player, "minecraft:adventure/kill_a_mob"))
+			{
+				CrypticUtil.awardAdvancement(player, "minecraft:adventure/kill_a_mob");
 			}
 		}
 	}

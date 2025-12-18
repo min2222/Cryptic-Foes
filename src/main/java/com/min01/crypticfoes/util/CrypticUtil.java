@@ -10,9 +10,13 @@ import com.min01.crypticfoes.network.AddSilencingParticlePacket;
 import com.min01.crypticfoes.network.CrypticNetwork;
 import com.min01.crypticfoes.world.CrypticSavedData;
 
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,6 +34,26 @@ public class CrypticUtil
 	public static final Method GET_ENTITY = ObfuscationReflectionHelper.findMethod(Level.class, "m_142646_");
 	
 	public static final List<BlockPos> SILENCED_BLOCKS = new ArrayList<>();
+	
+	public static boolean isDone(ServerPlayer serverPlayer, String name)
+	{
+		Advancement adv = serverPlayer.server.getAdvancements().getAdvancement(new ResourceLocation(name));
+		AdvancementProgress progress = serverPlayer.getAdvancements().getOrStartProgress(adv);
+		return progress.isDone();
+	}
+	
+	public static void awardAdvancement(ServerPlayer serverPlayer, String name)
+	{
+		Advancement adv = serverPlayer.server.getAdvancements().getAdvancement(new ResourceLocation(name));
+		AdvancementProgress progress = serverPlayer.getAdvancements().getOrStartProgress(adv);
+		if(!progress.isDone())
+		{
+			progress.getRemainingCriteria().forEach(t ->
+			{
+				serverPlayer.getAdvancements().award(adv, t);
+			});
+		}
+	}
 	
     public static float distanceToY(BlockPos blockPos, BlockPos targetPos)
     {

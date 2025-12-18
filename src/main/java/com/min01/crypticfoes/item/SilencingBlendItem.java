@@ -1,9 +1,11 @@
 package com.min01.crypticfoes.item;
 
+import com.min01.crypticfoes.advancements.CrypticCriteriaTriggers;
 import com.min01.crypticfoes.sound.CrypticSounds;
 import com.min01.crypticfoes.util.CrypticUtil;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -33,6 +35,10 @@ public class SilencingBlendItem extends Item
 			}
 			player.playSound(CrypticSounds.SILENCING_BLEND_ON.get());
 			CrypticUtil.setBlockSilence(level, pos);
+			if(player instanceof ServerPlayer serverPlayer)
+			{
+				CrypticCriteriaTriggers.SILENCING_BLEND.trigger(serverPlayer);
+			}
 			return InteractionResult.SUCCESS;
 		}
 		return super.useOn(p_41427_);
