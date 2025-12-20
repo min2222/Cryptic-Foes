@@ -44,76 +44,76 @@ public class ScreamerBlock extends BaseEntityBlock
 	}
 	
 	@Override
-	public VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) 
+	public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) 
 	{
 		return SHAPE;
 	}
 
 	@Override
-	public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_)
+	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) 
 	{
-		return new ScreamerBlockEntity(p_153215_, p_153216_);
+		return new ScreamerBlockEntity(pPos, pState);
 	}
 	
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_153212_, BlockState p_153213_, BlockEntityType<T> p_153214_) 
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) 
 	{
-		return createTickerHelper(p_153214_, CrypticBlocks.SCREAMER_BLOCK_ENTITY.get(), ScreamerBlockEntity::update);
+		return createTickerHelper(pBlockEntityType, CrypticBlocks.SCREAMER_BLOCK_ENTITY.get(), ScreamerBlockEntity::update);
 	}
 	
 	@Override
-	public void neighborChanged(BlockState p_60509_, Level p_60510_, BlockPos p_60511_, Block p_60512_, BlockPos p_60513_, boolean p_60514_) 
+	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pNeighborBlock, BlockPos pNeighborPos, boolean pMovedByPiston)
 	{
-		BlockEntity blockEntity = p_60510_.getBlockEntity(p_60511_);
+		BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
 		if(blockEntity instanceof ScreamerBlockEntity screamer)
 		{
-			if(p_60510_.hasNeighborSignal(p_60511_) && !p_60509_.getValue(ACTIVATE))
+			if(pLevel.hasNeighborSignal(pPos) && !pState.getValue(ACTIVATE))
 			{
-				p_60510_.setBlockAndUpdate(p_60511_, p_60509_.setValue(ACTIVATE, true));
+				pLevel.setBlockAndUpdate(pPos, pState.setValue(ACTIVATE, true));
 			}
-			else if(!p_60510_.hasNeighborSignal(p_60511_) && p_60509_.getValue(ACTIVATE))
+			else if(!pLevel.hasNeighborSignal(pPos) && pState.getValue(ACTIVATE))
 			{
 				if(screamer.tickCount == 0)
 				{
-					p_60510_.setBlockAndUpdate(p_60511_, p_60509_.setValue(ACTIVATE, false));
+					pLevel.setBlockAndUpdate(pPos, pState.setValue(ACTIVATE, false));
 				}
 			}
 		}
 	}
 	
 	@Override
-	protected void createBlockStateDefinition(Builder<Block, BlockState> p_49915_) 
+	protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) 
 	{
-		p_49915_.add(CHARGED, FACING, ACTIVATE);
+		pBuilder.add(CHARGED, FACING, ACTIVATE);
 	}
 	
 	@Override
-	public BlockState rotate(BlockState p_54125_, Rotation p_54126_)
+	public BlockState rotate(BlockState pState, Rotation pRotation)
 	{
-		return p_54125_.setValue(FACING, p_54126_.rotate(p_54125_.getValue(FACING)));
+		return pState.setValue(FACING, pRotation.rotate(pState.getValue(FACING)));
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public BlockState mirror(BlockState p_54122_, Mirror p_54123_)
+	public BlockState mirror(BlockState pState, Mirror pMirror)
 	{
-		return p_54122_.rotate(p_54123_.getRotation(p_54122_.getValue(FACING)));
+		return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
 	}
 	
 	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext p_49820_) 
+	public BlockState getStateForPlacement(BlockPlaceContext pContext) 
 	{
-    	Direction direction = p_49820_.getHorizontalDirection().getOpposite();
+    	Direction direction = pContext.getHorizontalDirection().getOpposite();
 		return this.defaultBlockState().setValue(FACING, direction);
 	}
 		   
 	@Override
-	public void onProjectileHit(Level p_60453_, BlockState p_60454_, BlockHitResult p_60455_, Projectile p_60456_) 
+	public void onProjectileHit(Level pLevel, BlockState pState, BlockHitResult pHit, Projectile pProjectile) 
 	{
-		if(p_60456_ instanceof EntityHowlerScream && !p_60454_.getValue(CHARGED))
+		if(pProjectile instanceof EntityHowlerScream && !pState.getValue(CHARGED))
 		{
-			p_60453_.playSound(null, p_60455_.getBlockPos(), CrypticSounds.SCREAMER_SWITCH.get(), SoundSource.BLOCKS, 0.7F, 1.0F);
-			p_60453_.setBlockAndUpdate(p_60455_.getBlockPos(), p_60454_.setValue(CHARGED, true));
+			pLevel.playSound(null, pHit.getBlockPos(), CrypticSounds.SCREAMER_SWITCH.get(), SoundSource.BLOCKS, 0.7F, 1.0F);
+			pLevel.setBlockAndUpdate(pHit.getBlockPos(), pState.setValue(CHARGED, true));
 		}
 	}
 }

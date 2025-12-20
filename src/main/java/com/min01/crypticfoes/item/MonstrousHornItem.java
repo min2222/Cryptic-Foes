@@ -25,78 +25,78 @@ public class MonstrousHornItem extends Item
 	}
 	
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level p_41432_, Player p_41433_, InteractionHand p_41434_)
+	public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand)
 	{
-		ItemStack stack = p_41433_.getItemInHand(p_41434_);
+		ItemStack stack = pPlayer.getItemInHand(pUsedHand);
 		boolean isScream = isScream(stack);
 		if(!isScream)
 		{
-			p_41433_.startUsingItem(p_41434_);
+			pPlayer.startUsingItem(pUsedHand);
 			return InteractionResultHolder.consume(stack);
 		}
 		return InteractionResultHolder.pass(stack);
 	}
 	
 	@Override
-	public void onUseTick(Level p_41428_, LivingEntity p_41429_, ItemStack p_41430_, int p_41431_)
+	public void onUseTick(Level pLevel, LivingEntity pLivingEntity, ItemStack pStack, int pRemainingUseDuration)
 	{
-		if(p_41431_ % 10 == 0)
+		if(pRemainingUseDuration % 10 == 0)
 		{
-			int charge = getHornCharge(p_41430_);
+			int charge = getHornCharge(pStack);
 			if(charge < 6)
 			{
-				setHornCharge(p_41430_, charge + 1);
-				setCurrentHornCharge(p_41430_, charge + 1);
-				p_41429_.playSound(CrypticSounds.MONSTROUS_HORN_INHALE.get(), 1.0F, charge / 2.0F);
+				setHornCharge(pStack, charge + 1);
+				setCurrentHornCharge(pStack, charge + 1);
+				pLivingEntity.playSound(CrypticSounds.MONSTROUS_HORN_INHALE.get(), 1.0F, charge / 2.0F);
 			}
 		}
 	}
 	
 	@Override
-	public void inventoryTick(ItemStack p_41404_, Level p_41405_, Entity p_41406_, int p_41407_, boolean p_41408_) 
+	public void inventoryTick(ItemStack pStack, Level pLevel, Entity pEntity, int pSlotId, boolean pIsSelected) 
 	{
-		boolean isScream = isScream(p_41404_);
-		if(p_41408_)
+		boolean isScream = isScream(pStack);
+		if(pIsSelected)
 		{
 			if(isScream)
 			{
-				int stunCount = getStunCount(p_41404_);
-				int charge = getHornCharge(p_41404_);
-				int chargeTick = getHornChargeTick(p_41404_);
-				int tick = getScreamTick(p_41404_);
+				int stunCount = getStunCount(pStack);
+				int charge = getHornCharge(pStack);
+				int chargeTick = getHornChargeTick(pStack);
+				int tick = getScreamTick(pStack);
 				if(chargeTick < charge * 3)
 				{
-					setScreamTick(p_41404_, tick + 1);
+					setScreamTick(pStack, tick + 1);
 					if(tick % 2 == 0)
 					{
-						EntityHowlerScream scream = new EntityHowlerScream(CrypticEntities.HOWLER_SCREAM.get(), p_41405_);
-						scream.setOwner(p_41406_);
-						scream.setPos(p_41406_.getEyePosition());
-						scream.shootFromRotation(p_41406_, p_41406_.getXRot(), p_41406_.getYRot(), 0.0F, 0.5F + (charge * 0.25F), 1.0F);
+						EntityHowlerScream scream = new EntityHowlerScream(CrypticEntities.HOWLER_SCREAM.get(), pLevel);
+						scream.setOwner(pEntity);
+						scream.setPos(pEntity.getEyePosition());
+						scream.shootFromRotation(pEntity, pEntity.getXRot(), pEntity.getYRot(), 0.0F, 0.5F + (charge * 0.25F), 1.0F);
 						scream.setNoGravity(true);
 						scream.setStunDuration(charge * 20);
 						scream.setRange(0.06F - (charge * 0.0005F));
-						p_41405_.addFreshEntity(scream);
-						setHornChargeTick(p_41404_, chargeTick + 1);
+						pLevel.addFreshEntity(scream);
+						setHornChargeTick(pStack, chargeTick + 1);
 						if(Math.random() <= 0.5F)
 						{
-							p_41406_.playSound(CrypticSounds.MONSTROUS_HORN_SCREAM.get());
+							pEntity.playSound(CrypticSounds.MONSTROUS_HORN_SCREAM.get());
 						}
 					}
-					if(stunCount >= 10 && p_41406_ instanceof ServerPlayer serverPlayer)
+					if(stunCount >= 10 && pEntity instanceof ServerPlayer serverPlayer)
 					{
 						CrypticCriteriaTriggers.STUNNING_SPEECH.trigger(serverPlayer);
 					}
 				}
 				else
 				{
-					reset(p_41404_, p_41406_);
+					reset(pStack, pEntity);
 				}
 			}
 		}
-		else if(getHornCharge(p_41404_) > 0)
+		else if(getHornCharge(pStack) > 0)
 		{
-			reset(p_41404_, p_41406_);
+			reset(pStack, pEntity);
 		}
 	}
 	
@@ -113,14 +113,14 @@ public class MonstrousHornItem extends Item
 			player.getCooldowns().addCooldown(stack.getItem(), 140);
 		}
 	}
-	
+
 	@Override
-	public void releaseUsing(ItemStack p_41412_, Level p_41413_, LivingEntity p_41414_, int p_41415_) 
+	public void releaseUsing(ItemStack pStack, Level pLevel, LivingEntity pLivingEntity, int pTimeCharged) 
 	{
-		int charge = getHornCharge(p_41412_);
+		int charge = getHornCharge(pStack);
 		if(charge > 0)
 		{
-			setScream(p_41412_, true);
+			setScream(pStack, true);
 		}
 	}
 	
@@ -207,13 +207,13 @@ public class MonstrousHornItem extends Item
     }
 	
 	@Override
-	public UseAnim getUseAnimation(ItemStack p_41452_)
+	public UseAnim getUseAnimation(ItemStack pStack)
 	{
 		return UseAnim.TOOT_HORN;
 	}
 	
 	@Override
-	public int getUseDuration(ItemStack p_41454_)
+	public int getUseDuration(ItemStack pStack)
 	{
 		return 72000;
 	}

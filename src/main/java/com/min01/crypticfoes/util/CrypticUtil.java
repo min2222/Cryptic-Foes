@@ -37,14 +37,14 @@ public class CrypticUtil
 	
 	public static boolean isDone(ServerPlayer serverPlayer, String name)
 	{
-		Advancement adv = serverPlayer.server.getAdvancements().getAdvancement(new ResourceLocation(name));
+		Advancement adv = serverPlayer.server.getAdvancements().getAdvancement(ResourceLocation.parse(name));
 		AdvancementProgress progress = serverPlayer.getAdvancements().getOrStartProgress(adv);
 		return progress.isDone();
 	}
 	
 	public static void awardAdvancement(ServerPlayer serverPlayer, String name)
 	{
-		Advancement adv = serverPlayer.server.getAdvancements().getAdvancement(new ResourceLocation(name));
+		Advancement adv = serverPlayer.server.getAdvancements().getAdvancement(ResourceLocation.parse(name));
 		AdvancementProgress progress = serverPlayer.getAdvancements().getOrStartProgress(adv);
 		if(!progress.isDone())
 		{
@@ -57,14 +57,14 @@ public class CrypticUtil
 	
     public static float distanceToY(BlockPos blockPos, BlockPos targetPos)
     {
-        float f = (float)(blockPos.getY() - targetPos.getY());
-        return Mth.sqrt(f * f);
+        float y = (float)(blockPos.getY() - targetPos.getY());
+        return Mth.sqrt(y * y);
     }
     
     public static float distanceToY(Entity entity, BlockPos pos)
     {
-        float f = (float)(entity.getY() - pos.getY());
-        return Mth.sqrt(f * f);
+        float y = (float)(entity.getY() - pos.getY());
+        return Mth.sqrt(y * y);
     }
     
 	public static void setBlockSilence(Level level, BlockPos pos)
@@ -117,30 +117,26 @@ public class CrypticUtil
 		return SILENCED_BLOCKS.contains(pos);
 	}
 	
-	@SuppressWarnings("deprecation")
-	public static BlockPos getCeilingPos(BlockGetter pLevel, double pX, double startY, double pZ, int aboveY)
+	public static BlockPos getCeilingPos(BlockGetter level, double x, double startY, double z)
     {
-        BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos(pX, startY, pZ);
+        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos(x, startY, z);
         do
         {
-        	blockpos$mutable.move(Direction.UP);
+        	mutablePos.move(Direction.UP);
         }
-        while((pLevel.getBlockState(blockpos$mutable).isAir() || pLevel.getBlockState(blockpos$mutable).liquid() || !pLevel.getBlockState(blockpos$mutable).isCollisionShapeFullBlock(pLevel, blockpos$mutable)) && blockpos$mutable.getY() < pLevel.getMaxBuildHeight());
-        BlockPos pos = blockpos$mutable.above().above(aboveY);
-        return pos;
+        while((level.getBlockState(mutablePos).isAir() || !level.getFluidState(mutablePos).isEmpty() || !level.getBlockState(mutablePos).isCollisionShapeFullBlock(level, mutablePos)) && mutablePos.getY() < level.getMaxBuildHeight());
+        return mutablePos.immutable();
     }
 	
-	@SuppressWarnings("deprecation")
-	public static BlockPos getGroundPos(BlockGetter pLevel, double pX, double startY, double pZ, int belowY)
+	public static BlockPos getGroundPos(BlockGetter level, double x, double startY, double z)
     {
-        BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos(pX, startY, pZ);
+        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos(x, startY, z);
         do
         {
-        	blockpos$mutable.move(Direction.DOWN);
+        	mutablePos.move(Direction.DOWN);
         }
-        while((pLevel.getBlockState(blockpos$mutable).isAir() || pLevel.getBlockState(blockpos$mutable).liquid() || !pLevel.getBlockState(blockpos$mutable).isCollisionShapeFullBlock(pLevel, blockpos$mutable)) && blockpos$mutable.getY() > pLevel.getMinBuildHeight());
-        BlockPos pos = blockpos$mutable.below().below(belowY);
-        return pos;
+        while((level.getBlockState(mutablePos).isAir() || !level.getFluidState(mutablePos).isEmpty() || !level.getBlockState(mutablePos).isCollisionShapeFullBlock(level, mutablePos)) && mutablePos.getY() > level.getMinBuildHeight());
+        return mutablePos.immutable();
     }
 	
 	public static void getClientLevel(Consumer<Level> consumer)
@@ -173,10 +169,10 @@ public class CrypticUtil
     	return d0 <= getMeleeAttackRangeSqr(owner, target, multiplier);
     }
 	
-	public static Vec3 fromToVector(Vec3 from, Vec3 to, float scale)
+	public static Vec3 getVelocityTowards(Vec3 from, Vec3 to, float speed)
 	{
 		Vec3 motion = to.subtract(from).normalize();
-		return motion.scale(scale);
+		return motion.scale(speed);
 	}
 	
 	public static Vec3 getLookPos(Vec2 rotation, Vec3 position, double left, double up, double forwards) 

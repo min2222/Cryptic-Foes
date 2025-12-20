@@ -20,28 +20,28 @@ public abstract class CrypticSkullModelBase extends SkullModelBase
 
 	public abstract ModelPart root();
 
-	public Optional<ModelPart> getAnyDescendantWithName(String p_233394_) 
+	public Optional<ModelPart> getAnyDescendantWithName(String pName) 
 	{
-		return this.root().getAllParts().filter((p_233400_) -> 
+		return this.root().getAllParts().filter(t -> 
 		{
-			return p_233400_.hasChild(p_233394_);
-		}).findFirst().map((p_233397_) ->
+			return t.hasChild(pName);
+		}).findFirst().map(t ->
 		{
-			return p_233397_.getChild(p_233394_);
+			return t.getChild(pName);
 		});
 	}
 
-	protected void animate(AnimationState p_233382_, AnimationDefinition p_233383_, float p_233384_)
+	protected void animate(AnimationState pAnimationState, AnimationDefinition pAnimationDefinition, float pAgeInTicks)
 	{
-		this.animate(p_233382_, p_233383_, p_233384_, 1.0F);
+		this.animate(pAnimationState, pAnimationDefinition, pAgeInTicks, 1.0F);
 	}
 
-	protected void animate(AnimationState p_233386_, AnimationDefinition p_233387_, float p_233388_, float p_233389_) 
+	protected void animate(AnimationState pAnimationState, AnimationDefinition pAnimationDefinition, float pAgeInTicks, float pSpeed) 
 	{
-		p_233386_.updateTime(p_233388_, p_233389_);
-		p_233386_.ifStarted((p_233392_) ->
+		pAnimationState.updateTime(pAgeInTicks, pSpeed);
+		pAnimationState.ifStarted(t -> 
 		{
-			KeyframeBlockAnimations.animate(this, p_233387_, p_233392_.getAccumulatedTime(), 1.0F, ANIMATION_VECTOR_CACHE);
+			KeyframeBlockAnimations.animate(this, pAnimationDefinition, t.getAccumulatedTime(), 1.0F, ANIMATION_VECTOR_CACHE);
 		});
 	}
 }

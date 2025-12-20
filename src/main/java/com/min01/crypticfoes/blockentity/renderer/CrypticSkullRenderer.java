@@ -27,46 +27,46 @@ public class CrypticSkullRenderer extends SkullBlockRenderer
 {
 	private final Map<SkullBlock.Type, SkullModelBase> modelByType;
 	   
-	public CrypticSkullRenderer(Context p_173660_) 
+	public CrypticSkullRenderer(Context pContext) 
 	{
-		super(p_173660_);
-		this.modelByType = createSkullRenderers(p_173660_.getModelSet());
+		super(pContext);
+		this.modelByType = createSkullRenderers(pContext.getModelSet());
 	}
 
 	@Override
-	public void render(SkullBlockEntity p_112534_, float p_112535_, PoseStack p_112536_, MultiBufferSource p_112537_, int p_112538_, int p_112539_)
+	public void render(SkullBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay)
 	{
-		float f = p_112534_.getAnimation(p_112535_);
-		BlockState blockstate = p_112534_.getBlockState();
-		boolean flag = blockstate.getBlock() instanceof WallSkullBlock;
-		Direction direction = flag ? blockstate.getValue(WallSkullBlock.FACING) : null;
-		int i = flag ? RotationSegment.convertToSegment(direction.getOpposite()) : blockstate.getValue(SkullBlock.ROTATION);
+		float f = pBlockEntity.getAnimation(pPartialTick);
+		BlockState blockState = pBlockEntity.getBlockState();
+		boolean flag = blockState.getBlock() instanceof WallSkullBlock;
+		Direction direction = flag ? blockState.getValue(WallSkullBlock.FACING) : null;
+		int i = flag ? RotationSegment.convertToSegment(direction.getOpposite()) : blockState.getValue(SkullBlock.ROTATION);
 		float f1 = RotationSegment.convertToDegrees(i);
-		SkullBlock.Type skullblock$type = ((AbstractSkullBlock) blockstate.getBlock()).getType();
-		SkullModelBase skullmodelbase = this.modelByType.get(skullblock$type);
-		RenderType rendertype = getRenderType(skullblock$type, p_112534_.getOwnerProfile());
-		if(skullmodelbase instanceof CrypticSkullModelBase base && p_112534_ instanceof CrypticSkullBlockEntity blockEntity)
+		SkullBlock.Type type = ((AbstractSkullBlock) blockState.getBlock()).getType();
+		SkullModelBase skullBase = this.modelByType.get(type);
+		RenderType renderType = getRenderType(type, pBlockEntity.getOwnerProfile());
+		if(skullBase instanceof CrypticSkullModelBase base && pBlockEntity instanceof CrypticSkullBlockEntity blockEntity)
 		{
-			renderSkull(blockEntity, p_112535_, direction, f1, f, p_112536_, p_112537_, p_112538_, base, rendertype);
+			renderSkull(blockEntity, pPartialTick, direction, f1, f, pPoseStack, pBuffer, pPackedLight, base, renderType);
 		}
 	}
 
-	public static void renderSkull(CrypticSkullBlockEntity blockEntity, float partialTicks, @Nullable Direction p_173664_, float p_173665_, float p_173666_, PoseStack p_173667_, MultiBufferSource p_173668_, int p_173669_, CrypticSkullModelBase p_173670_, RenderType p_173671_) 
+	public static void renderSkull(CrypticSkullBlockEntity blockEntity, float partialTicks, @Nullable Direction pDirection, float pYRot, float pMouthAnimation, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, CrypticSkullModelBase pModel, RenderType pRenderType) 
 	{
-		p_173667_.pushPose();
-		if(p_173664_ == null)
+		pPoseStack.pushPose();
+		if(pDirection == null)
 		{
-			p_173667_.translate(0.5F, 0.0F, 0.5F);
+			pPoseStack.translate(0.5F, 0.0F, 0.5F);
 		} 
 		else
 		{
-			p_173667_.translate(0.5F - (float) p_173664_.getStepX() * 0.25F, 0.25F,	0.5F - (float) p_173664_.getStepZ() * 0.25F);
+			pPoseStack.translate(0.5F - (float) pDirection.getStepX() * 0.25F, 0.25F,	0.5F - (float) pDirection.getStepZ() * 0.25F);
 		}
-		p_173667_.scale(-1.0F, -1.0F, 1.0F);
-		VertexConsumer vertexconsumer = p_173668_.getBuffer(p_173671_);
-		p_173670_.setupAnim(blockEntity, partialTicks + blockEntity.tickCount);
-		p_173670_.setupAnim(p_173666_, p_173665_, 0.0F);
-		p_173670_.renderToBuffer(p_173667_, vertexconsumer, p_173669_, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-		p_173667_.popPose();
+		pPoseStack.scale(-1.0F, -1.0F, 1.0F);
+		VertexConsumer consumer = pBufferSource.getBuffer(pRenderType);
+		pModel.setupAnim(blockEntity, partialTicks + blockEntity.tickCount);
+		pModel.setupAnim(pMouthAnimation, pYRot, 0.0F);
+		pModel.renderToBuffer(pPoseStack, consumer, pPackedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		pPoseStack.popPose();
 	}
 }

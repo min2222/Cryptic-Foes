@@ -20,7 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ModelHowler extends HierarchicalModel<EntityHowler>
 {
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(CrypticFoes.MODID, "howler"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "howler"), "main");
 	private final ModelPart root;
 	private final ModelPart howlersleeppivot;
 	private final ModelPart howler;

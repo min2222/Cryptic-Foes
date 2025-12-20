@@ -44,7 +44,7 @@ public class HowlerRoarGoal extends BasicAnimationSkillGoal<EntityHowler>
 	}
 	
 	@Override
-	protected void performSkill() 
+	public void performSkill() 
 	{
 		this.mob.playSound(CrypticSounds.HOWLER_SCREAM.get(), 0.75F, 1.0F);
 	}
@@ -57,19 +57,19 @@ public class HowlerRoarGoal extends BasicAnimationSkillGoal<EntityHowler>
 	}
 
 	@Override
-	protected int getSkillUsingTime()
+	public int getSkillUsingTime()
 	{
 		return 93;
 	}
 
 	@Override
-	protected int getSkillUsingInterval() 
+	public int getSkillUsingInterval() 
 	{
 		return 360;
 	}
 	
 	@Override
-	protected int getSkillWarmupTime() 
+	public int getSkillWarmupTime() 
 	{
 		return 45;
 	}

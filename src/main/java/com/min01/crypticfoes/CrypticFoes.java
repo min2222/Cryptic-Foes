@@ -20,9 +20,9 @@ public class CrypticFoes
 {
 	public static final String MODID = "crypticfoes";
 	
-	public CrypticFoes() 
+	public CrypticFoes(FMLJavaModLoadingContext ctx) 
 	{
-		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+		IEventBus bus = ctx.getModEventBus();
 		
 		CrypticEntities.ENTITY_TYPES.register(bus);
 		CrypticItems.ITEMS.register(bus);

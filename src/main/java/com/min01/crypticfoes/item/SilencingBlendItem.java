@@ -21,12 +21,12 @@ public class SilencingBlendItem extends Item
 	}
 	
 	@Override
-	public InteractionResult useOn(UseOnContext p_41427_)
+	public InteractionResult useOn(UseOnContext pContext)
 	{
-		Level level = p_41427_.getLevel();
-		Player player = p_41427_.getPlayer();
-		ItemStack stack = p_41427_.getItemInHand();
-		BlockPos pos = p_41427_.getClickedPos();
+		Level level = pContext.getLevel();
+		Player player = pContext.getPlayer();
+		ItemStack stack = pContext.getItemInHand();
+		BlockPos pos = pContext.getClickedPos();
 		if(!CrypticUtil.isBlockSilenced(level, pos))
 		{
 			if(!player.getAbilities().instabuild)
@@ -41,6 +41,6 @@ public class SilencingBlendItem extends Item
 			}
 			return InteractionResult.SUCCESS;
 		}
-		return super.useOn(p_41427_);
+		return super.useOn(pContext);
 	}
 }

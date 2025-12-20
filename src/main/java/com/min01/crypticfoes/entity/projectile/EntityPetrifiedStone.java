@@ -22,9 +22,9 @@ public class EntityPetrifiedStone extends ThrowableProjectile
 {
 	public static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(EntityPetrifiedStone.class, EntityDataSerializers.OPTIONAL_UUID);
 	
-	public EntityPetrifiedStone(EntityType<? extends ThrowableProjectile> p_37466_, Level p_37467_)
+	public EntityPetrifiedStone(EntityType<? extends ThrowableProjectile> pEntityType, Level pLevel)
 	{
-		super(p_37466_, p_37467_);
+		super(pEntityType, pLevel);
 	}
 
 	@Override
@@ -34,9 +34,9 @@ public class EntityPetrifiedStone extends ThrowableProjectile
 	}
 	
 	@Override
-	protected void onHitEntity(EntityHitResult p_37259_) 
+	protected void onHitEntity(EntityHitResult pResult) 
 	{
-		Entity entity = p_37259_.getEntity();
+		Entity entity = pResult.getEntity();
 		if(this.getOwner() != null)
 		{
 			if(entity != this.getOwner() && !entity.isAlliedTo(this.getOwner()))
@@ -49,9 +49,9 @@ public class EntityPetrifiedStone extends ThrowableProjectile
 	}
 	
 	@Override
-	protected void onHitBlock(BlockHitResult p_37258_) 
+	protected void onHitBlock(BlockHitResult pResult) 
 	{
-		super.onHitBlock(p_37258_);
+		super.onHitBlock(pResult);
 		this.playSound(SoundEvents.ZOMBIE_BREAK_WOODEN_DOOR);
 		this.discard();
 	}
@@ -63,20 +63,20 @@ public class EntityPetrifiedStone extends ThrowableProjectile
 	}
 	
 	@Override
-	public void addAdditionalSaveData(CompoundTag p_37265_) 
+	public void addAdditionalSaveData(CompoundTag pCompound) 
 	{
 		if(this.entityData.get(OWNER_UUID).isPresent())
 		{
-			p_37265_.putUUID("Owner", this.entityData.get(OWNER_UUID).get());
+			pCompound.putUUID("Owner", this.entityData.get(OWNER_UUID).get());
 		}
 	}
 	
 	@Override
-	public void readAdditionalSaveData(CompoundTag p_37262_) 
+	public void readAdditionalSaveData(CompoundTag pCompound) 
 	{
-		if(p_37262_.hasUUID("Owner")) 
+		if(pCompound.hasUUID("Owner")) 
 		{
-			this.entityData.set(OWNER_UUID, Optional.of(p_37262_.getUUID("Owner")));
+			this.entityData.set(OWNER_UUID, Optional.of(pCompound.getUUID("Owner")));
 		}
 	}
 	

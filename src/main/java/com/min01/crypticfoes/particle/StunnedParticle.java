@@ -15,14 +15,14 @@ public class StunnedParticle extends TextureSheetParticle
 	public final SpriteSet sprites;
 	public int tick;
 	   
-	protected StunnedParticle(ClientLevel p_107647_, double p_107648_, double p_107649_, double p_107650_, double xd, double yd, double zd, SpriteSet p_107651_) 
+	public StunnedParticle(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, SpriteSet sprites) 
 	{
-		super(p_107647_, p_107648_, p_107649_, p_107650_, xd, yd, zd);
+		super(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
 		this.friction = 0.0F;
 		this.lifetime = 3;
-		this.sprites = p_107651_;
+		this.sprites = sprites;
 		this.hasPhysics = false;
-		this.setSpriteFromAge(p_107651_);
+		this.setSpriteFromAge(sprites);
 	}
 	
 	@Override
@@ -71,15 +71,15 @@ public class StunnedParticle extends TextureSheetParticle
 	{
 		private final SpriteSet sprites;
 
-		public Provider(SpriteSet p_106555_) 
+		public Provider(SpriteSet sprites) 
 		{
-			this.sprites = p_106555_;
+			this.sprites = sprites;
 		}
 		
 		@Override
-		public Particle createParticle(SimpleParticleType p_107421_, ClientLevel p_107422_, double p_107423_, double p_107424_, double p_107425_, double p_107426_, double p_107427_, double p_107428_) 
+		public Particle createParticle(SimpleParticleType pType, ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed)
 		{
-			return new StunnedParticle(p_107422_, p_107423_, p_107424_, p_107425_, p_107426_, p_107427_, p_107428_, this.sprites);
+			return new StunnedParticle(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed, this.sprites);
 		}
 	}
 }

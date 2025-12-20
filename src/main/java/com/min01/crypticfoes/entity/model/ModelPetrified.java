@@ -20,7 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ModelPetrified extends HierarchicalModel<EntityPetrified>
 {
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(CrypticFoes.MODID, "petrified"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "petrified"), "main");
 	private final ModelPart root;
 	private final ModelPart body;
 	private final ModelPart head;

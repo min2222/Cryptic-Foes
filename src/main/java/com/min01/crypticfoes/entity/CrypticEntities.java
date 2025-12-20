@@ -35,6 +35,6 @@ public class CrypticEntities
 	
 	public static <T extends Entity> RegistryObject<EntityType<T>> registerEntity(String name, EntityType.Builder<T> builder) 
 	{
-		return ENTITY_TYPES.register(name, () -> builder.build(new ResourceLocation(CrypticFoes.MODID, name).toString()));
+		return ENTITY_TYPES.register(name, () -> builder.build(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, name).toString()));
 	}
 }

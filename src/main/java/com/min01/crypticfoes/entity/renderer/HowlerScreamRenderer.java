@@ -16,34 +16,34 @@ import net.minecraft.world.entity.player.Player;
 
 public class HowlerScreamRenderer extends EntityRenderer<EntityHowlerScream>
 {
-	public HowlerScreamRenderer(Context p_174008_) 
+	public HowlerScreamRenderer(Context pContext) 
 	{
-		super(p_174008_);
+		super(pContext);
 	}
 	
 	@Override
-	public void render(EntityHowlerScream p_114485_, float p_114486_, float p_114487_, PoseStack p_114488_, MultiBufferSource p_114489_, int p_114490_) 
+	public void render(EntityHowlerScream pEntity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) 
 	{
-		p_114488_.pushPose();
-		float scale = 0.25F + (p_114485_.tickCount * 0.08F);
+		pPoseStack.pushPose();
+		float scale = 0.25F + (pEntity.tickCount * 0.08F);
 		scale = Mth.clamp(scale, 0.0F, 3.0F);
-		float xRot = Mth.lerp(p_114487_, p_114485_.xRotO, p_114485_.getXRot());
-		float yRot = Mth.rotLerp(p_114487_, p_114485_.yRotO, p_114485_.getYRot());
-		if(p_114485_.getOwner() instanceof Player)
+		float xRot = Mth.lerp(pPartialTicks, pEntity.xRotO, pEntity.getXRot());
+		float yRot = Mth.rotLerp(pPartialTicks, pEntity.yRotO, pEntity.getYRot());
+		if(pEntity.getOwner() instanceof Player)
 		{
 			xRot = -xRot;
 		}
-		p_114488_.mulPose(Axis.YP.rotationDegrees(yRot));
-		p_114488_.mulPose(Axis.XP.rotationDegrees(xRot));
-		p_114488_.scale(scale, scale, scale);
-		p_114488_.translate(0, 0.5F, 0);
-		CrypticClientUtil.drawQuad(p_114488_, p_114489_.getBuffer(RenderType.entityTranslucent(this.getTextureLocation(p_114485_))), 1.0F, p_114490_, p_114485_.alpha);
-		p_114488_.popPose();
+		pPoseStack.mulPose(Axis.YP.rotationDegrees(yRot));
+		pPoseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+		pPoseStack.scale(scale, scale, scale);
+		pPoseStack.translate(0, 0.5F, 0);
+		CrypticClientUtil.drawQuad(pPoseStack, pBuffer.getBuffer(RenderType.entityTranslucent(this.getTextureLocation(pEntity))), 1.0F, pPackedLight, pEntity.alpha);
+		pPoseStack.popPose();
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(EntityHowlerScream p_114482_)
+	public ResourceLocation getTextureLocation(EntityHowlerScream pEntity)
 	{
-		return new ResourceLocation(CrypticFoes.MODID, "textures/entity/howler_scream.png");
+		return ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/entity/howler_scream.png");
 	}
 }

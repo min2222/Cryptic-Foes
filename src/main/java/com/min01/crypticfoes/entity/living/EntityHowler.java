@@ -6,6 +6,8 @@ import com.min01.crypticfoes.entity.AbstractAnimatableMonster;
 import com.min01.crypticfoes.entity.EntityCameraShake;
 import com.min01.crypticfoes.entity.ai.goal.HowlerPunchGoal;
 import com.min01.crypticfoes.entity.ai.goal.HowlerRoarGoal;
+import com.min01.crypticfoes.entity.ai.goal.LookAtTargetGoal;
+import com.min01.crypticfoes.entity.ai.goal.MoveToTargetGoal;
 import com.min01.crypticfoes.item.CrypticItems;
 import com.min01.crypticfoes.misc.SmoothAnimationState;
 import com.min01.crypticfoes.particle.CrypticParticles;
@@ -66,9 +68,9 @@ public class EntityHowler extends AbstractAnimatableMonster
 	public int ambientTick;
 	public int targetTick = 200;
 	
-	public EntityHowler(EntityType<? extends Monster> p_33002_, Level p_33003_) 
+	public EntityHowler(EntityType<? extends Monster> pEntityType, Level pLevel) 
 	{
-		super(p_33002_, p_33003_);
+		super(pEntityType, pLevel);
 		this.posArray = new Vec3[1];
 	}
 	
@@ -87,6 +89,8 @@ public class EntityHowler extends AbstractAnimatableMonster
     protected void registerGoals() 
     {
     	super.registerGoals();
+        this.goalSelector.addGoal(0, new MoveToTargetGoal<>(this));
+        this.goalSelector.addGoal(0, new LookAtTargetGoal<>(this));
         this.goalSelector.addGoal(0, new HowlerPunchGoal(this));
         this.goalSelector.addGoal(0, new HowlerRoarGoal(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true) 
@@ -114,15 +118,15 @@ public class EntityHowler extends AbstractAnimatableMonster
     }
     
     @Override
-    public boolean canRandomStroll() 
+    public boolean canMoveAround() 
     {
-    	return super.canRandomStroll() && !this.isHowlerSleeping() && !this.isUsingSkill();
+    	return super.canMoveAround() && !this.isHowlerSleeping();
     }
     
     @Override
     public boolean canLookAround() 
     {
-    	return super.canLookAround() && !this.isHowlerSleeping() && !this.isUsingSkill();
+    	return super.canLookAround() && !this.isHowlerSleeping();
     }
     
     @Override
@@ -170,18 +174,10 @@ public class EntityHowler extends AbstractAnimatableMonster
         		else if(this.getTarget().isAlive())
         		{
         			this.targetTick = 0;
-            		if(this.canLook())
-            		{
-            			this.getLookControl().setLookAt(this.getTarget(), 30.0F, 30.0F);
-            		}
-        			if(this.canMove())
-        			{
-    					this.getNavigation().moveTo(this.getTarget(), 1.0F);
-        			}
         		}
         		if(this.targetTick >= 200 && !this.level.canSeeSky(this.blockPosition()) && this.getAnimationState() == 0 && this.onGround() && this.level.getBlockState(this.getOnPos().above()).isAir())
         		{
-        			BlockPos ceilingPos = CrypticUtil.getCeilingPos(this.level, this.getX(), this.getY(), this.getZ(), -1);
+        			BlockPos ceilingPos = CrypticUtil.getCeilingPos(this.level, this.getX(), this.getY(), this.getZ());
         			if(!this.level.canSeeSky(ceilingPos) && CrypticUtil.distanceToY(this, ceilingPos) >= 8.0F)
         			{
             			this.setSleepPos(ceilingPos);
@@ -310,10 +306,10 @@ public class EntityHowler extends AbstractAnimatableMonster
     }
     
     @Override
-    protected void dropCustomDeathLoot(DamageSource p_32292_, int p_32293_, boolean p_32294_) 
+    protected void dropCustomDeathLoot(DamageSource pSource, int pLooting, boolean pRecentlyHit) 
     {
-    	super.dropCustomDeathLoot(p_32292_, p_32293_, p_32294_);
-        Entity entity = p_32292_.getEntity();
+    	super.dropCustomDeathLoot(pSource, pLooting, pRecentlyHit);
+        Entity entity = pSource.getEntity();
         if(entity != this && entity instanceof Creeper creeper) 
         {
         	if(creeper.canDropMobsSkull()) 
@@ -330,7 +326,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     	List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(3.0F), t -> !(t instanceof EntityHowler));
     	list.forEach(t -> 
     	{
-    		Vec3 motion = CrypticUtil.fromToVector(this.position(), t.position().add(0, 1, 0), 1.0F);
+    		Vec3 motion = CrypticUtil.getVelocityTowards(this.position(), t.position().add(0, 1, 0), 1.0F);
     		t.push(motion.x, motion.y, motion.z);
     		if(t instanceof ServerPlayer player)
     		{
@@ -349,12 +345,12 @@ public class EntityHowler extends AbstractAnimatableMonster
     		}
     	}
     }
-    
-    public static boolean checkHowlerSpawnRules(EntityType<? extends Monster> p_219014_, ServerLevelAccessor p_219015_, MobSpawnType p_219016_, BlockPos p_219017_, RandomSource p_219018_)
+
+    public static boolean checkHowlerSpawnRules(EntityType<? extends Monster> pType, ServerLevelAccessor pLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom)
     {
-    	BlockPos ceilingPos = CrypticUtil.getCeilingPos(p_219015_, p_219017_.getX(), p_219017_.getY(), p_219017_.getZ(), 0);
-    	BlockPos groundPos = CrypticUtil.getGroundPos(p_219015_,  p_219017_.getX(), p_219017_.getY(), p_219017_.getZ(), -1);
-    	return p_219017_.getY() < 0 && CrypticUtil.distanceToY(p_219017_, ceilingPos) >= 8.0F && !p_219015_.canSeeSky(ceilingPos) && !p_219015_.canSeeSky(groundPos) && p_219015_.getDifficulty() != Difficulty.PEACEFUL && isDarkEnoughToSpawn(p_219015_, p_219017_, p_219018_) && checkMobSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
+    	BlockPos ceilingPos = CrypticUtil.getCeilingPos(pLevel, pPos.getX(), pPos.getY(), pPos.getZ());
+    	BlockPos groundPos = CrypticUtil.getGroundPos(pLevel,  pPos.getX(), pPos.getY(), pPos.getZ());
+    	return pPos.getY() < 0 && CrypticUtil.distanceToY(pPos, ceilingPos) >= 8.0F && !pLevel.canSeeSky(ceilingPos) && !pLevel.canSeeSky(groundPos) && pLevel.getDifficulty() != Difficulty.PEACEFUL && isDarkEnoughToSpawn(pLevel, pPos, pRandom) && checkMobSpawnRules(pType, pLevel, pSpawnType, pPos, pRandom);
     }
     
     public double horizontalDist(BlockPos pos, double x, double z) 
@@ -365,22 +361,22 @@ public class EntityHowler extends AbstractAnimatableMonster
     }
     
     @Override
-    public void handleEntityEvent(byte p_21375_) 
+    public void handleEntityEvent(byte pId) 
     {
-    	super.handleEntityEvent(p_21375_);
-    	if(p_21375_ == 99)
+    	super.handleEntityEvent(pId);
+    	if(pId == 99)
     	{
-    		BlockPos groundPos = CrypticUtil.getGroundPos(this.level, this.getX(), this.getY() + 1, this.getZ(), -2);
+    		BlockPos groundPos = CrypticUtil.getGroundPos(this.level, this.getX(), this.getY() + 1, this.getZ()).above(1);
     		this.level.addParticle(CrypticParticles.HOWLER_SHOCKWAVE.get(), this.getX(), groundPos.getY() + 0.01F, this.getZ(), 20.0F, 0.0F, 0.0F);
     	}
     }
     
     @Override
-    public void push(double p_20286_, double p_20287_, double p_20288_)
+    public void push(double pX, double pY, double pZ)
     {
     	if(!this.isHowlerSleeping())
     	{
-        	super.push(p_20286_, p_20287_, p_20288_);
+        	super.push(pX, pY, pZ);
     	}
     }
     
@@ -395,9 +391,9 @@ public class EntityHowler extends AbstractAnimatableMonster
     }
     
     @Override
-    protected void updateWalkAnimation(float p_268283_) 
+    protected void updateWalkAnimation(float pPartialTick) 
     {
-        float f = Math.min(p_268283_ * 4.0F, 1.0F);
+        float f = Math.min(pPartialTick * 4.0F, 1.0F);
         if(this.isHowlerSleeping())
         {
         	f = 0.0F;
@@ -406,17 +402,17 @@ public class EntityHowler extends AbstractAnimatableMonster
     }
     
     @Override
-    public boolean hurt(DamageSource p_21016_, float p_21017_) 
+    public boolean hurt(DamageSource pSource, float pAmount) 
     {
     	if(this.getAnimationState() == 3 || this.getAnimationState() == 4 || this.getAnimationState() == 5)
     	{
-    		p_21017_ *= 0.5F;
+    		pAmount *= 0.5F;
     	}
-    	if(p_21016_.is(DamageTypeTags.IS_FALL))
+    	if(pSource.is(DamageTypeTags.IS_FALL))
     	{
     		return false;
     	}
-		if(p_21016_.is(DamageTypes.IN_WALL))
+		if(pSource.is(DamageTypes.IN_WALL))
 		{
 			if(this.isHowlerSleeping() || this.isFalling())
 			{
@@ -425,32 +421,32 @@ public class EntityHowler extends AbstractAnimatableMonster
 		}
     	if(this.isHowlerSleeping() && this.getAnimationState() == 1)
     	{
-    		if(p_21016_.getDirectEntity() != null)
+    		if(pSource.getDirectEntity() != null)
     		{
     			this.targetTick = 0;
     			this.setAnimationState(2);
     			this.setAnimationTick(60);
     		}
     	}
-    	return super.hurt(p_21016_, p_21017_);
+    	return super.hurt(pSource, pAmount);
     }
     
     @Override
-    public void readAdditionalSaveData(CompoundTag p_21450_)
+    public void readAdditionalSaveData(CompoundTag pCompound)
     {
-    	super.readAdditionalSaveData(p_21450_);
-    	this.setHowlerSleeping(p_21450_.getBoolean("isHowlerSleeping"));
-    	this.setFalling(p_21450_.getBoolean("isFalling"));
-    	this.setSleepPos(NbtUtils.readBlockPos(p_21450_.getCompound("SleepPos")));
+    	super.readAdditionalSaveData(pCompound);
+    	this.setHowlerSleeping(pCompound.getBoolean("isHowlerSleeping"));
+    	this.setFalling(pCompound.getBoolean("isFalling"));
+    	this.setSleepPos(NbtUtils.readBlockPos(pCompound.getCompound("SleepPos")));
     }
     
     @Override
-    public void addAdditionalSaveData(CompoundTag p_21484_) 
+    public void addAdditionalSaveData(CompoundTag pCompound) 
     {
-    	super.addAdditionalSaveData(p_21484_);
-    	p_21484_.putBoolean("isHowlerSleeping", this.isHowlerSleeping());
-    	p_21484_.putBoolean("isFalling", this.isFalling());
-    	p_21484_.put("SleepPos", NbtUtils.writeBlockPos(this.getSleepPos()));
+    	super.addAdditionalSaveData(pCompound);
+    	pCompound.putBoolean("isHowlerSleeping", this.isHowlerSleeping());
+    	pCompound.putBoolean("isFalling", this.isFalling());
+    	pCompound.put("SleepPos", NbtUtils.writeBlockPos(this.getSleepPos()));
     }
     
     @Override

@@ -30,9 +30,9 @@ public class ScreamerBlockEntity extends BlockEntity
 	public int tickCount;
 	public final SmoothAnimationState screamAnimationState = new SmoothAnimationState();
 	
-	public ScreamerBlockEntity(BlockPos p_155229_, BlockState p_155230_) 
+	public ScreamerBlockEntity(BlockPos pPos, BlockState pBlockState) 
 	{
-		super(CrypticBlocks.SCREAMER_BLOCK_ENTITY.get(), p_155229_, p_155230_);
+		super(CrypticBlocks.SCREAMER_BLOCK_ENTITY.get(), pPos, pBlockState);
 	}
 	
 	public static void update(Level level, BlockPos pos, BlockState state, ScreamerBlockEntity block)
@@ -61,7 +61,7 @@ public class ScreamerBlockEntity extends BlockEntity
 		    	List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, new AABB(-6.0F, 0.0F, -6.0F, 6.0F, 6.0F, 6.0F).move(pos), EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(t -> !(t instanceof EntityHowler)));
 		    	list.forEach(t -> 
 		    	{
-		    		Vec3 motion = CrypticUtil.fromToVector(Vec3.atBottomCenterOf(pos), t.position().add(0, 1, 0), 1.0F);
+		    		Vec3 motion = CrypticUtil.getVelocityTowards(Vec3.atBottomCenterOf(pos), t.position().add(0, 1, 0), 1.0F);
 		    		t.setDeltaMovement(motion.x, motion.y, motion.z);
 		    		if(t instanceof ServerPlayer player)
 		    		{
@@ -89,16 +89,16 @@ public class ScreamerBlockEntity extends BlockEntity
 	}
 	
 	@Override
-	public void load(CompoundTag p_155245_) 
+	public void load(CompoundTag pTag) 
 	{
-		super.load(p_155245_);
-		this.tickCount = p_155245_.getInt("TickCount");
+		super.load(pTag);
+		this.tickCount = pTag.getInt("TickCount");
 	}
 	
 	@Override
-	protected void saveAdditional(CompoundTag p_187471_)
+	protected void saveAdditional(CompoundTag pTag)
 	{
-		super.saveAdditional(p_187471_);
-		p_187471_.putInt("TickCount", this.tickCount);
+		super.saveAdditional(pTag);
+		pTag.putInt("TickCount", this.tickCount);
 	}
 }

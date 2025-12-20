@@ -1,6 +1,8 @@
 package com.min01.crypticfoes.entity.living;
 
 import com.min01.crypticfoes.entity.AbstractAnimatableMonster;
+import com.min01.crypticfoes.entity.ai.goal.LookAtTargetGoal;
+import com.min01.crypticfoes.entity.ai.goal.MoveToTargetGoal;
 import com.min01.crypticfoes.entity.ai.goal.PetrifiedShootStoneGoal;
 import com.min01.crypticfoes.misc.SmoothAnimationState;
 
@@ -38,9 +40,9 @@ public class EntityPetrified extends AbstractAnimatableMonster
 	public final SmoothAnimationState reloadingAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState runAnimationState = new SmoothAnimationState();
 	
-	public EntityPetrified(EntityType<? extends Monster> p_33002_, Level p_33003_) 
+	public EntityPetrified(EntityType<? extends Monster> pEntityType, Level pLevel) 
 	{
-		super(p_33002_, p_33003_);
+		super(pEntityType, pLevel);
 		this.posArray = new Vec3[1];
 	}
 	
@@ -72,6 +74,8 @@ public class EntityPetrified extends AbstractAnimatableMonster
         	}
         });
         this.goalSelector.addGoal(4, new PetrifiedShootStoneGoal(this));
+        this.goalSelector.addGoal(0, new MoveToTargetGoal<>(this));
+        this.goalSelector.addGoal(0, new LookAtTargetGoal<>(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
@@ -88,24 +92,6 @@ public class EntityPetrified extends AbstractAnimatableMonster
     		this.throwAnimationState.updateWhen(this.isUsingSkill(1), this.tickCount);
     		this.reloadingAnimationState.updateWhen(this.getAnimationState() == 2, this.tickCount);
     		this.runAnimationState.updateWhen(this.hasStone(), this.tickCount);
-    	}
-    	
-    	if(this.getTarget() != null)
-    	{
-    		if(this.canLook())
-    		{
-    			if(this.hasStone())
-    			{
-        			this.getLookControl().setLookAt(this.getTarget(), 30.0F, 30.0F);
-    			}
-    		}
-			if(this.canMove())
-			{
-				if(this.hasStone() && this.distanceTo(this.getTarget()) >= 12.0F)
-				{
-					this.getNavigation().moveTo(this.getTarget(), 1.0F);
-				}
-			}
     	}
     	
     	if(!this.hasStone())
@@ -131,10 +117,28 @@ public class EntityPetrified extends AbstractAnimatableMonster
 			}
     	}
     }
-
-    public static boolean checkPetrifiedSpawnRules(EntityType<? extends Monster> p_219014_, ServerLevelAccessor p_219015_, MobSpawnType p_219016_, BlockPos p_219017_, RandomSource p_219018_)
+    
+    @Override
+    public void lookAtTarget()
     {
-        return p_219015_.getDifficulty() != Difficulty.PEACEFUL && !isDarkEnoughToSpawn(p_219015_, p_219017_, p_219018_) && checkMobSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
+		if(this.hasStone())
+		{
+	    	super.lookAtTarget();
+		}
+    }
+    
+    @Override
+    public void moveToTarget() 
+    {
+		if(this.hasStone() && this.distanceTo(this.getTarget()) >= 12.0F)
+		{
+	    	super.moveToTarget();
+		}
+    }
+
+    public static boolean checkPetrifiedSpawnRules(EntityType<? extends Monster> pType, ServerLevelAccessor pLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom)
+    {
+        return pLevel.getDifficulty() != Difficulty.PEACEFUL && !isDarkEnoughToSpawn(pLevel, pPos, pRandom) && checkMobSpawnRules(pType, pLevel, pSpawnType, pPos, pRandom);
     }
     
     @Override
@@ -156,19 +160,19 @@ public class EntityPetrified extends AbstractAnimatableMonster
     }
     
     @Override
-    public void addAdditionalSaveData(CompoundTag p_21484_) 
+    public void addAdditionalSaveData(CompoundTag pCompound) 
     {
-    	super.addAdditionalSaveData(p_21484_);
-    	p_21484_.putBoolean("HasStone", this.hasStone());
+    	super.addAdditionalSaveData(pCompound);
+    	pCompound.putBoolean("HasStone", this.hasStone());
     }
     
     @Override
-    public void readAdditionalSaveData(CompoundTag p_21450_) 
+    public void readAdditionalSaveData(CompoundTag pCompound) 
     {
-    	super.readAdditionalSaveData(p_21450_);
-    	if(p_21450_.contains("HasStone"))
+    	super.readAdditionalSaveData(pCompound);
+    	if(pCompound.contains("HasStone"))
     	{
-    		this.setHasStone(p_21450_.getBoolean("HasStone"));
+    		this.setHasStone(pCompound.getBoolean("HasStone"));
     	}
     }
     

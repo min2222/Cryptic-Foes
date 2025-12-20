@@ -25,10 +25,10 @@ public class ScreamerItemRenderer extends BlockEntityWithoutLevelRenderer
 	}
 	
 	@Override
-	public void renderByItem(ItemStack p_108830_, ItemDisplayContext p_108831_, PoseStack p_108832_, MultiBufferSource p_108833_, int p_108834_, int p_108835_)
+	public void renderByItem(ItemStack pStack, ItemDisplayContext pDisplayContext, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay)
 	{
-		p_108832_.pushPose();
-		this.blockEntityRenderDispatcher.renderItem(this.blockEntity, p_108832_, p_108833_, p_108834_, p_108835_);
-		p_108832_.popPose();
+		pPoseStack.pushPose();
+		this.blockEntityRenderDispatcher.renderItem(this.blockEntity, pPoseStack, pBuffer, pPackedLight, pPackedOverlay);
+		pPoseStack.popPose();
 	}
 }

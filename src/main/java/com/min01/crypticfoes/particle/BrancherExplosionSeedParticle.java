@@ -13,9 +13,9 @@ public class BrancherExplosionSeedParticle extends NoRenderParticle
 	private int life;
 	private final int lifeTime = 8;
 
-	public BrancherExplosionSeedParticle(ClientLevel p_106947_, double p_106948_, double p_106949_, double p_106950_) 
+	public BrancherExplosionSeedParticle(ClientLevel pLevel, double pX, double pY, double pZ) 
 	{
-		super(p_106947_, p_106948_, p_106949_, p_106950_, 0.0D, 0.0D, 0.0D);
+		super(pLevel, pX, pY, pZ, 0.0D, 0.0D, 0.0D);
 	}
 
 	@Override
@@ -39,9 +39,10 @@ public class BrancherExplosionSeedParticle extends NoRenderParticle
 	@OnlyIn(Dist.CLIENT)
 	public static class Provider implements ParticleProvider<SimpleParticleType> 
 	{
-		public Particle createParticle(SimpleParticleType p_106969_, ClientLevel p_106970_, double p_106971_, double p_106972_, double p_106973_, double p_106974_, double p_106975_, double p_106976_)
+		@Override
+		public Particle createParticle(SimpleParticleType pType, ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed)
 		{
-			return new BrancherExplosionSeedParticle(p_106970_, p_106971_, p_106972_, p_106973_);
+			return new BrancherExplosionSeedParticle(pLevel, pX, pY, pZ);
 		}
 	}
 }

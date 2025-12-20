@@ -16,23 +16,23 @@ import net.minecraft.world.phys.Vec3;
 
 public class PetrifiedRenderer extends MobRenderer<EntityPetrified, ModelPetrified>
 {
-	public PetrifiedRenderer(Context p_174304_)
+	public PetrifiedRenderer(Context pContext)
 	{
-		super(p_174304_, new ModelPetrified(p_174304_.bakeLayer(ModelPetrified.LAYER_LOCATION)), 0.5F);
+		super(pContext, new ModelPetrified(pContext.bakeLayer(ModelPetrified.LAYER_LOCATION)), 0.5F);
 	}
 	
 	@Override
-	public void render(EntityPetrified p_115455_, float p_115456_, float p_115457_, PoseStack p_115458_, MultiBufferSource p_115459_, int p_115460_)
+	public void render(EntityPetrified pEntity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) 
 	{
-		super.render(p_115455_, p_115456_, p_115457_, p_115458_, p_115459_, p_115460_);
-		Vec3 pos1 = CrypticClientUtil.getWorldPosition(p_115455_, this.model.root(), new Vec3(0.0F, p_115455_.yBodyRot, 0.0F), "body", "arms", "stone");
-		p_115455_.posArray[0] = pos1;
-		CrypticNetwork.sendToServer(new UpdatePosArrayPacket(p_115455_, pos1, 0));
+		super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
+		Vec3 pos1 = CrypticClientUtil.getWorldPosition(pEntity, this.model.root(), new Vec3(0.0F, pEntity.yBodyRot, 0.0F), "body", "arms", "stone");
+		pEntity.posArray[0] = pos1;
+		CrypticNetwork.sendToServer(new UpdatePosArrayPacket(pEntity.getUUID(), pos1, 0));
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(EntityPetrified p_115812_) 
+	public ResourceLocation getTextureLocation(EntityPetrified pEntity) 
 	{
-		return new ResourceLocation(CrypticFoes.MODID, "textures/entity/petrified.png");
+		return ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/entity/petrified.png");
 	}
 }

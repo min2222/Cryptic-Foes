@@ -1,6 +1,8 @@
 package com.min01.crypticfoes.entity.living;
 
 import com.min01.crypticfoes.entity.AbstractAnimatableCreature;
+import com.min01.crypticfoes.entity.ai.goal.LookAtTargetGoal;
+import com.min01.crypticfoes.entity.ai.goal.MoveToTargetGoal;
 import com.min01.crypticfoes.misc.CrypticExplosion;
 import com.min01.crypticfoes.misc.SmoothAnimationState;
 import com.min01.crypticfoes.particle.CrypticParticles;
@@ -42,9 +44,9 @@ public class EntityBrancher extends AbstractAnimatableCreature
     public int explosionTick;
     public int explosionMaxTick;
     
-	public EntityBrancher(EntityType<? extends PathfinderMob> p_33002_, Level p_33003_) 
+	public EntityBrancher(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) 
 	{
-		super(p_33002_, p_33003_);
+		super(pEntityType, pLevel);
 		this.setPathfindingMalus(BlockPathTypes.LEAVES, 0.0F);
 	}
 	
@@ -52,7 +54,7 @@ public class EntityBrancher extends AbstractAnimatableCreature
     {
         return Mob.createMobAttributes()
     			.add(Attributes.MAX_HEALTH, 30.0F)
-    			.add(Attributes.MOVEMENT_SPEED, 0.8F);
+    			.add(Attributes.MOVEMENT_SPEED, 0.2F);
     }
     
     @Override
@@ -68,6 +70,8 @@ public class EntityBrancher extends AbstractAnimatableCreature
     protected void registerGoals() 
     {
     	super.registerGoals();
+        this.goalSelector.addGoal(0, new MoveToTargetGoal<>(this));
+        this.goalSelector.addGoal(0, new LookAtTargetGoal<>(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true)
         {
         	@Override
@@ -103,10 +107,9 @@ public class EntityBrancher extends AbstractAnimatableCreature
             this.brightness += (0.0F - this.brightness) * 0.8F;
     	}
     	
-    	if(this.isAngry() && this.getTarget() != null)
+    	if(this.isAngry() && this.getTarget() != null && this.getTarget().isAlive())
     	{
     		this.setRunning(true);
-    		this.getNavigation().moveTo(this.getTarget(), 0.42F);
     		if(this.distanceTo(this.getTarget()) <= 2.0F)
     		{
     			if(this.getAnimationState() == 0)
@@ -148,6 +151,24 @@ public class EntityBrancher extends AbstractAnimatableCreature
     	}
     }
     
+    @Override
+    public void moveToTarget() 
+    {
+    	if(this.isAngry())
+    	{
+    		if(this.canMove())
+    		{
+    			Vec3 pos = this.getTarget().position();
+    			this.getMoveControl().setWantedPosition(pos.x, pos.y, pos.z, 1.25F);
+    			this.getNavigation().moveTo(this.getTarget(), 1.25F);
+    		}
+    	}
+    	else
+    	{
+        	super.moveToTarget();
+    	}
+    }
+    
     public void brancherExplode(Vec3 pos, float radius)
     {
         CrypticExplosion explosion = new CrypticExplosion(this.level, this, pos.x, pos.y, pos.z, radius, CrypticParticles.BRANCHER_EXPLOSION_SEED.get());
@@ -157,29 +178,29 @@ public class EntityBrancher extends AbstractAnimatableCreature
     }
     
     @Override
-    public void addAdditionalSaveData(CompoundTag p_21484_) 
+    public void addAdditionalSaveData(CompoundTag pCompound) 
     {
-    	super.addAdditionalSaveData(p_21484_);
-    	p_21484_.putBoolean("isRunning", this.isRunning());
-    	p_21484_.putInt("AngerCount", this.getAngerCount());
-    	p_21484_.putInt("ExplosionMaxTick", this.getExplosionMaxTick());
+    	super.addAdditionalSaveData(pCompound);
+    	pCompound.putBoolean("isRunning", this.isRunning());
+    	pCompound.putInt("AngerCount", this.getAngerCount());
+    	pCompound.putInt("ExplosionMaxTick", this.getExplosionMaxTick());
     }
     
     @Override
-    public void readAdditionalSaveData(CompoundTag p_21450_)
+    public void readAdditionalSaveData(CompoundTag pCompound)
     {
-    	super.readAdditionalSaveData(p_21450_);
-    	if(p_21450_.contains("isRunning"))
+    	super.readAdditionalSaveData(pCompound);
+    	if(pCompound.contains("isRunning"))
     	{
-    		this.setRunning(p_21450_.getBoolean("isRunning"));
+    		this.setRunning(pCompound.getBoolean("isRunning"));
     	}
-    	if(p_21450_.contains("AngerCount"))
+    	if(pCompound.contains("AngerCount"))
     	{
-    		this.setAngerCount(p_21450_.getInt("AngerCount"));
+    		this.setAngerCount(pCompound.getInt("AngerCount"));
     	}
-    	if(p_21450_.contains("ExplosionMaxTick"))
+    	if(pCompound.contains("ExplosionMaxTick"))
     	{
-    		this.setExplosionMaxTick(p_21450_.getInt("ExplosionMaxTick"));
+    		this.setExplosionMaxTick(pCompound.getInt("ExplosionMaxTick"));
     	}
     }
     
@@ -190,7 +211,7 @@ public class EntityBrancher extends AbstractAnimatableCreature
     }
     
     @Override
-    protected SoundEvent getHurtSound(DamageSource p_21239_) 
+    protected SoundEvent getHurtSound(DamageSource pDamageSource) 
     {
     	return CrypticSounds.BRANCHER_HURT.get();
     }

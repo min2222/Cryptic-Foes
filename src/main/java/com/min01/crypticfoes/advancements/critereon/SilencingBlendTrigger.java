@@ -12,7 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class SilencingBlendTrigger extends SimpleCriterionTrigger<SilencingBlendTrigger.TriggerInstance>
 {
-	public static final ResourceLocation ID = new ResourceLocation(CrypticFoes.MODID, "silencing_blend");
+	public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "silencing_blend");
 	
 	@Override
 	public ResourceLocation getId() 
@@ -26,16 +26,16 @@ public class SilencingBlendTrigger extends SimpleCriterionTrigger<SilencingBlend
 	}
 
 	@Override
-	protected TriggerInstance createInstance(JsonObject p_66248_, ContextAwarePredicate p_286603_, DeserializationContext p_66250_) 
+	protected TriggerInstance createInstance(JsonObject pJson, ContextAwarePredicate pPredicate, DeserializationContext pDeserializationContext) 
 	{
-		return new TriggerInstance(p_286603_);
+		return new TriggerInstance(pPredicate);
 	}
 	
 	public static class TriggerInstance extends AbstractCriterionTriggerInstance 
 	{
-		public TriggerInstance(ContextAwarePredicate p_286466_) 
+		public TriggerInstance(ContextAwarePredicate pPlayer) 
 		{
-			super(ID, p_286466_);
+			super(ID, pPlayer);
 		}
 	}
 }

@@ -10,11 +10,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SkullBlock.Type;
+import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.WallSkullBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -27,37 +28,37 @@ public class CrypticWallSkullBlock extends WallSkullBlock
 	protected static final VoxelShape HOLWER_SHAPE_EAST = Block.box(0.0D, 4.0D, 1.5D, 10.0D, 14.0D, 14.5D);
 	protected static final VoxelShape HOLWER_SHAPE_WEST = Block.box(6.0D, 4.0D, 1.5D, 16.0D, 14.0D, 14.5D);
 	
-	public CrypticWallSkullBlock(Type p_56318_, Properties p_56319_)
+	public CrypticWallSkullBlock(SkullBlock.Type pType, BlockBehaviour.Properties pProperties) 
 	{
-		super(p_56318_, p_56319_);
+		super(pType, pProperties);
 	}
 
 	@Override
-	public BlockEntity newBlockEntity(BlockPos p_151996_, BlockState p_151997_) 
+	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) 
 	{
-		return new CrypticSkullBlockEntity(p_151996_, p_151997_);
+		return new CrypticSkullBlockEntity(pPos, pState);
 	}
 	
 	@Nullable
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_151992_, BlockState p_151993_, BlockEntityType<T> p_151994_)
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) 
 	{
-		if(p_151992_.isClientSide) 
+		if(pLevel.isClientSide) 
 		{
-			if(p_151993_.is(CrypticBlocks.HOWLER_WALL_HEAD.get())) 
+			if(pState.is(CrypticBlocks.HOWLER_WALL_HEAD.get())) 
 			{
-				return createTickerHelper(p_151994_, CrypticBlocks.CRYPTIC_SKULL_BLOCK_ENTITY.get(), CrypticSkullBlockEntity::update);
+				return createTickerHelper(pBlockEntityType, CrypticBlocks.CRYPTIC_SKULL_BLOCK_ENTITY.get(), CrypticSkullBlockEntity::update);
 			}
 		}
 		return null;
 	}
 	
 	@Override
-	public VoxelShape getShape(BlockState p_56331_, BlockGetter p_56332_, BlockPos p_56333_, CollisionContext p_56334_) 
+	public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) 
 	{
 		if(this.getType() == CrypticSkullTypes.HOWLER)
 		{
-			Direction direction = p_56331_.getValue(FACING);
+			Direction direction = pState.getValue(FACING);
 			switch(direction)
 			{
 			case EAST:
@@ -72,6 +73,6 @@ public class CrypticWallSkullBlock extends WallSkullBlock
 				break;
 			}
 		}
-		return super.getShape(p_56331_, p_56332_, p_56333_, p_56334_);
+		return super.getShape(pState, pLevel, pPos, pContext);
 	}
 }

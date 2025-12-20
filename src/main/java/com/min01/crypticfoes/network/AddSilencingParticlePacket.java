@@ -20,32 +20,29 @@ public class AddSilencingParticlePacket
 		this.blockPos = blockPos;
 	}
 
-	public AddSilencingParticlePacket(FriendlyByteBuf buf)
+	public static AddSilencingParticlePacket read(FriendlyByteBuf buf)
 	{
-		this.blockPos = buf.readBlockPos();
+		return new AddSilencingParticlePacket(buf.readBlockPos());
 	}
 
-	public void encode(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeBlockPos(this.blockPos);
 	}
 
-	public static class Handler 
+	public static boolean handle(AddSilencingParticlePacket message, Supplier<NetworkEvent.Context> ctx)
 	{
-		public static boolean onMessage(AddSilencingParticlePacket message, Supplier<NetworkEvent.Context> ctx)
+		ctx.get().enqueueWork(() ->
 		{
-			ctx.get().enqueueWork(() ->
+			if(ctx.get().getDirection().getReceptionSide().isClient())
 			{
-				if(ctx.get().getDirection().getReceptionSide().isClient())
+				CrypticUtil.getClientLevel(t -> 
 				{
-					CrypticUtil.getClientLevel(t -> 
-					{
-			            ParticleUtils.spawnParticlesOnBlockFaces(t, message.blockPos, CrypticParticles.SILENCING.get(), UniformInt.of(3, 5));
-					});
-				}
-			});
-			ctx.get().setPacketHandled(true);
-			return true;
-		}
+		            ParticleUtils.spawnParticlesOnBlockFaces(t, message.blockPos, CrypticParticles.SILENCING.get(), UniformInt.of(3, 5));
+				});
+			}
+		});
+		ctx.get().setPacketHandled(true);
+		return true;
 	}
 }

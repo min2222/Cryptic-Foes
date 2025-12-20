@@ -18,13 +18,13 @@ public class StunnedEffect extends MobEffect
 	}
 	
 	@Override
-	public void applyEffectTick(LivingEntity p_19467_, int p_19468_) 
+	public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) 
 	{
-		if(p_19467_.getType().is(CrypticTags.CrypticEntity.RESIST_TO_STUN) || p_19467_.isSpectator())
+		if(pLivingEntity.getType().is(CrypticTags.CrypticEntity.RESIST_TO_STUN) || pLivingEntity.isSpectator())
 		{
 			return;
 		}
-        if(p_19467_ instanceof Mob mob && !mob.level.isClientSide)
+        if(pLivingEntity instanceof Mob mob && !mob.level.isClientSide)
         {
 			mob.getNavigation().stop();
 			mob.setTarget(null);
@@ -36,13 +36,13 @@ public class StunnedEffect extends MobEffect
             mob.goalSelector.setControlFlag(Goal.Flag.JUMP, false);
             mob.goalSelector.setControlFlag(Goal.Flag.LOOK, false);
         }
-		p_19467_.stopUsingItem();
-		p_19467_.xxa = 0.0F;
-		p_19467_.yya = 0.0F;
-		p_19467_.zza = 0.0F;
-		if(p_19467_.tickCount % 5 == 0)
+        pLivingEntity.stopUsingItem();
+        pLivingEntity.xxa = 0.0F;
+        pLivingEntity.yya = 0.0F;
+        pLivingEntity.zza = 0.0F;
+		if(pLivingEntity.tickCount % 5 == 0)
 		{
-			p_19467_.level.addParticle(CrypticParticles.STUNNED.get(), p_19467_.getRandomX(1.0F), p_19467_.getEyeY(), p_19467_.getRandomZ(1.0F), 0.0F, 0.0F, 0.0F);
+			pLivingEntity.level.addParticle(CrypticParticles.STUNNED.get(), pLivingEntity.getRandomX(1.0F), pLivingEntity.getEyeY(), pLivingEntity.getRandomZ(1.0F), 0.0F, 0.0F, 0.0F);
 		}
 	}
 	

@@ -17,24 +17,24 @@ import net.minecraft.world.phys.Vec3;
 
 public class HowlerRenderer extends MobRenderer<EntityHowler, ModelHowler>
 {
-	public HowlerRenderer(Context p_174304_)
+	public HowlerRenderer(Context pContext)
 	{
-		super(p_174304_, new ModelHowler(p_174304_.bakeLayer(ModelHowler.LAYER_LOCATION)), 0.5F);
+		super(pContext, new ModelHowler(pContext.bakeLayer(ModelHowler.LAYER_LOCATION)), 0.5F);
 		this.addLayer(new HowlerLayer(this));
 	}
 	
 	@Override
-	public void render(EntityHowler p_115455_, float p_115456_, float p_115457_, PoseStack p_115458_, MultiBufferSource p_115459_, int p_115460_)
+	public void render(EntityHowler pEntity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) 
 	{
-		super.render(p_115455_, p_115456_, p_115457_, p_115458_, p_115459_, p_115460_);
-		Vec3 pos1 = CrypticClientUtil.getWorldPosition(p_115455_, this.model.root(), new Vec3(0.0F, p_115455_.yBodyRot, 0.0F), "howlersleeppivot", "howler", "body", "body_no_hands", "head");
-		p_115455_.posArray[0] = pos1;
-		CrypticNetwork.sendToServer(new UpdatePosArrayPacket(p_115455_, pos1, 0));
+		super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
+		Vec3 pos1 = CrypticClientUtil.getWorldPosition(pEntity, this.model.root(), new Vec3(0.0F, pEntity.yBodyRot, 0.0F), "howlersleeppivot", "howler", "body", "body_no_hands", "head");
+		pEntity.posArray[0] = pos1;
+		CrypticNetwork.sendToServer(new UpdatePosArrayPacket(pEntity.getUUID(), pos1, 0));
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(EntityHowler p_115812_) 
+	public ResourceLocation getTextureLocation(EntityHowler pEntity) 
 	{
-		return new ResourceLocation(CrypticFoes.MODID, "textures/entity/howler.png");
+		return ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/entity/howler.png");
 	}
 }

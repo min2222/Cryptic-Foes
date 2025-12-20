@@ -18,29 +18,26 @@ public class UpdateSilencedBlocksPacket
 		this.blocks = blocks;
 	}
 
-	public UpdateSilencedBlocksPacket(FriendlyByteBuf buf)
+	public static UpdateSilencedBlocksPacket read(FriendlyByteBuf buf)
 	{
-		this.blocks = buf.readList(t -> t.readBlockPos());
+		return new UpdateSilencedBlocksPacket(buf.readList(t -> t.readBlockPos()));
 	}
 
-	public void encode(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeCollection(this.blocks, (t, u) -> t.writeBlockPos(u));
 	}
 
-	public static class Handler 
+	public static boolean handle(UpdateSilencedBlocksPacket message, Supplier<NetworkEvent.Context> ctx)
 	{
-		public static boolean onMessage(UpdateSilencedBlocksPacket message, Supplier<NetworkEvent.Context> ctx)
+		ctx.get().enqueueWork(() ->
 		{
-			ctx.get().enqueueWork(() ->
+			if(ctx.get().getDirection().getReceptionSide().isClient() && !CrypticUtil.SILENCED_BLOCKS.containsAll(message.blocks))
 			{
-				if(ctx.get().getDirection().getReceptionSide().isClient())
-				{
-					CrypticUtil.SILENCED_BLOCKS.addAll(message.blocks);
-				}
-			});
-			ctx.get().setPacketHandled(true);
-			return true;
-		}
+				CrypticUtil.SILENCED_BLOCKS.addAll(message.blocks);
+			}
+		});
+		ctx.get().setPacketHandled(true);
+		return true;
 	}
 }

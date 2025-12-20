@@ -20,20 +20,20 @@ public class PileofFragileBonesBlock extends Block
 	}
 	
 	@Override
-	public void stepOn(Level p_152431_, BlockPos p_152432_, BlockState p_152433_, Entity p_152434_)
+	public void stepOn(Level pLevel, BlockPos pPos, BlockState pState, Entity pEntity)
 	{
-		if(!p_152434_.isSteppingCarefully() && p_152434_ instanceof LivingEntity)
+		if(!pEntity.isSteppingCarefully() && pEntity instanceof LivingEntity)
 		{
-			int tick = p_152433_.is(CrypticBlocks.POLISHED_PILE_OF_FRAGILE_BONES.get()) ? 5 : 2;
-			p_152431_.scheduleTick(p_152432_, this, tick);
+			int tick = pState.is(CrypticBlocks.POLISHED_PILE_OF_FRAGILE_BONES.get()) ? 5 : 2;
+			pLevel.scheduleTick(pPos, this, tick);
 		}
 	}
 	
 	@Override
-	public void tick(BlockState p_222945_, ServerLevel p_222946_, BlockPos p_222947_, RandomSource p_222948_) 
+	public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) 
 	{
-		p_222946_.destroyBlock(p_222947_, false);
-		p_222946_.gameEvent(GameEvent.BLOCK_DESTROY, p_222947_, GameEvent.Context.of(p_222945_));
-		p_222946_.levelEvent(2001, p_222947_, Block.getId(p_222945_));
+		pLevel.destroyBlock(pPos, false);
+		pLevel.gameEvent(GameEvent.BLOCK_DESTROY, pPos, GameEvent.Context.of(pState));
+		pLevel.levelEvent(2001, pPos, Block.getId(pState));
 	}
 }

@@ -1,5 +1,7 @@
 package com.min01.crypticfoes.misc;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -15,20 +17,20 @@ public class CrypticExplosion extends Explosion
 	private final double z;
 	private final ParticleOptions particle;
 	   
-	public CrypticExplosion(Level p_46032_, Entity p_46033_, double p_46034_, double p_46035_, double p_46036_, float p_46037_, ParticleOptions particle) 
+	public CrypticExplosion(Level pLevel, @Nullable Entity pSource, double pToBlowX, double pToBlowY, double pToBlowZ, float pRadius, ParticleOptions particle) 
 	{
-		super(p_46032_, p_46033_, p_46034_, p_46035_, p_46036_, p_46037_, false, BlockInteraction.KEEP);
-		this.level = p_46032_;
-		this.x = p_46034_;
-		this.y = p_46035_;
-		this.z = p_46036_;
+		super(pLevel, pSource, pToBlowX, pToBlowY, pToBlowZ, pRadius, false, BlockInteraction.KEEP);
+		this.level = pLevel;
+		this.x = pToBlowX;
+		this.y = pToBlowY;
+		this.z = pToBlowZ;
 		this.particle = particle;
 	}
 	
 	@Override
-	public void finalizeExplosion(boolean p_46076_) 
+	public void finalizeExplosion(boolean pSpawnParticles) 
 	{
-		super.finalizeExplosion(p_46076_);
+		super.finalizeExplosion(pSpawnParticles);
 		if(this.level instanceof ServerLevel serverLevel)
 		{
 			serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER, this.x, this.y, this.z, 1, 1, 0, 0, 1);

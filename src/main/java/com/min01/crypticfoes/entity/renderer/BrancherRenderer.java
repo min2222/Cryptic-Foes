@@ -11,15 +11,15 @@ import net.minecraft.resources.ResourceLocation;
 
 public class BrancherRenderer extends MobRenderer<EntityBrancher, ModelBrancher>
 {
-	public BrancherRenderer(Context p_174304_)
+	public BrancherRenderer(Context pContext)
 	{
-		super(p_174304_, new ModelBrancher(p_174304_.bakeLayer(ModelBrancher.LAYER_LOCATION)), 0.5F);
+		super(pContext, new ModelBrancher(pContext.bakeLayer(ModelBrancher.LAYER_LOCATION)), 0.5F);
 		this.addLayer(new BrancherLayer(this));
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(EntityBrancher p_115812_) 
+	public ResourceLocation getTextureLocation(EntityBrancher pEntity) 
 	{
-		return new ResourceLocation(CrypticFoes.MODID, "textures/entity/brancher.png");
+		return ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/entity/brancher.png");
 	}
 }

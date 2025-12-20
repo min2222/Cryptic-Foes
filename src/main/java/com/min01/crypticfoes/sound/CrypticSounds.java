@@ -38,11 +38,11 @@ public class CrypticSounds
 	
 	private static RegistryObject<SoundEvent> registerFixedSound(String name, float range) 
 	{
-		return SOUNDS.register(name, () -> SoundEvent.createFixedRangeEvent(new ResourceLocation(CrypticFoes.MODID, name), 16.0F * range));
+		return SOUNDS.register(name, () -> SoundEvent.createFixedRangeEvent(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, name), 16.0F * range));
     }
 	
 	private static RegistryObject<SoundEvent> registerSound(String name) 
 	{
-		return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(CrypticFoes.MODID, name)));
+		return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, name)));
     }
 }

@@ -14,9 +14,9 @@ public class CrypticSkullBlockEntity extends SkullBlockEntity
 	public int tickCount;
 	public final SmoothAnimationState blinkAnimationState = new SmoothAnimationState();
 	
-	public CrypticSkullBlockEntity(BlockPos p_155731_, BlockState p_155732_)
+	public CrypticSkullBlockEntity(BlockPos pPos, BlockState pBlockState)
 	{
-		super(p_155731_, p_155732_);
+		super(pPos, pBlockState);
 	}
 
 	public static void update(Level level, BlockPos pos, BlockState state, CrypticSkullBlockEntity block)

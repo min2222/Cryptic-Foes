@@ -16,27 +16,26 @@ import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
 public interface MixinVibrationSystem extends VibrationSystem.User 
 {
 	@Override
-	default boolean isValidVibration(GameEvent p_282750_, GameEvent.Context p_283373_) 
+	default boolean isValidVibration(GameEvent pGameEvent, GameEvent.Context pContext) 
 	{
-		if(!p_282750_.is(this.getListenableEvents())) 
+		if(!pGameEvent.is(this.getListenableEvents())) 
 		{
 			return false;
 		}
 		else 
 		{
-			Entity entity = p_283373_.sourceEntity();
+			Entity entity = pContext.sourceEntity();
 			if(entity != null) 
 			{
 				if(entity.isSpectator())
 				{
 					return false;
 				}
-				if(entity.isSteppingCarefully() && p_282750_.is(GameEventTags.IGNORE_VIBRATIONS_SNEAKING)) 
+				if(entity.isSteppingCarefully() && pGameEvent.is(GameEventTags.IGNORE_VIBRATIONS_SNEAKING)) 
 				{
-					if(this.canTriggerAvoidVibration() && entity instanceof ServerPlayer) 
+					if(this.canTriggerAvoidVibration() && entity instanceof ServerPlayer serverPlayer) 
 					{
-						ServerPlayer serverplayer = (ServerPlayer) entity;
-						CriteriaTriggers.AVOID_VIBRATION.trigger(serverplayer);
+						CriteriaTriggers.AVOID_VIBRATION.trigger(serverPlayer);
 					}
 					return false;
 				}
@@ -45,9 +44,9 @@ public interface MixinVibrationSystem extends VibrationSystem.User
 					return false;
 				}
 			}
-			if(p_283373_.affectedState() != null)
+			if(pContext.affectedState() != null)
 			{
-				return !p_283373_.affectedState().is(BlockTags.DAMPENS_VIBRATIONS);
+				return !pContext.affectedState().is(BlockTags.DAMPENS_VIBRATIONS);
 			}
 			else 
 			{

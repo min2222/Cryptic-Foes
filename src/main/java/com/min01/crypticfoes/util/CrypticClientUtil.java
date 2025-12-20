@@ -46,23 +46,10 @@ public class CrypticClientUtil
 	
 	//https://github.com/EEEAB/EEEABsMobs/blob/master/src/main/java/com/eeeab/animate/client/util/ModelPartUtils.java#L57
     
-    public static Vec3 getWorldPositionOfMultiPart(Entity entity, ModelPart root, Vec3 rotation, String... modelPartName)
-    {
-    	return getWorldPosition(entity, root, false, rotation, modelPartName);
-    }
-    
     public static Vec3 getWorldPosition(Entity entity, ModelPart root, Vec3 rotation, String... modelPartName)
     {
-    	return getWorldPosition(entity, root, true, rotation, modelPartName);
-    }
-    
-    public static Vec3 getWorldPosition(Entity entity, ModelPart root, boolean translateToEntity, Vec3 rotation, String... modelPartName)
-    {
         PoseStack poseStack = new PoseStack();
-        if(translateToEntity)
-        {
-        	poseStack.translate(entity.getX(), entity.getY(), entity.getZ());
-        }
+    	poseStack.translate(entity.getX(), entity.getY(), entity.getZ());
         poseStack.mulPose(new Quaternionf().rotateXYZ((float) Math.toRadians(rotation.x), (float) Math.toRadians(-rotation.y + 180.0F), (float) Math.toRadians(rotation.z)));
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         ModelPart nextPart = null;

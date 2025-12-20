@@ -16,9 +16,9 @@ import net.minecraft.util.Mth;
 
 public class BrancherLayer extends RenderLayer<EntityBrancher, ModelBrancher>
 {
-	public BrancherLayer(RenderLayerParent<EntityBrancher, ModelBrancher> p_117346_)
+	public BrancherLayer(RenderLayerParent<EntityBrancher, ModelBrancher> pRenderer)
 	{
-		super(p_117346_);
+		super(pRenderer);
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class BrancherLayer extends RenderLayer<EntityBrancher, ModelBrancher>
 	{
 		if(!entity.isInvisible() && entity.getAngerCount() > 0)
 		{
-			VertexConsumer consumer = bufferIn.getBuffer(RenderType.eyes(new ResourceLocation(CrypticFoes.MODID, "textures/entity/brancher_layer.png")));
+			VertexConsumer consumer = bufferIn.getBuffer(RenderType.eyes(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/entity/brancher_layer.png")));
 	        float strength = 0.5F + Mth.clamp(((float) Math.cos((entity.glowingTicks + ageInTicks) * 0.1F)) - 0.5F, -0.5F, 0.5F);
 
 	        strength += Mth.lerp(ageInTicks, entity.brightnessOld, entity.brightness) * Mth.PI;

@@ -16,7 +16,7 @@ public class CrypticTags
 		
 		private static TagKey<EntityType<?>> create(String name) 
 		{
-			return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(CrypticFoes.MODID, name));
+			return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, name));
 		}
 	}
 	
@@ -26,7 +26,7 @@ public class CrypticTags
 		
 		private static TagKey<Block> create(String name) 
 		{
-			return TagKey.create(Registries.BLOCK, new ResourceLocation(CrypticFoes.MODID, name));
+			return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, name));
 		}
 	}
 }

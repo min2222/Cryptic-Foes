@@ -18,7 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ModelPetrifiedStone extends EntityModel<EntityPetrifiedStone> 
 {
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(CrypticFoes.MODID, "petrified_stone"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "petrified_stone"), "main");
 	private final ModelPart stone;
 
 	public ModelPetrifiedStone(ModelPart root) 

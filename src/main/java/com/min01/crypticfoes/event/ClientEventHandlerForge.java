@@ -22,7 +22,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = CrypticFoes.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientEventHandlerForge
 {
-	public static final ResourceLocation GUI_ICONS_LOCATION = new ResourceLocation(CrypticFoes.MODID, "textures/gui/cryptic_foes_icon.png");
+	public static final ResourceLocation GUI_ICONS_LOCATION = ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/gui/cryptic_foes_icon.png");
 	
 	@SubscribeEvent
 	public static void onComputeFovModifier(ComputeFovModifierEvent event)

@@ -20,27 +20,27 @@ public class CaveSaladItem extends Item
 	}
 	
 	@Override
-	public ItemStack finishUsingItem(ItemStack p_41409_, Level p_41410_, LivingEntity p_41411_)
+	public ItemStack finishUsingItem(ItemStack pStack, Level pLevel, LivingEntity pLivingEntity)
 	{
-		EntityHowlerScream scream = new EntityHowlerScream(CrypticEntities.HOWLER_SCREAM.get(), p_41410_);
-		scream.setOwner(p_41411_);
-		scream.setPos(p_41411_.getEyePosition());
-		scream.shootFromRotation(p_41411_, p_41411_.getXRot(), p_41411_.getYRot(), 0.0F, 0.75F, 1.0F);
+		EntityHowlerScream scream = new EntityHowlerScream(CrypticEntities.HOWLER_SCREAM.get(), pLevel);
+		scream.setOwner(pLivingEntity);
+		scream.setPos(pLivingEntity.getEyePosition());
+		scream.shootFromRotation(pLivingEntity, pLivingEntity.getXRot(), pLivingEntity.getYRot(), 0.0F, 0.75F, 1.0F);
 		scream.setNoGravity(true);
 		scream.setStunDuration(20);
 		scream.setRange(0.06F - 0.0005F);
-		p_41410_.addFreshEntity(scream);
-		ItemStack stack = super.finishUsingItem(p_41409_, p_41410_, p_41411_);
+		pLevel.addFreshEntity(scream);
+		ItemStack stack = super.finishUsingItem(pStack, pLevel, pLivingEntity);
 		if(stack.getCount() > 1)
 		{
-			if(p_41411_ instanceof Player player && !player.getAbilities().instabuild)
+			if(pLivingEntity instanceof Player player && !player.getAbilities().instabuild)
 			{
 				stack.shrink(1);
 				player.getInventory().add(new ItemStack(Items.BOWL));
 			}
 			return stack;
 		}
-		return p_41411_ instanceof Player player && player.getAbilities().instabuild ? stack : new ItemStack(Items.BOWL);
+		return pLivingEntity instanceof Player player && player.getAbilities().instabuild ? stack : new ItemStack(Items.BOWL);
 	}
 	
 	@Override

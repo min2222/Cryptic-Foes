@@ -17,7 +17,7 @@ public class CrypticPaintings
     public static final RegistryObject<PaintingVariant> DWELLERS = PAINTING_VARIANTS.register("dwellers", () -> new PaintingVariant(32, 32));
     public static final RegistryObject<PaintingVariant> RESIN = PAINTING_VARIANTS.register("resin", () -> new PaintingVariant(16, 32));
     
-    public static final ResourceKey<PaintingVariant> MOUNTAIN_HOLDER_KEY = ResourceKey.create(Registries.PAINTING_VARIANT, new ResourceLocation(CrypticFoes.MODID, "mountain_holder"));
-    public static final ResourceKey<PaintingVariant> DWELLERS_KEY = ResourceKey.create(Registries.PAINTING_VARIANT, new ResourceLocation(CrypticFoes.MODID, "dwellers"));
-    public static final ResourceKey<PaintingVariant> RESIN_KEY = ResourceKey.create(Registries.PAINTING_VARIANT, new ResourceLocation(CrypticFoes.MODID, "resin"));
+    public static final ResourceKey<PaintingVariant> MOUNTAIN_HOLDER_KEY = ResourceKey.create(Registries.PAINTING_VARIANT, ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "mountain_holder"));
+    public static final ResourceKey<PaintingVariant> DWELLERS_KEY = ResourceKey.create(Registries.PAINTING_VARIANT, ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "dwellers"));
+    public static final ResourceKey<PaintingVariant> RESIN_KEY = ResourceKey.create(Registries.PAINTING_VARIANT, ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "resin"));
 }

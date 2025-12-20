@@ -36,9 +36,9 @@ public class EntityHowlerScream extends ThrowableProjectile
 	public static final EntityDataAccessor<Float> RANGE = SynchedEntityData.defineId(EntityHowlerScream.class, EntityDataSerializers.FLOAT);
 	public float alpha = 1.0F;
 	
-	public EntityHowlerScream(EntityType<? extends ThrowableProjectile> p_37466_, Level p_37467_)
+	public EntityHowlerScream(EntityType<? extends ThrowableProjectile> pEntityType, Level pLevel)
 	{
-		super(p_37466_, p_37467_);
+		super(pEntityType, pLevel);
 	}
 
 	@Override
@@ -89,10 +89,10 @@ public class EntityHowlerScream extends ThrowableProjectile
 	}
 	
 	@Override
-	protected void onHitBlock(BlockHitResult p_37258_)
+	protected void onHitBlock(BlockHitResult pResult)
 	{
-		super.onHitBlock(p_37258_);
-		BlockPos blockPos = p_37258_.getBlockPos();
+		super.onHitBlock(pResult);
+		BlockPos blockPos = pResult.getBlockPos();
 		BlockState state = this.level.getBlockState(blockPos);
 		if(state.is(CrypticTags.CrypticBlocks.BREAKABLE_BY_SCREAM) && !this.level.isClientSide && this.mayInteract(this.level, blockPos) && this.getDeltaMovement().length() > 0.6D) 
 		{
@@ -101,7 +101,7 @@ public class EntityHowlerScream extends ThrowableProjectile
 	}
 	
 	@Override
-	public EntityDimensions getDimensions(Pose p_19975_)
+	public EntityDimensions getDimensions(Pose pPose)
 	{
 		float scale = 0.25F + (this.tickCount * 0.08F);
 		scale = Mth.clamp(scale, 0.0F, 3.0F);
@@ -127,25 +127,25 @@ public class EntityHowlerScream extends ThrowableProjectile
 	}
 	
 	@Override
-	public void addAdditionalSaveData(CompoundTag p_37265_) 
+	public void addAdditionalSaveData(CompoundTag pCompound) 
 	{
 		if(this.entityData.get(OWNER_UUID).isPresent())
 		{
-			p_37265_.putUUID("Owner", this.entityData.get(OWNER_UUID).get());
+			pCompound.putUUID("Owner", this.entityData.get(OWNER_UUID).get());
 		}
-		p_37265_.putInt("StunDuration", this.getStunDuration());
-		p_37265_.putFloat("Range", this.getRange());
+		pCompound.putInt("StunDuration", this.getStunDuration());
+		pCompound.putFloat("Range", this.getRange());
 	}
 	
 	@Override
-	public void readAdditionalSaveData(CompoundTag p_37262_) 
+	public void readAdditionalSaveData(CompoundTag pCompound) 
 	{
-		if(p_37262_.hasUUID("Owner")) 
+		if(pCompound.hasUUID("Owner")) 
 		{
-			this.entityData.set(OWNER_UUID, Optional.of(p_37262_.getUUID("Owner")));
+			this.entityData.set(OWNER_UUID, Optional.of(pCompound.getUUID("Owner")));
 		}
-		this.setStunDuration(p_37262_.getInt("StunDuration"));
-		this.setRange(p_37262_.getFloat("Range"));
+		this.setStunDuration(pCompound.getInt("StunDuration"));
+		this.setRange(pCompound.getFloat("Range"));
 	}
 	
 	@Override

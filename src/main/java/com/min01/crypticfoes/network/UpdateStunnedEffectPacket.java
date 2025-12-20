@@ -27,15 +27,12 @@ public class UpdateStunnedEffectPacket
 		this.remove = remove;
 	}
 
-	public UpdateStunnedEffectPacket(FriendlyByteBuf buf)
+	public static UpdateStunnedEffectPacket read(FriendlyByteBuf buf)
 	{
-		this.entityUUID = buf.readUUID();
-		this.amplifier = buf.readInt();
-		this.duration = buf.readInt();
-		this.remove = buf.readBoolean();
+		return new UpdateStunnedEffectPacket(buf.readUUID(), buf.readInt(), buf.readInt(), buf.readBoolean());
 	}
 
-	public void encode(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeUUID(this.entityUUID);
 		buf.writeInt(this.amplifier);
@@ -43,33 +40,30 @@ public class UpdateStunnedEffectPacket
 		buf.writeBoolean(this.remove);
 	}
 
-	public static class Handler 
+	public static boolean handle(UpdateStunnedEffectPacket message, Supplier<NetworkEvent.Context> ctx)
 	{
-		public static boolean onMessage(UpdateStunnedEffectPacket message, Supplier<NetworkEvent.Context> ctx)
+		ctx.get().enqueueWork(() ->
 		{
-			ctx.get().enqueueWork(() ->
+			if(ctx.get().getDirection().getReceptionSide().isClient())
 			{
-				if(ctx.get().getDirection().getReceptionSide().isClient())
+				CrypticUtil.getClientLevel(level -> 
 				{
-					CrypticUtil.getClientLevel(level -> 
+					Entity entity = CrypticUtil.getEntityByUUID(level, message.entityUUID);
+					if(entity instanceof LivingEntity living) 
 					{
-						Entity entity = CrypticUtil.getEntityByUUID(level, message.entityUUID);
-						if(entity instanceof LivingEntity living) 
+						if(!message.remove)
 						{
-							if(!message.remove)
-							{
-								living.addEffect(new MobEffectInstance(CrypticEffects.STUNNED.get(), message.duration, message.amplifier));
-							}
-							else if(living.hasEffect(CrypticEffects.STUNNED.get()))
-							{
-								living.removeEffect(CrypticEffects.STUNNED.get());
-							}
+							living.addEffect(new MobEffectInstance(CrypticEffects.STUNNED.get(), message.duration, message.amplifier));
 						}
-					});
-				}
-			});
-			ctx.get().setPacketHandled(true);
-			return true;
-		}
+						else if(living.hasEffect(CrypticEffects.STUNNED.get()))
+						{
+							living.removeEffect(CrypticEffects.STUNNED.get());
+						}
+					}
+				});
+			}
+		});
+		ctx.get().setPacketHandled(true);
+		return true;
 	}
 }

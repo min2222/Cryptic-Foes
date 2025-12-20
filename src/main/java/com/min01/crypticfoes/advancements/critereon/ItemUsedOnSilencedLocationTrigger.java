@@ -9,6 +9,6 @@ public class ItemUsedOnSilencedLocationTrigger extends ItemUsedOnLocationTrigger
 {
 	public ItemUsedOnSilencedLocationTrigger()
 	{
-		super(new ResourceLocation(CrypticFoes.MODID, "item_used_on_silenced_block"));
+		super(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "item_used_on_silenced_block"));
 	}
 }

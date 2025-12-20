@@ -16,26 +16,26 @@ import net.minecraft.resources.ResourceLocation;
 public class PetrifiedStoneRenderer extends EntityRenderer<EntityPetrifiedStone>
 {
 	public final ModelPetrifiedStone model;
-	public PetrifiedStoneRenderer(Context p_174008_) 
+	public PetrifiedStoneRenderer(Context pContext) 
 	{
-		super(p_174008_);
-		this.model = new ModelPetrifiedStone(p_174008_.bakeLayer(ModelPetrifiedStone.LAYER_LOCATION));
+		super(pContext);
+		this.model = new ModelPetrifiedStone(pContext.bakeLayer(ModelPetrifiedStone.LAYER_LOCATION));
 	}
 	
 	@Override
-	public void render(EntityPetrifiedStone p_114485_, float p_114486_, float p_114487_, PoseStack p_114488_, MultiBufferSource p_114489_, int p_114490_) 
+	public void render(EntityPetrifiedStone pEntity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) 
 	{
-		p_114488_.pushPose();
-		p_114488_.scale(-1.0F, -1.0F, 1.0F);
-		p_114488_.translate(0.0F, -1.5F, 0.0F);
-		p_114488_.mulPose(Axis.XP.rotationDegrees(p_114485_.tickCount * 0.01F));
-		this.model.renderToBuffer(p_114488_, p_114489_.getBuffer(RenderType.entityCutoutNoCull(this.getTextureLocation(p_114485_))), p_114490_, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-		p_114488_.popPose();
+		pPoseStack.pushPose();
+		pPoseStack.scale(-1.0F, -1.0F, 1.0F);
+		pPoseStack.translate(0.0F, -1.5F, 0.0F);
+		pPoseStack.mulPose(Axis.XP.rotationDegrees(pEntity.tickCount * 0.01F));
+		this.model.renderToBuffer(pPoseStack, pBuffer.getBuffer(RenderType.entityCutoutNoCull(this.getTextureLocation(pEntity))), pPackedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		pPoseStack.popPose();
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(EntityPetrifiedStone p_114482_)
+	public ResourceLocation getTextureLocation(EntityPetrifiedStone pEntity)
 	{
-		return new ResourceLocation(CrypticFoes.MODID, "textures/entity/petrified.png");
+		return ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/entity/petrified.png");
 	}
 }

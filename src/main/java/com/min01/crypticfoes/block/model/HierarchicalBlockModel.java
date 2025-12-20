@@ -23,39 +23,39 @@ public abstract class HierarchicalBlockModel<T extends BlockEntity> extends Mode
 	{
 		super(RenderType::entityCutoutNoCull);
 	}
-	
-	public abstract void setupAnim(T p_102618_, float p_102619_, float p_102620_, float p_102621_, float p_102622_, float p_102623_);
+
+	public abstract void setupAnim(T blockEntity, float pLimbSwing, float pLimbSwingAmount, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch);
 
 	@Override
-	public void renderToBuffer(PoseStack p_170625_, VertexConsumer p_170626_, int p_170627_, int p_170628_, float p_170629_, float p_170630_, float p_170631_, float p_170632_) 
+	public void renderToBuffer(PoseStack pPoseStack, VertexConsumer pBuffer, int pPackedLight, int pPackedOverlay, float pRed, float pGreen, float pBlue, float pAlpha)
 	{
-		this.root().render(p_170625_, p_170626_, p_170627_, p_170628_, p_170629_, p_170630_, p_170631_, p_170632_);
+		this.root().render(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pRed, pGreen, pBlue, pAlpha);
 	}
 
 	public abstract ModelPart root();
 
-	public Optional<ModelPart> getAnyDescendantWithName(String p_233394_) 
+	public Optional<ModelPart> getAnyDescendantWithName(String pName) 
 	{
-		return this.root().getAllParts().filter((p_233400_) -> 
+		return this.root().getAllParts().filter(t -> 
 		{
-			return p_233400_.hasChild(p_233394_);
-		}).findFirst().map((p_233397_) ->
+			return t.hasChild(pName);
+		}).findFirst().map(t ->
 		{
-			return p_233397_.getChild(p_233394_);
+			return t.getChild(pName);
 		});
 	}
 
-	protected void animate(AnimationState p_233382_, AnimationDefinition p_233383_, float p_233384_)
+	protected void animate(AnimationState pAnimationState, AnimationDefinition pAnimationDefinition, float pAgeInTicks)
 	{
-		this.animate(p_233382_, p_233383_, p_233384_, 1.0F);
+		this.animate(pAnimationState, pAnimationDefinition, pAgeInTicks, 1.0F);
 	}
 
-	protected void animate(AnimationState p_233386_, AnimationDefinition p_233387_, float p_233388_, float p_233389_) 
+	protected void animate(AnimationState pAnimationState, AnimationDefinition pAnimationDefinition, float pAgeInTicks, float pSpeed) 
 	{
-		p_233386_.updateTime(p_233388_, p_233389_);
-		p_233386_.ifStarted((p_233392_) ->
+		pAnimationState.updateTime(pAgeInTicks, pSpeed);
+		pAnimationState.ifStarted(t -> 
 		{
-			KeyframeBlockAnimations.animate(this, p_233387_, p_233392_.getAccumulatedTime(), 1.0F, ANIMATION_VECTOR_CACHE);
+			KeyframeBlockAnimations.animate(this, pAnimationDefinition, t.getAccumulatedTime(), 1.0F, ANIMATION_VECTOR_CACHE);
 		});
 	}
 }

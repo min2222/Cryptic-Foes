@@ -29,22 +29,22 @@ public class FallenLeavesBlock extends BushBlock
 	}
 	
 	@Override
-	public VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_)
+	public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext)
 	{
 		return AABB;
 	}
 	
 	@Override
-	public void stepOn(Level p_152431_, BlockPos p_152432_, BlockState p_152433_, Entity p_152434_)
+	public void stepOn(Level pLevel, BlockPos pPos, BlockState pState, Entity pEntity)
 	{
-		if(!p_152434_.isSteppingCarefully() && p_152434_ instanceof LivingEntity living)
+		if(!pEntity.isSteppingCarefully() && pEntity instanceof LivingEntity living)
 		{
 			if(!(living instanceof EntityBrancher))
 			{
 				living.playSound(CrypticSounds.FALLEN_LEAVES_STEP.get());
 				if(EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(living))
 				{
-					List<EntityBrancher> list = p_152431_.getEntitiesOfClass(EntityBrancher.class, living.getBoundingBox().inflate(12.5F), t -> !t.isAngry() && t.getAnimationState() != 1 && t.getAnimationTick() <= 0);
+					List<EntityBrancher> list = pLevel.getEntitiesOfClass(EntityBrancher.class, living.getBoundingBox().inflate(12.5F), t -> !t.isAngry() && t.getAnimationState() != 1 && t.getAnimationTick() <= 0);
 					list.forEach(t -> 
 					{
 						t.setTarget(living);
@@ -58,8 +58,8 @@ public class FallenLeavesBlock extends BushBlock
 	}
 	
 	@Override
-	protected boolean mayPlaceOn(BlockState p_51042_, BlockGetter p_51043_, BlockPos p_51044_) 
+	protected boolean mayPlaceOn(BlockState pState, BlockGetter pLevel, BlockPos pPos) 
 	{
-		return super.mayPlaceOn(p_51042_, p_51043_, p_51044_) || p_51042_.is(Blocks.GRASS_BLOCK);
+		return super.mayPlaceOn(pState, pLevel, pPos) || pState.is(Blocks.GRASS_BLOCK);
 	}
 }

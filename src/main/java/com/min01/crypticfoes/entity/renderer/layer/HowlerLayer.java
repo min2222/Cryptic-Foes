@@ -15,9 +15,9 @@ import net.minecraft.resources.ResourceLocation;
 
 public class HowlerLayer extends RenderLayer<EntityHowler, ModelHowler>
 {
-	public HowlerLayer(RenderLayerParent<EntityHowler, ModelHowler> p_117346_)
+	public HowlerLayer(RenderLayerParent<EntityHowler, ModelHowler> pRenderer)
 	{
-		super(p_117346_);
+		super(pRenderer);
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class HowlerLayer extends RenderLayer<EntityHowler, ModelHowler>
 	{
 		if(!entity.isInvisible())
 		{
-			VertexConsumer consumer = bufferIn.getBuffer(RenderType.eyes(new ResourceLocation(CrypticFoes.MODID, "textures/entity/howler_layer.png")));
+			VertexConsumer consumer = bufferIn.getBuffer(RenderType.eyes(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/entity/howler_layer.png")));
 			this.getParentModel().renderToBuffer(poseStack, consumer, packedLightIn, LivingEntityRenderer.getOverlayCoords(entity, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);
 		}
 	}
