@@ -45,12 +45,12 @@ public abstract class HierarchicalBlockModel<T extends BlockEntity> extends Mode
 		});
 	}
 
-	protected void animate(AnimationState pAnimationState, AnimationDefinition pAnimationDefinition, float pAgeInTicks)
+	public void animate(AnimationState pAnimationState, AnimationDefinition pAnimationDefinition, float pAgeInTicks)
 	{
 		this.animate(pAnimationState, pAnimationDefinition, pAgeInTicks, 1.0F);
 	}
 
-	protected void animate(AnimationState pAnimationState, AnimationDefinition pAnimationDefinition, float pAgeInTicks, float pSpeed) 
+	public void animate(AnimationState pAnimationState, AnimationDefinition pAnimationDefinition, float pAgeInTicks, float pSpeed) 
 	{
 		pAnimationState.updateTime(pAgeInTicks, pSpeed);
 		pAnimationState.ifStarted(t -> 
