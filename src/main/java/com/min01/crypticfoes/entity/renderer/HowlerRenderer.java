@@ -35,6 +35,17 @@ public class HowlerRenderer extends MobRenderer<EntityHowler, ModelHowler>
 	@Override
 	public ResourceLocation getTextureLocation(EntityHowler pEntity) 
 	{
+		if(pEntity.hasCustomName())
+		{
+			if(pEntity.getCustomName().getString().equals("Sonar"))
+			{
+				return ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/entity/howler_sonar.png");
+			}
+			if(pEntity.getCustomName().getString().equals("Fruit"))
+			{
+				return ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/entity/howler_fruit.png");
+			}
+		}
 		return ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/entity/howler.png");
 	}
 }

@@ -44,6 +44,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -350,7 +351,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     {
     	BlockPos ceilingPos = CrypticUtil.getCeilingPos(pLevel, pPos.getX(), pPos.getY(), pPos.getZ());
     	BlockPos groundPos = CrypticUtil.getGroundPos(pLevel,  pPos.getX(), pPos.getY(), pPos.getZ());
-    	return pPos.getY() < 0 && CrypticUtil.distanceToY(pPos, ceilingPos) >= 8.0F && !pLevel.canSeeSky(ceilingPos) && !pLevel.canSeeSky(groundPos) && pLevel.getDifficulty() != Difficulty.PEACEFUL && isDarkEnoughToSpawn(pLevel, pPos, pRandom) && checkMobSpawnRules(pType, pLevel, pSpawnType, pPos, pRandom);
+    	return !pLevel.getBiome(pPos).is(Biomes.DEEP_DARK) && pPos.getY() < 0 && CrypticUtil.distanceToY(pPos, ceilingPos) >= 8.0F && !pLevel.canSeeSky(ceilingPos) && !pLevel.canSeeSky(groundPos) && pLevel.getDifficulty() != Difficulty.PEACEFUL && isDarkEnoughToSpawn(pLevel, pPos, pRandom) && checkMobSpawnRules(pType, pLevel, pSpawnType, pPos, pRandom);
     }
     
     public double horizontalDist(BlockPos pos, double x, double z) 

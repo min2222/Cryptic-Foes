@@ -55,48 +55,51 @@ public class MonstrousHornItem extends Item
 	@Override
 	public void inventoryTick(ItemStack pStack, Level pLevel, Entity pEntity, int pSlotId, boolean pIsSelected) 
 	{
-		boolean isScream = isScream(pStack);
-		if(pIsSelected)
+		if(pEntity instanceof LivingEntity living)
 		{
-			if(isScream)
+			if(living.isHolding(this))
 			{
-				int stunCount = getStunCount(pStack);
-				int charge = getHornCharge(pStack);
-				int chargeTick = getHornChargeTick(pStack);
-				int tick = getScreamTick(pStack);
-				if(chargeTick < charge * 3)
+				boolean isScream = isScream(pStack);
+				if(isScream)
 				{
-					setScreamTick(pStack, tick + 1);
-					if(tick % 2 == 0)
+					int stunCount = getStunCount(pStack);
+					int charge = getHornCharge(pStack);
+					int chargeTick = getHornChargeTick(pStack);
+					int tick = getScreamTick(pStack);
+					if(chargeTick < charge * 3)
 					{
-						EntityHowlerScream scream = new EntityHowlerScream(CrypticEntities.HOWLER_SCREAM.get(), pLevel);
-						scream.setOwner(pEntity);
-						scream.setPos(pEntity.getEyePosition());
-						scream.shootFromRotation(pEntity, pEntity.getXRot(), pEntity.getYRot(), 0.0F, 0.5F + (charge * 0.25F), 1.0F);
-						scream.setNoGravity(true);
-						scream.setStunDuration(charge * 20);
-						scream.setRange(0.06F - (charge * 0.0005F));
-						pLevel.addFreshEntity(scream);
-						setHornChargeTick(pStack, chargeTick + 1);
-						if(Math.random() <= 0.5F)
+						setScreamTick(pStack, tick + 1);
+						if(tick % 2 == 0)
 						{
-							pEntity.playSound(CrypticSounds.MONSTROUS_HORN_SCREAM.get());
+							EntityHowlerScream scream = new EntityHowlerScream(CrypticEntities.HOWLER_SCREAM.get(), pLevel);
+							scream.setOwner(pEntity);
+							scream.setPos(pEntity.getEyePosition());
+							scream.shootFromRotation(pEntity, pEntity.getXRot(), pEntity.getYRot(), 0.0F, 0.5F + (charge * 0.25F), 1.0F);
+							scream.setNoGravity(true);
+							scream.setStunDuration(charge * 20);
+							scream.setRange(0.06F - (charge * 0.0005F));
+							pLevel.addFreshEntity(scream);
+							setHornChargeTick(pStack, chargeTick + 1);
+							if(Math.random() <= 0.5F)
+							{
+								pEntity.playSound(CrypticSounds.MONSTROUS_HORN_SCREAM.get());
+							}
+						}
+						if(stunCount >= 10 && pEntity instanceof ServerPlayer serverPlayer)
+						{
+							CrypticCriteriaTriggers.STUNNING_SPEECH.trigger(serverPlayer);
 						}
 					}
-					if(stunCount >= 10 && pEntity instanceof ServerPlayer serverPlayer)
+					else
 					{
-						CrypticCriteriaTriggers.STUNNING_SPEECH.trigger(serverPlayer);
+						reset(pStack, pEntity);
 					}
 				}
-				else
-				{
-					reset(pStack, pEntity);
-				}
 			}
-		}
-		else if(getHornCharge(pStack) > 0)
-		{
-			reset(pStack, pEntity);
+			else if(getHornCharge(pStack) > 0)
+			{
+				reset(pStack, pEntity);
+			}
 		}
 	}
 	

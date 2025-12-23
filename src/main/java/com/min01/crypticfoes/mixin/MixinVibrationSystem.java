@@ -1,57 +1,34 @@
 package com.min01.crypticfoes.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.min01.crypticfoes.util.CrypticUtil;
 
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.GameEventTags;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
+import net.minecraft.world.phys.Vec3;
 
-@Mixin(value = VibrationSystem.User.class, priority = -10000)
-public interface MixinVibrationSystem extends VibrationSystem.User 
+@Mixin(value = VibrationSystem.Listener.class, priority = -10000)
+public class MixinVibrationSystem
 {
-	@Override
-	default boolean isValidVibration(GameEvent pGameEvent, GameEvent.Context pContext) 
-	{
-		if(!pGameEvent.is(this.getListenableEvents())) 
+	@Inject(at = @At("HEAD"), method = "handleGameEvent", cancellable = true)
+    public void handleGameEvent(ServerLevel pLevel, GameEvent pGameEvent, GameEvent.Context pContext, Vec3 pPos, CallbackInfoReturnable<Boolean> cir) 
+    {
+		if(pContext.sourceEntity() != null)
 		{
-			return false;
+	    	if(CrypticUtil.isBlockSilenced(pLevel, pContext.sourceEntity().getOnPos()))
+	    	{
+	    		cir.setReturnValue(false);
+	    	}
 		}
-		else 
-		{
-			Entity entity = pContext.sourceEntity();
-			if(entity != null) 
-			{
-				if(entity.isSpectator())
-				{
-					return false;
-				}
-				if(entity.isSteppingCarefully() && pGameEvent.is(GameEventTags.IGNORE_VIBRATIONS_SNEAKING)) 
-				{
-					if(this.canTriggerAvoidVibration() && entity instanceof ServerPlayer serverPlayer) 
-					{
-						CriteriaTriggers.AVOID_VIBRATION.trigger(serverPlayer);
-					}
-					return false;
-				}
-				if(entity.dampensVibrations() || CrypticUtil.isBlockSilenced(entity.level, entity.getOnPos()))
-				{
-					return false;
-				}
-			}
-			if(pContext.affectedState() != null)
-			{
-				return !pContext.affectedState().is(BlockTags.DAMPENS_VIBRATIONS);
-			}
-			else 
-			{
-				return true;
-			}
-		}
-	}
+    	if(CrypticUtil.isBlockSilenced(pLevel, BlockPos.containing(pPos)))
+    	{
+    		cir.setReturnValue(false);
+    	}
+    }
 }
