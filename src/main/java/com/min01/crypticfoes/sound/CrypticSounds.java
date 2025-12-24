@@ -25,8 +25,8 @@ public class CrypticSounds
 	public static final RegistryObject<SoundEvent> FALLEN_LEAVES_PLACE = registerSound("fallen_leaves_place");
 	public static final RegistryObject<SoundEvent> FALLEN_LEAVES_STEP = registerSound("fallen_leaves_step");
 	public static final RegistryObject<SoundEvent> HOWLER_IDLE = registerSound("howler_idle");
-	public static final RegistryObject<SoundEvent> HOWLER_SCREAM = registerFixedSound("howler_scream", 25.0F);
-	public static final RegistryObject<SoundEvent> HOWLER_LAND = registerFixedSound("howler_land", 25.0F);
+	public static final RegistryObject<SoundEvent> HOWLER_SCREAM = registerSound("howler_scream");
+	public static final RegistryObject<SoundEvent> HOWLER_LAND = registerSound("howler_land");
 	public static final RegistryObject<SoundEvent> CAVE_SALAD_BURP = registerSound("cave_salad_burp");
 	public static final RegistryObject<SoundEvent> MONSTROUS_HORN_INHALE = registerSound("monstrous_horn_inhale");
 	public static final RegistryObject<SoundEvent> MONSTROUS_HORN_SCREAM = registerSound("monstrous_horn_scream");
@@ -37,12 +37,12 @@ public class CrypticSounds
 	
 	public static final SoundType FALLEN_LEAVES = new ForgeSoundType(1.0F, 1.0F, () -> FALLEN_LEAVES_BREAK.get(), () -> FALLEN_LEAVES_STEP.get(), () -> FALLEN_LEAVES_PLACE.get(), () -> SoundEvents.GRASS_HIT, () -> SoundEvents.GRASS_FALL);
 	
-	private static RegistryObject<SoundEvent> registerFixedSound(String name, float range) 
+	public static RegistryObject<SoundEvent> registerFixedSound(String name, float range) 
 	{
 		return SOUNDS.register(name, () -> SoundEvent.createFixedRangeEvent(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, name), 16.0F * range));
     }
 	
-	private static RegistryObject<SoundEvent> registerSound(String name) 
+	public static RegistryObject<SoundEvent> registerSound(String name) 
 	{
 		return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, name)));
     }
