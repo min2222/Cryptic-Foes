@@ -26,6 +26,7 @@ public class CrypticSounds
 	public static final RegistryObject<SoundEvent> FALLEN_LEAVES_STEP = registerSound("fallen_leaves_step");
 	public static final RegistryObject<SoundEvent> HOWLER_IDLE = registerSound("howler_idle");
 	public static final RegistryObject<SoundEvent> HOWLER_SCREAM = registerFixedSound("howler_scream", 25.0F);
+	public static final RegistryObject<SoundEvent> HOWLER_LAND = registerFixedSound("howler_land", 25.0F);
 	public static final RegistryObject<SoundEvent> CAVE_SALAD_BURP = registerSound("cave_salad_burp");
 	public static final RegistryObject<SoundEvent> MONSTROUS_HORN_INHALE = registerSound("monstrous_horn_inhale");
 	public static final RegistryObject<SoundEvent> MONSTROUS_HORN_SCREAM = registerSound("monstrous_horn_scream");

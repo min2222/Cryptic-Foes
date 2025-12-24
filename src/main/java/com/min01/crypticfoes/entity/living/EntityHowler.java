@@ -323,6 +323,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     
     public void createShockwave()
     {
+    	this.playSound(CrypticSounds.HOWLER_LAND.get());
     	EntityCameraShake.cameraShake(this.level, this.position(), 15.0F, 0.25F, 0, 20);
     	List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(3.0F), t -> !(t instanceof EntityHowler));
     	list.forEach(t -> 
