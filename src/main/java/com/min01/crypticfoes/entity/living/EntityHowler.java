@@ -82,7 +82,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     			.add(Attributes.ARMOR, 10.0F)
     			.add(Attributes.ATTACK_DAMAGE, 10.0F)
     			.add(Attributes.KNOCKBACK_RESISTANCE, 100.0F)
-    			.add(Attributes.MOVEMENT_SPEED, 0.35F)
+    			.add(Attributes.MOVEMENT_SPEED, 0.25F)
     			.add(Attributes.FOLLOW_RANGE, 25.0F);
     }
     
