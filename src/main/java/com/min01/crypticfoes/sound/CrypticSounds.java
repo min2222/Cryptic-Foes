@@ -37,11 +37,6 @@ public class CrypticSounds
 	
 	public static final SoundType FALLEN_LEAVES = new ForgeSoundType(1.0F, 1.0F, () -> FALLEN_LEAVES_BREAK.get(), () -> FALLEN_LEAVES_STEP.get(), () -> FALLEN_LEAVES_PLACE.get(), () -> SoundEvents.GRASS_HIT, () -> SoundEvents.GRASS_FALL);
 	
-	public static RegistryObject<SoundEvent> registerFixedSound(String name, float range) 
-	{
-		return SOUNDS.register(name, () -> SoundEvent.createFixedRangeEvent(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, name), 16.0F * range));
-    }
-	
 	public static RegistryObject<SoundEvent> registerSound(String name) 
 	{
 		return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, name)));

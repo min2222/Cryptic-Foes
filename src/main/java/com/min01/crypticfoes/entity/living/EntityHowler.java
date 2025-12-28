@@ -33,9 +33,14 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
@@ -82,7 +87,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     			.add(Attributes.ARMOR, 10.0F)
     			.add(Attributes.ATTACK_DAMAGE, 10.0F)
     			.add(Attributes.KNOCKBACK_RESISTANCE, 100.0F)
-    			.add(Attributes.MOVEMENT_SPEED, 0.25F)
+    			.add(Attributes.MOVEMENT_SPEED, 0.35F)
     			.add(Attributes.FOLLOW_RANGE, 25.0F);
     }
     
@@ -119,18 +124,6 @@ public class EntityHowler extends AbstractAnimatableMonster
     }
     
     @Override
-    public boolean canMoveAround() 
-    {
-    	return super.canMoveAround() && !this.isHowlerSleeping();
-    }
-    
-    @Override
-    public boolean canLookAround() 
-    {
-    	return super.canLookAround() && !this.isHowlerSleeping();
-    }
-    
-    @Override
     protected void defineSynchedData()
     {
     	super.defineSynchedData();
@@ -138,6 +131,43 @@ public class EntityHowler extends AbstractAnimatableMonster
     	this.entityData.define(IS_FALLING, false);
     	this.entityData.define(SLEEP_POS, BlockPos.ZERO);
     }
+    
+	public void registerDefaultGoals()
+	{
+		this.goalSelector.addGoal(0, new FloatGoal(this));
+		this.goalSelector.addGoal(0, new WaterAvoidingRandomStrollGoal(this, 0.5F)
+		{
+			@Override
+			public boolean canUse()
+			{
+				return super.canUse() && EntityHowler.this.canMoveAround();
+			}
+		});
+		this.goalSelector.addGoal(0, new RandomLookAroundGoal(this)
+		{
+			@Override
+			public boolean canUse()
+			{
+				return super.canUse() && EntityHowler.this.canLookAround();
+			}
+		});
+		this.goalSelector.addGoal(0, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F)
+		{
+			@Override
+			public boolean canUse()
+			{
+				return super.canUse() && EntityHowler.this.canLookAround();
+			}
+		});
+		this.goalSelector.addGoal(0, new LookAtPlayerGoal(this, Mob.class, 8.0F)
+		{
+			@Override
+			public boolean canUse()
+			{
+				return super.canUse() && EntityHowler.this.canLookAround();
+			}
+		});
+	}
     
     @Override
     public void tick() 
@@ -159,7 +189,6 @@ public class EntityHowler extends AbstractAnimatableMonster
     		this.flyStartAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 7, this.tickCount);
     		this.flyEndAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 8, this.tickCount);
     	}
-    	
     	if(this.ambientTick > 0)
     	{
 			this.ambientTick--;
@@ -321,9 +350,21 @@ public class EntityHowler extends AbstractAnimatableMonster
         }
     }
     
+    @Override
+    public boolean canMoveAround() 
+    {
+    	return super.canMoveAround() && !this.isHowlerSleeping();
+    }
+    
+    @Override
+    public boolean canLookAround() 
+    {
+    	return super.canLookAround() && !this.isHowlerSleeping();
+    }
+    
     public void createShockwave()
     {
-    	this.playSound(CrypticSounds.HOWLER_LAND.get());
+    	this.playSound(CrypticSounds.HOWLER_LAND.get(), 2.0F, 1.0F);
     	EntityCameraShake.cameraShake(this.level, this.position(), 15.0F, 0.25F, 0, 20);
     	List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(3.0F), t -> !(t instanceof EntityHowler));
     	list.forEach(t -> 

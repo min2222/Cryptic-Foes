@@ -47,16 +47,16 @@ public class HowlerPunchGoal extends BasicAnimationSkillGoal<EntityHowler>
 	{
 		return 50;
 	}
-
-	@Override
-	public int getSkillUsingInterval() 
-	{
-		return 60;
-	}
 	
 	@Override
 	public int getSkillWarmupTime() 
 	{
 		return 24;
+	}
+
+	@Override
+	public int getSkillUsingInterval() 
+	{
+		return 10;
 	}
 }

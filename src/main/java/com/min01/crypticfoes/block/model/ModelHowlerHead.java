@@ -65,11 +65,11 @@ public class ModelHowlerHead extends CrypticSkullModelBase
 	}
 
 	@Override
-	public void setupAnim(float p_170950_, float p_170951_, float p_170952_) 
+	public void setupAnim(float pMouthAnimation, float pYRot, float pXRot) 
 	{
 		this.head.y = 1.0F / 16.0F;
-		this.head.yRot = p_170951_ * ((float)Math.PI / 180.0F);
-		this.head.xRot = p_170952_ * ((float)Math.PI / 180.0F);
+		this.head.yRot = pYRot * ((float)Math.PI / 180.0F);
+		this.head.xRot = pXRot * ((float)Math.PI / 180.0F);
 	}
 	
 	@Override
