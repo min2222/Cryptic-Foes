@@ -177,21 +177,21 @@ public class EntityHowler extends AbstractAnimatableMonster
     	
     	if(this.level.isClientSide)
     	{
+        	if(this.ambientTick > 0)
+        	{
+    			this.ambientTick--;
+        	}
     		this.idleAnimationState.updateWhen(!this.isHowlerSleeping() && this.getAnimationState() == 0, this.tickCount);
     		this.sleepAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 1, this.tickCount);
     		this.awakeAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 2, this.tickCount);
     		this.fallAnimationState.updateWhen(!this.isHowlerSleeping() && this.isFalling() && this.getAnimationState() == 0, this.tickCount);
     		this.landAnimationState.updateWhen(!this.isHowlerSleeping() && this.getAnimationState() == 3, this.tickCount);
     		this.roarAnimationState.updateWhen(!this.isHowlerSleeping() && this.isUsingSkill(4), this.tickCount);
-    		this.blinkAnimationState.updateWhen(!this.isHowlerSleeping() && this.ambientTick > 0, this.tickCount);
+    		this.blinkAnimationState.animateWhen(!this.isHowlerSleeping() && this.ambientTick > 0, this.tickCount);
     		this.punchAnimationState.updateWhen(!this.isHowlerSleeping() && this.isUsingSkill(5), this.tickCount);
     		this.flyAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 6, this.tickCount);
     		this.flyStartAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 7, this.tickCount);
     		this.flyEndAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 8, this.tickCount);
-    	}
-    	if(this.ambientTick > 0)
-    	{
-			this.ambientTick--;
     	}
     	if(!this.isHowlerSleeping())
     	{
@@ -427,7 +427,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     public void playAmbientSound() 
     {
     	super.playAmbientSound();
-    	if(!this.isHowlerSleeping() && this.ambientTick <= 0)
+    	if(!this.isHowlerSleeping() && this.ambientTick <= 0 && this.level.isClientSide)
     	{
 			this.ambientTick = 10;
     	}
