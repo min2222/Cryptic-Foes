@@ -10,6 +10,6 @@ out vec4 fragColor;
 
 void main(){
 	vec4 bg = texture(DiffuseSampler, texCoord);
-	bg.rgb *= 0.1;
+	bg.rgb *= 0.5;
     fragColor = bg * ColorModulate;
 }

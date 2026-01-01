@@ -26,7 +26,7 @@ public class HowlerRenderer extends MobRenderer<EntityHowler, ModelHowler>
 	@Override
 	public void render(EntityHowler pEntity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) 
 	{
-		super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
+		super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, CrypticClientUtil.MC.renderBuffers().outlineBufferSource(), pPackedLight);
 		Vec3 pos1 = CrypticClientUtil.getWorldPosition(pEntity, this.model.root(), new Vec3(0.0F, pEntity.yBodyRot, 0.0F), "howlersleeppivot", "howler", "body", "body_no_hands", "head");
 		pEntity.posArray[0] = pos1;
 		CrypticNetwork.sendToServer(new UpdatePosArrayPacket(pEntity.getUUID(), pos1, 0));

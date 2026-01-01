@@ -1,0 +1,18 @@
+{
+	"targets": [
+		"swap",
+		"final"
+	],
+	"passes": [
+		{
+			"name": "crypticfoes:glow",
+			"intarget": "final",
+			"outtarget": "swap"
+		},
+		{
+			"name": "blit",
+			"intarget": "swap",
+			"outtarget": "final"
+		}
+	]
+}

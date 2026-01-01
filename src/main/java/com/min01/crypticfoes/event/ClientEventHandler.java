@@ -49,13 +49,13 @@ public class ClientEventHandler
 	{
         BlockEntityRenderers.register(CrypticBlocks.CRYPTIC_SKULL_BLOCK_ENTITY.get(), CrypticSkullRenderer::new);
         BlockEntityRenderers.register(CrypticBlocks.SCREAMER_BLOCK_ENTITY.get(), ScreamerRenderer::new);
-        ItemProperties.register(CrypticItems.MONSTROUS_HORN.get(), ResourceLocation.parse("charge"), (p_174585_, p_174586_, p_174587_, p_174588_) ->
+        ItemProperties.register(CrypticItems.MONSTROUS_HORN.get(), ResourceLocation.parse("charge"), (pStack, pLevel, pEntity, pSeed) ->
         {
-        	if(p_174587_ != null && p_174587_.isUsingItem())
+        	if(pEntity != null && pEntity.isUsingItem())
         	{
-        		return Mth.floor(MonstrousHornItem.getHornCharge(p_174585_) / 2) + 0.5F;
+        		return Mth.floor(MonstrousHornItem.getHornCharge(pStack) / 2) + 0.5F;
         	}
-        	return Mth.floor(MonstrousHornItem.getHornCharge(p_174585_) / 2);
+        	return Mth.floor(MonstrousHornItem.getHornCharge(pStack) / 2);
         });
         SkullBlockRenderer.SKIN_BY_TYPE.put(CrypticSkullTypes.HOWLER, ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/entity/howler.png"));
 	}
@@ -63,7 +63,7 @@ public class ClientEventHandler
 	@SubscribeEvent
 	public static void onRegisterEntitySpectatorShaders(RegisterEntitySpectatorShadersEvent event)
 	{
-		event.register(CrypticEntities.HOWLER.get(), ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "shaders/post/howler.json"));
+		event.register(CrypticEntities.HOWLER.get(), ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "shaders/post/dark.json"));
 	}
 	
 	@SubscribeEvent
