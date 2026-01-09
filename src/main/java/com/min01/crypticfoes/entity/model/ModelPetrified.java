@@ -68,15 +68,15 @@ public class ModelPetrified extends HierarchicalModel<EntityPetrified>
 		this.root().getAllParts().forEach(ModelPart::resetPose);
 		CrypticClientUtil.animateHead(this.head, netHeadYaw, headPitch);
 		
-		entity.idleAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_IDLE, ageInTicks, limbSwingAmount);
-		entity.idleNoneAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_IDLE_NONE, ageInTicks, limbSwingAmount);
+		float factor = entity.runAnimationState.factor(CrypticClientUtil.MC.getFrameTime());
+		
+		entity.idleAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_IDLE, ageInTicks, Math.max(limbSwingAmount - factor, 0.0F), 2.5F);
+		entity.idleNoneAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_IDLE_NONE, ageInTicks, Math.max(limbSwingAmount * factor, 0.0F), 2.5F);
 		entity.throwAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_THROW, ageInTicks);
 		entity.reloadingAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_RELOADING, ageInTicks);
-		
-		float factor = entity.runAnimationState.factor(CrypticClientUtil.MC.getFrameTime());
 
-		this.animateWalk(PetrifiedAnimation.PETRIFIED_WALK, limbSwing,  Math.max(limbSwingAmount - factor, 0.0F), 2.5F, 2.5F);
-		this.animateWalk(PetrifiedAnimation.PETRIFIED_WALK_NONE, limbSwing, limbSwingAmount * factor, 2.5F, 2.5F);
+		this.animateWalk(PetrifiedAnimation.PETRIFIED_WALK, limbSwing, Math.max(limbSwingAmount - factor, 0.0F), 2.5F, 2.5F);
+		this.animateWalk(PetrifiedAnimation.PETRIFIED_WALK_NONE, limbSwing, Math.max(limbSwingAmount * factor, 0.0F), 2.5F, 2.5F);
 		
 		this.stone.visible = entity.hasStone();
 	}

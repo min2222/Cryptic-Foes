@@ -112,7 +112,8 @@ public class ModelHowler extends HierarchicalModel<EntityHowler>
 		}
 
 		this.animateWalk(HowlerAnimation.HOWLER_WALK, limbSwing, limbSwingAmount, 2.5F, 2.5F);
-		entity.idleAnimationState.animate(this, HowlerAnimation.HOWLER_IDLE, ageInTicks, limbSwingAmount);
+		
+		entity.idleAnimationState.animate(this, HowlerAnimation.HOWLER_IDLE, ageInTicks, limbSwingAmount, 2.5F);
 		entity.sleepAnimationState.animate(this, HowlerAnimation.HOWLER_SLEEP, ageInTicks);
 		entity.awakeAnimationState.animate(this, HowlerAnimation.HOWLER_AWAKE, ageInTicks);
 		entity.fallAnimationState.animate(this, HowlerAnimation.HOWLER_FALL, ageInTicks);
