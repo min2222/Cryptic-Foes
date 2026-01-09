@@ -4,5 +4,5 @@ import net.minecraft.world.food.FoodProperties;
 
 public class CrypticFoods
 {
-	public static final FoodProperties CAVE_SALAD = (new FoodProperties.Builder()).nutrition(6).saturationMod(0.5416666666666667F).build();
+	public static final FoodProperties CAVE_SALAD = (new FoodProperties.Builder()).nutrition(6).saturationMod(0.5F).build();
 }

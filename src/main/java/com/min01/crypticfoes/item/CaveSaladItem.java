@@ -1,7 +1,5 @@
 package com.min01.crypticfoes.item;
 
-import com.min01.crypticfoes.entity.CrypticEntities;
-import com.min01.crypticfoes.entity.projectile.EntityHowlerScream;
 import com.min01.crypticfoes.misc.CrypticFoods;
 
 import net.minecraft.world.entity.LivingEntity;
@@ -22,14 +20,6 @@ public class CaveSaladItem extends Item
 	@Override
 	public ItemStack finishUsingItem(ItemStack pStack, Level pLevel, LivingEntity pLivingEntity)
 	{
-		EntityHowlerScream scream = new EntityHowlerScream(CrypticEntities.HOWLER_SCREAM.get(), pLevel);
-		scream.setOwner(pLivingEntity);
-		scream.setPos(pLivingEntity.getEyePosition());
-		scream.shootFromRotation(pLivingEntity, pLivingEntity.getXRot(), pLivingEntity.getYRot(), 0.0F, 0.75F, 1.0F);
-		scream.setNoGravity(true);
-		scream.setStunDuration(20);
-		scream.setRange(0.06F - 0.0005F);
-		pLevel.addFreshEntity(scream);
 		ItemStack stack = super.finishUsingItem(pStack, pLevel, pLivingEntity);
 		if(stack.getCount() > 1)
 		{

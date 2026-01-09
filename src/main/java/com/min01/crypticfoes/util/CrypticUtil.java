@@ -1,8 +1,8 @@
 package com.min01.crypticfoes.util;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -15,6 +15,7 @@ import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -33,7 +34,7 @@ public class CrypticUtil
 {
 	public static final Method GET_ENTITY = ObfuscationReflectionHelper.findMethod(Level.class, "m_142646_");
 	
-	public static final List<BlockPos> SILENCED_BLOCKS = new ArrayList<>();
+	public static final Map<ResourceKey<Level>, BlockPos> SILENCED_BLOCKS = new HashMap<>();
 	
 	public static boolean isDone(ServerPlayer serverPlayer, String name)
 	{
@@ -72,12 +73,8 @@ public class CrypticUtil
 		CrypticSavedData data = CrypticSavedData.get(level);
 		if(data != null)
 		{
-			data.setBlockSilence(pos);
+			data.setBlockSilence(level, pos);
 			CrypticNetwork.sendToAll(new AddSilencingParticlePacket(pos));
-		}
-		else
-		{
-			SILENCED_BLOCKS.add(pos);
 		}
 	}
 	
@@ -90,7 +87,7 @@ public class CrypticUtil
 		}
 		else
 		{
-			SILENCED_BLOCKS.removeIf(t -> level.getBlockState(t).isAir());
+			SILENCED_BLOCKS.values().removeIf(t -> level.getBlockState(t).isAir());
 		}
 	}
 	
@@ -103,7 +100,7 @@ public class CrypticUtil
 		}
 		else
 		{
-			SILENCED_BLOCKS.removeIf(t -> t.equals(pos));
+			SILENCED_BLOCKS.values().removeIf(t -> t.equals(pos));
 		}
 	}
 	
@@ -114,7 +111,7 @@ public class CrypticUtil
 		{
 			return data.isBlockSilenced(level, pos);
 		}
-		return SILENCED_BLOCKS.contains(pos);
+		return SILENCED_BLOCKS.containsKey(level.dimension()) && SILENCED_BLOCKS.containsValue(pos);
 	}
 	
 	public static BlockPos getCeilingPos(BlockGetter level, double x, double startY, double z)

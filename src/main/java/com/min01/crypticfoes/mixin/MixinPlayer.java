@@ -5,7 +5,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.min01.crypticfoes.item.CrypticItems;
+import com.min01.crypticfoes.entity.CrypticEntities;
+import com.min01.crypticfoes.entity.projectile.EntityHowlerScream;
+import com.min01.crypticfoes.misc.CrypticTags;
 import com.min01.crypticfoes.sound.CrypticSounds;
 
 import net.minecraft.advancements.CriteriaTriggers;
@@ -23,9 +25,19 @@ public class MixinPlayer
 	private void eat(Level level, ItemStack stack, CallbackInfoReturnable<ItemStack> cir)
 	{
 		Player player = Player.class.cast(this);
-		if(stack.is(CrypticItems.CAVE_SALAD.get()))
+		if(stack.is(CrypticTags.CrypticItems.BURP_FOODS))
 		{
 			cir.cancel();
+
+			EntityHowlerScream scream = new EntityHowlerScream(CrypticEntities.HOWLER_SCREAM.get(), level);
+			scream.setOwner(player);
+			scream.setPos(player.getEyePosition());
+			scream.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 0.75F, 1.0F);
+			scream.setNoGravity(true);
+			scream.setStunDuration(20);
+			scream.setRange(0.06F - 0.0005F);
+			level.addFreshEntity(scream);
+			
 			player.getFoodData().eat(stack.getItem(), stack, player);
 			player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), CrypticSounds.CAVE_SALAD_BURP.get(), SoundSource.PLAYERS, 0.5F, level.random.nextFloat() * 0.1F + 0.9F);

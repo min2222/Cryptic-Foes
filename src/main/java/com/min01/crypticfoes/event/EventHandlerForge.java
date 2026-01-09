@@ -11,11 +11,9 @@ import com.min01.crypticfoes.effect.CrypticEffects;
 import com.min01.crypticfoes.entity.AbstractAnimatableMonster;
 import com.min01.crypticfoes.entity.living.EntityHowler;
 import com.min01.crypticfoes.network.CrypticNetwork;
-import com.min01.crypticfoes.network.UpdateSilencedBlocksPacket;
 import com.min01.crypticfoes.network.UpdateStunnedEffectPacket;
 import com.min01.crypticfoes.sound.CrypticSounds;
 import com.min01.crypticfoes.util.CrypticUtil;
-import com.min01.crypticfoes.world.CrypticSavedData;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -44,7 +42,6 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -120,17 +117,6 @@ public class EventHandlerForge
 		if(event.phase == Phase.END && event.type == Type.LEVEL)
 		{
 			CrypticUtil.removeSilencedBlocks(event.level);
-		}
-	}
-	
-	@SubscribeEvent
-	public static void onLevelLoad(LevelEvent.Load event)
-	{
-		Level level = (Level) event.getLevel();
-		CrypticSavedData data = CrypticSavedData.get(level);
-		if(data != null)
-		{
-			CrypticNetwork.sendToAll(new UpdateSilencedBlocksPacket(data.getSilencedBlocks()));
 		}
 	}
 	

@@ -3,6 +3,9 @@ package com.min01.crypticfoes.world;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.min01.crypticfoes.network.CrypticNetwork;
+import com.min01.crypticfoes.network.UpdateSilencedBlocksPacket;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -41,7 +44,7 @@ public class CrypticSavedData extends SavedData
 			BlockState state = level.getBlockState(pos);
 			if(!state.isAir())
 			{
-				data.setBlockSilence(pos);
+				data.setBlockSilence(level, pos);
 			}
 		}
     	return data;
@@ -59,9 +62,10 @@ public class CrypticSavedData extends SavedData
 		return nbt;
 	}
 	
-	public void setBlockSilence(BlockPos pos)
+	public void setBlockSilence(Level level, BlockPos pos)
 	{
 		this.blocks.add(pos);
+		CrypticNetwork.sendToAll(new UpdateSilencedBlocksPacket(level.dimension(), pos));
 		this.setDirty();
 	}
 	
