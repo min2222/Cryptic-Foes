@@ -70,8 +70,10 @@ public class ModelPetrified extends HierarchicalModel<EntityPetrified>
 		
 		float factor = entity.runAnimationState.factor(CrypticClientUtil.MC.getFrameTime());
 		
-		entity.idleAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_IDLE, ageInTicks, Math.max(limbSwingAmount - factor, 0.0F), 2.5F);
-		entity.idleNoneAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_IDLE_NONE, ageInTicks, Math.max(limbSwingAmount * factor, 0.0F), 2.5F);
+		float totalLimb = Math.max(limbSwingAmount - factor, 0.0F) + Math.max(limbSwingAmount * factor, 0.0F);
+		
+		entity.idleAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_IDLE, ageInTicks, totalLimb, 2.5F);
+		entity.idleNoneAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_IDLE_NONE, ageInTicks, totalLimb, 2.5F);
 		entity.throwAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_THROW, ageInTicks);
 		entity.reloadingAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_RELOADING, ageInTicks);
 

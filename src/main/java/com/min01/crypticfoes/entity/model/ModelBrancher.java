@@ -75,11 +75,13 @@ public class ModelBrancher extends HierarchicalModel<EntityBrancher>
 		
 		float factor = entity.runAnimationState.factor(CrypticClientUtil.MC.getFrameTime());
 		
-		entity.idleAnimationState.animate(this, BrancherAnimation.BRANCHER_IDLE, ageInTicks, Math.max(limbSwingAmount * factor, limbSwingAmount), 2.5F);
+		float totalLimb = Math.max(limbSwingAmount * factor, 0.0F) + Math.max(limbSwingAmount - factor, 0.0F);
+		
+		entity.idleAnimationState.animate(this, BrancherAnimation.BRANCHER_IDLE, ageInTicks, totalLimb, 2.5F);
 		entity.shiverAnimationState.animate(this, BrancherAnimation.BRANCHER_SHIVER, ageInTicks);
 		entity.explosionAnimationState.animate(this, BrancherAnimation.BRANCHER_EXPLOSION, ageInTicks);
 		
-		this.animateWalk(BrancherAnimation.BRANCHER_WALK, limbSwing, Math.max(limbSwingAmount * factor, limbSwingAmount), 2.5F, 2.5F);
+		this.animateWalk(BrancherAnimation.BRANCHER_WALK, limbSwing, Math.max(limbSwingAmount * factor, 0.0F), 2.5F, 2.5F);
 		this.animateWalk(BrancherAnimation.BRANCHER_RUN, limbSwing, Math.max(limbSwingAmount - factor, 0.0F), 1.5F, 2.5F);
 	}
 	
