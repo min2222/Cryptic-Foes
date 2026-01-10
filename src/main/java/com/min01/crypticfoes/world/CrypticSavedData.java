@@ -44,7 +44,7 @@ public class CrypticSavedData extends SavedData
 			BlockState state = level.getBlockState(pos);
 			if(!state.isAir())
 			{
-				data.setBlockSilence(level, pos);
+				data.setBlockSilence(pos);
 			}
 		}
     	return data;
@@ -62,14 +62,14 @@ public class CrypticSavedData extends SavedData
 		return nbt;
 	}
 	
-	public void setBlockSilence(Level level, BlockPos pos)
+	public void setBlockSilence(BlockPos pos)
 	{
 		this.blocks.add(pos);
-		CrypticNetwork.sendToAll(new UpdateSilencedBlocksPacket(level.dimension(), pos));
+		CrypticNetwork.sendToAll(new UpdateSilencedBlocksPacket(pos));
 		this.setDirty();
 	}
 	
-	public boolean isBlockSilenced(Level level, BlockPos pos)
+	public boolean isBlockSilenced(BlockPos pos)
 	{
 		return this.blocks.contains(pos);
 	}
