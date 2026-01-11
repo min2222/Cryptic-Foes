@@ -75,7 +75,38 @@
 			"crypticfoes:entity/howler_idle2",
 			"crypticfoes:entity/howler_idle3"
 		],
-    	"subtitle": "crypticfoes.sound.subtitle.howler_idle"
+		"subtitle": "crypticfoes.sound.subtitle.howler_idle"
+	},
+	"howler_hurt": {
+		"sounds": [
+			"crypticfoes:entity/howler_hurt1",
+			"crypticfoes:entity/howler_hurt2"
+		],
+		"subtitle": "crypticfoes.sound.subtitle.howler_hurt"
+	},
+	"howler_death": {
+		"sounds": [
+			{
+				"name": "crypticfoes:entity/howler_death",
+				"stream": true
+			}
+		],
+		"subtitle": "crypticfoes.sound.subtitle.howler_death"
+	},
+	"howler_punch": {
+		"sounds": [
+			"crypticfoes:entity/howler_punch1",
+			"crypticfoes:entity/howler_punch2"
+		],
+		"subtitle": "crypticfoes.sound.subtitle.howler_punch"
+	},
+	"howler_sleep": {
+		"sounds": [
+			"crypticfoes:entity/howler_sleep1",
+			"crypticfoes:entity/howler_sleep2",
+			"crypticfoes:entity/howler_sleep3"
+		],
+		"subtitle": "crypticfoes.sound.subtitle.howler_sleep"
 	},
 	"howler_scream": {
 		"sounds": [
@@ -84,7 +115,7 @@
 				"stream": true
 			}
 		],
-    	"subtitle": "crypticfoes.sound.subtitle.howler_scream"
+		"subtitle": "crypticfoes.sound.subtitle.howler_scream"
 	},
 	"howler_land": {
 		"sounds": [
@@ -93,7 +124,34 @@
 				"stream": true
 			}
 		],
-    	"subtitle": "crypticfoes.sound.subtitle.howler_land"
+		"subtitle": "crypticfoes.sound.subtitle.howler_land"
+	},
+	"howler_fly": {
+		"sounds": [
+			{
+				"name": "crypticfoes:entity/howler_fly",
+				"stream": true
+			}
+		],
+		"subtitle": "crypticfoes.sound.subtitle.howler_fly"
+	},
+	"howler_fly_start": {
+		"sounds": [
+			{
+				"name": "crypticfoes:entity/howler_fly_start",
+				"stream": true
+			}
+		],
+		"subtitle": "crypticfoes.sound.subtitle.howler_fly_start"
+	},
+	"howler_fly_end": {
+		"sounds": [
+			{
+				"name": "crypticfoes:entity/howler_fly_end",
+				"stream": true
+			}
+		],
+		"subtitle": "crypticfoes.sound.subtitle.howler_fly_end"
 	},
 	"cave_salad_burp": {
 		"sounds": [
@@ -102,14 +160,14 @@
 				"stream": true
 			}
 		],
-    	"subtitle": "crypticfoes.sound.subtitle.cave_salad_burp"
+		"subtitle": "crypticfoes.sound.subtitle.cave_salad_burp"
 	},
 	"monstrous_horn_inhale": {
 		"sounds": [
 			"crypticfoes:item/monstrous_horn_inhale1",
 			"crypticfoes:item/monstrous_horn_inhale2"
 		],
-    	"subtitle": "crypticfoes.sound.subtitle.monstrous_horn_inhale"
+		"subtitle": "crypticfoes.sound.subtitle.monstrous_horn_inhale"
 	},
 	"monstrous_horn_scream": {
 		"sounds": [
@@ -117,7 +175,7 @@
 			"crypticfoes:item/monstrous_horn_scream2",
 			"crypticfoes:item/monstrous_horn_scream3"
 		],
-    	"subtitle": "crypticfoes.sound.subtitle.monstrous_horn_scream"
+		"subtitle": "crypticfoes.sound.subtitle.monstrous_horn_scream"
 	},
 	"screamer_work": {
 		"sounds": [
@@ -126,7 +184,7 @@
 				"stream": true
 			}
 		],
-    	"subtitle": "crypticfoes.sound.subtitle.screamer_work"
+		"subtitle": "crypticfoes.sound.subtitle.screamer_work"
 	},
 	"screamer_switch": {
 		"sounds": [
@@ -135,20 +193,20 @@
 				"stream": true
 			}
 		],
-    	"subtitle": "crypticfoes.sound.subtitle.screamer_switch"
+		"subtitle": "crypticfoes.sound.subtitle.screamer_switch"
 	},
 	"silencing_blend_off": {
 		"sounds": [
 			"crypticfoes:block/silencing_blend_off1",
 			"crypticfoes:block/silencing_blend_off2"
 		],
-    	"subtitle": "crypticfoes.sound.subtitle.silencing_blend_off"
+		"subtitle": "crypticfoes.sound.subtitle.silencing_blend_off"
 	},
 	"silencing_blend_on": {
 		"sounds": [
 			"crypticfoes:block/silencing_blend_on1",
 			"crypticfoes:block/silencing_blend_on2"
 		],
-    	"subtitle": "crypticfoes.sound.subtitle.silencing_blend_on"
+		"subtitle": "crypticfoes.sound.subtitle.silencing_blend_on"
 	}
 }

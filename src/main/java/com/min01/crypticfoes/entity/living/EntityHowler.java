@@ -247,6 +247,7 @@ public class EntityHowler extends AbstractAnimatableMonster
             			this.setAnimationTick(46);
             			this.setDeltaMovement(Vec3.ZERO);
                 		this.setNoGravity(true);
+                		this.playSound(CrypticSounds.HOWLER_FLY_START.get());
         			}
         			
         			if(this.getAnimationState() == 7)
@@ -262,6 +263,7 @@ public class EntityHowler extends AbstractAnimatableMonster
             				this.setAnimationState(8);
             				this.setAnimationTick(35);
             				this.setDeltaMovement(new Vec3(0.0F, this.getDeltaMovement().y, 0.0F));
+                    		this.playSound(CrypticSounds.HOWLER_FLY_END.get());
             			}
             			else
             			{
@@ -271,6 +273,10 @@ public class EntityHowler extends AbstractAnimatableMonster
                 				this.setSleepPos(abovePos);
                 			}
                 			this.addDeltaMovement(new Vec3(0.0F, 0.05F, 0.0F));
+                			if(this.tickCount % 20 == 0)
+                			{
+                        		this.playSound(CrypticSounds.HOWLER_FLY.get());
+                			}
             			}
             		}
             		
@@ -495,7 +501,29 @@ public class EntityHowler extends AbstractAnimatableMonster
     @Override
     protected SoundEvent getAmbientSound() 
     {
+    	if(this.isHowlerSleeping())
+    	{
+    		return CrypticSounds.HOWLER_SLEEP.get();
+    	}
     	return CrypticSounds.HOWLER_IDLE.get();
+    }
+    
+    @Override
+    protected SoundEvent getHurtSound(DamageSource pDamageSource) 
+    {
+    	return CrypticSounds.HOWLER_HURT.get();
+    }
+    
+    @Override
+    protected SoundEvent getDeathSound() 
+    {
+    	return CrypticSounds.HOWLER_DEATH.get();
+    }
+    
+    @Override
+    public int getAmbientSoundInterval() 
+    {
+    	return 120;
     }
     
     public void setHowlerSleeping(boolean value)

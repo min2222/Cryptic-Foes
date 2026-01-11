@@ -1,6 +1,7 @@
 package com.min01.crypticfoes.entity.ai.goal;
 
 import com.min01.crypticfoes.entity.living.EntityHowler;
+import com.min01.crypticfoes.sound.CrypticSounds;
 import com.min01.crypticfoes.util.CrypticUtil;
 
 public class HowlerPunchGoal extends BasicAnimationSkillGoal<EntityHowler>
@@ -26,6 +27,7 @@ public class HowlerPunchGoal extends BasicAnimationSkillGoal<EntityHowler>
 	@Override
 	public void performSkill() 
 	{
+		this.mob.playSound(CrypticSounds.HOWLER_PUNCH.get(), 1.2F, 1.0F);
 		if(this.mob.getTarget() != null)
 		{
 			if(CrypticUtil.isWithinMeleeAttackRange(this.mob, this.mob.getTarget(), 5.0F))
