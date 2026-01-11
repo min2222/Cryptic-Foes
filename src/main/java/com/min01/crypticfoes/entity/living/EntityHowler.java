@@ -370,7 +370,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     
     public void createShockwave()
     {
-    	this.playSound(CrypticSounds.HOWLER_LAND.get(), 2.0F, 1.0F);
+    	this.playSound(CrypticSounds.HOWLER_LAND.get(), 4.0F, 1.0F);
     	EntityCameraShake.cameraShake(this.level, this.position(), 15.0F, 0.25F, 0, 20);
     	List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(3.0F), t -> !(t instanceof EntityHowler));
     	list.forEach(t -> 
@@ -432,7 +432,14 @@ public class EntityHowler extends AbstractAnimatableMonster
     @Override
     public void playAmbientSound() 
     {
-    	super.playAmbientSound();
+    	if(this.isHowlerSleeping() && this.getAnimationState() == 1)
+    	{
+            this.playSound(this.getAmbientSound(), 2.0F, this.getVoicePitch());
+    	}
+    	else
+    	{
+    		super.playAmbientSound();
+    	}
     	if(!this.isHowlerSleeping() && this.ambientTick <= 0 && this.level.isClientSide)
     	{
 			this.ambientTick = 10;
@@ -501,7 +508,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     @Override
     protected SoundEvent getAmbientSound() 
     {
-    	if(this.isHowlerSleeping())
+    	if(this.isHowlerSleeping() && this.getAnimationState() == 1)
     	{
     		return CrypticSounds.HOWLER_SLEEP.get();
     	}

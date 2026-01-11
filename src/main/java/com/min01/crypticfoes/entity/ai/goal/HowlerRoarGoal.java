@@ -46,7 +46,7 @@ public class HowlerRoarGoal extends BasicAnimationSkillGoal<EntityHowler>
 	@Override
 	public void performSkill() 
 	{
-		this.mob.playSound(CrypticSounds.HOWLER_SCREAM.get(), 1.5F, 1.0F);
+		this.mob.playSound(CrypticSounds.HOWLER_SCREAM.get(), 4.0F, 1.0F);
 	}
 	
 	@Override
