@@ -151,6 +151,10 @@ public class EventHandlerForge
 		if(entity.hasEffect(CrypticEffects.STUNNED.get()))
 		{
 			entity.removeEffect(CrypticEffects.STUNNED.get());
+			if(!entity.level.isClientSide)
+	    	{
+	    		CrypticNetwork.sendToAll(new UpdateStunnedEffectPacket(entity.getUUID(), 0, 0, true));
+	    	}
 		}
 	}
 	
