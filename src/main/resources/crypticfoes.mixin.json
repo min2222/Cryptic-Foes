@@ -10,7 +10,9 @@
 		"MixinMobEffectInstance"
 	],
 	"client": [
-		"MixinKeyMapping"
+		"MixinKeyMapping",
+		"MixinLevelRenderer",
+		"MixinLivingEntityRenderer"
 	],
 	"server": [
 	],

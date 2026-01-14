@@ -2,8 +2,10 @@ package com.min01.crypticfoes.blockentity;
 
 import com.min01.crypticfoes.block.CrypticBlocks;
 import com.min01.crypticfoes.misc.SmoothAnimationState;
+import com.min01.crypticfoes.sound.CrypticSounds;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
@@ -23,6 +25,12 @@ public class CrypticSkullBlockEntity extends SkullBlockEntity
 	{
 		block.tickCount++;
 		block.blinkAnimationState.updateWhen(level.hasNeighborSignal(pos), block.tickCount);
+	}
+	
+	@Override
+	public ResourceLocation getNoteBlockSound()
+	{
+		return CrypticSounds.HOWLER_SLEEP.getId();
 	}
 
 	@Override

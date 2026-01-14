@@ -27,6 +27,7 @@ import com.min01.crypticfoes.particle.DustPillarParticle;
 import com.min01.crypticfoes.particle.HowlerShockwaveParticle;
 import com.min01.crypticfoes.particle.SilencingParticle;
 import com.min01.crypticfoes.particle.StunnedParticle;
+import com.min01.crypticfoes.shader.CrypticShaders;
 
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
@@ -35,6 +36,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterEntitySpectatorShadersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -63,7 +65,7 @@ public class ClientEventHandler
 	@SubscribeEvent
 	public static void onRegisterEntitySpectatorShaders(RegisterEntitySpectatorShadersEvent event)
 	{
-		event.register(CrypticEntities.HOWLER.get(), ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "shaders/post/dark.json"));
+		event.register(CrypticEntities.HOWLER.get(), ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "shaders/post/howler_dummy.json"));
 	}
 	
 	@SubscribeEvent
@@ -93,6 +95,12 @@ public class ClientEventHandler
     	event.registerLayerDefinition(ModelHowlerHead.LAYER_LOCATION, ModelHowlerHead::createHeadModel);
     	event.registerLayerDefinition(ModelScreamer.LAYER_LOCATION, ModelScreamer::createBodyLayer);
     }
+    
+	@SubscribeEvent
+	public static void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event)
+	{
+		event.registerReloadListener(new CrypticShaders());
+	}
     
 	@SubscribeEvent
 	public static void onRegisterParticleProviders(RegisterParticleProvidersEvent event)
