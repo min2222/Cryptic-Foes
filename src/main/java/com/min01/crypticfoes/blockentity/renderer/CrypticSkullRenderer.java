@@ -4,12 +4,16 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ImmutableMap;
 import com.min01.crypticfoes.block.model.CrypticSkullModelBase;
+import com.min01.crypticfoes.block.model.ModelHowlerHead;
 import com.min01.crypticfoes.blockentity.CrypticSkullBlockEntity;
+import com.min01.crypticfoes.misc.CrypticSkullTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.model.SkullModelBase;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
@@ -30,7 +34,14 @@ public class CrypticSkullRenderer extends SkullBlockRenderer
 	public CrypticSkullRenderer(Context pContext) 
 	{
 		super(pContext);
-		this.modelByType = createSkullRenderers(pContext.getModelSet());
+		this.modelByType = createCrypticSkullRenderers(pContext.getModelSet());
+	}
+	
+	public static Map<SkullBlock.Type, SkullModelBase> createCrypticSkullRenderers(EntityModelSet pEntityModelSet)
+	{
+		ImmutableMap.Builder<SkullBlock.Type, SkullModelBase> builder = ImmutableMap.builder();
+		builder.put(CrypticSkullTypes.HOWLER, new ModelHowlerHead(pEntityModelSet.bakeLayer(ModelHowlerHead.LAYER_LOCATION)));
+		return builder.build();
 	}
 
 	@Override

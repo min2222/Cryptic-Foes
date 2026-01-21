@@ -12,6 +12,6 @@ void main() {
     vec4 color = texture(DiffuseSampler, texCoord);
     vec4 entity = texture(EntitySampler, texCoord);
 	color.rgb *= 0.2;
-    entity.rgb *= 2.0;
-    fragColor = mix(color, entity, entity.a);
+	entity.rgb *= 2.0;
+	fragColor = mix(color, entity, entity.a);
 }

@@ -12,7 +12,8 @@
 	"client": [
 		"MixinKeyMapping",
 		"MixinLevelRenderer",
-		"MixinLivingEntityRenderer"
+		"MixinLivingEntityRenderer",
+		"MixinRenderType"
 	],
 	"server": [
 	],

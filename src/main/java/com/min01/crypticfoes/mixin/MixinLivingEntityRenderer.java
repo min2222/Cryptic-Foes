@@ -26,10 +26,9 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
 	@Inject(at = @At(value = "HEAD"), method = "getRenderType", cancellable = true)
 	protected void getRenderType(T pLivingEntity, boolean pBodyVisible, boolean pTranslucent, boolean pGlowing, CallbackInfoReturnable<RenderType> cir) 
 	{
-		//TODO more proper way to apply target, mixin to RenderStateShard? (setupRenderState method);
 		if(CrypticEntityEffect.INSTANCE.shouldShowEntityEffect())
 		{
-			cir.setReturnValue(CrypticRenderType.entity(this.getTextureLocation(pLivingEntity)));
+			cir.setReturnValue(CrypticRenderType.CRYPTIC_ENTITY_CUTOUT_NO_CULL.apply(this.getTextureLocation(pLivingEntity), true));
 		}
 	}
 }
