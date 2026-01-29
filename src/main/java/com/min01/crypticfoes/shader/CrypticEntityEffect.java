@@ -23,6 +23,7 @@ public class CrypticEntityEffect
 	
 	public RenderTarget entityTarget;
 	public PostChain entityEffect;
+	public boolean enabled;
 	
 	public final Minecraft minecraft = CrypticClientUtil.MC;
 	
@@ -35,6 +36,7 @@ public class CrypticEntityEffect
 			this.entityTarget.blitToScreen(this.minecraft.getWindow().getWidth(), this.minecraft.getWindow().getHeight(), false);
 			this.entityTarget.clear(Minecraft.ON_OSX);
 			this.minecraft.getMainRenderTarget().bindWrite(false);
+			this.enabled = false;
 			RenderSystem.disableBlend();
 			RenderSystem.defaultBlendFunc();
 		}
@@ -86,9 +88,9 @@ public class CrypticEntityEffect
 			{
 				shader.setSampler("EntitySampler", () -> this.entityTarget.getColorTextureId());
 				shaderChain.process(partialTicks);
-				this.entityEffect.process(partialTicks);
-				this.minecraft.getMainRenderTarget().bindWrite(false);
 			}
+			this.entityEffect.process(partialTicks);
+			this.minecraft.getMainRenderTarget().bindWrite(false);
 		}
 	}
 	
@@ -106,6 +108,6 @@ public class CrypticEntityEffect
 		{
 			return false;
 		}
-		return !this.minecraft.gameRenderer.isPanoramicMode() && this.entityTarget != null && this.entityEffect != null;
+		return !this.minecraft.gameRenderer.isPanoramicMode() && this.entityTarget != null && this.entityEffect != null && this.enabled;
 	}
 }

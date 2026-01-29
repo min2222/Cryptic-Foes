@@ -4,7 +4,7 @@
 	],
 	"passes": [
 		{
-			"name": "blit",
+			"name": "crypticfoes:entity",
 			"intarget": "minecraft:main",
 			"outtarget": "swap"
 		},

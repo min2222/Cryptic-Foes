@@ -3,6 +3,7 @@ package com.min01.crypticfoes.event;
 import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.effect.CrypticEffects;
 import com.min01.crypticfoes.entity.EntityCameraShake;
+import com.min01.crypticfoes.shader.CrypticEntityEffect;
 import com.min01.crypticfoes.util.CrypticClientUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -13,6 +14,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ComputeFovModifierEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -23,6 +25,12 @@ import net.minecraftforge.fml.common.Mod;
 public class ClientEventHandlerForge
 {
 	public static final ResourceLocation GUI_ICONS_LOCATION = ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/gui/cryptic_foes_icon.png");
+	
+	@SubscribeEvent
+	public static void onRenderLivingPost(RenderLivingEvent.Post<?, ?> event)
+	{
+		CrypticEntityEffect.INSTANCE.enabled = true;
+	}
 	
 	@SubscribeEvent
 	public static void onComputeFovModifier(ComputeFovModifierEvent event)

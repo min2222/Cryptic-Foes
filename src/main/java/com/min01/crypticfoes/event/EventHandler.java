@@ -89,11 +89,15 @@ public class EventHandler
     	}
     	if(tabKey == CreativeModeTabs.FUNCTIONAL_BLOCKS)
     	{
-    		entries.putAfter(Items.DRAGON_HEAD.getDefaultInstance(), CrypticItems.HOWLER_HEAD.get().getDefaultInstance(), TabVisibility.PARENT_AND_SEARCH_TABS);
+    		entries.putBefore(Items.PIGLIN_HEAD.getDefaultInstance(), CrypticItems.HOWLER_HEAD.get().getDefaultInstance(), TabVisibility.PARENT_AND_SEARCH_TABS);
     	}
     	if(tabKey == CreativeModeTabs.SPAWN_EGGS)
     	{
     		entries.putAfter(Items.HORSE_SPAWN_EGG.getDefaultInstance(), CrypticItems.HOWLER_SPAWN_EGG.get().getDefaultInstance(), TabVisibility.PARENT_AND_SEARCH_TABS);
+    	}
+    	if(tabKey == CreativeModeTabs.REDSTONE_BLOCKS)
+    	{
+    		entries.putAfter(Items.ARMOR_STAND.getDefaultInstance(), CrypticItems.SCREAMER.get().getDefaultInstance(), TabVisibility.PARENT_AND_SEARCH_TABS);
     	}
     }
 }
