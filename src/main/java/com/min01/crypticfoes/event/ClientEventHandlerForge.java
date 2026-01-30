@@ -13,7 +13,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ComputeFovModifierEvent;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RenderArmEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent.Stage;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
@@ -27,9 +30,27 @@ public class ClientEventHandlerForge
 	public static final ResourceLocation GUI_ICONS_LOCATION = ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/gui/cryptic_foes_icon.png");
 	
 	@SubscribeEvent
+	public static void onRenderArm(RenderArmEvent event)
+	{
+		if(CrypticEntityEffect.INSTANCE.shouldShowEntityEffect())
+		{
+	        RenderSystem.setShaderColor(100.0F, 100.0F, 100.0F, 1.0F);
+		}
+	}
+	
+	@SubscribeEvent
 	public static void onRenderLivingPost(RenderLivingEvent.Post<?, ?> event)
 	{
 		CrypticEntityEffect.INSTANCE.enabled = true;
+	}
+	
+	@SubscribeEvent
+	public static void onRenderLevelStage(RenderLevelStageEvent event)
+	{
+		if(event.getStage() == Stage.AFTER_SOLID_BLOCKS)
+		{
+			CrypticEntityEffect.INSTANCE.enabled = true;
+		}
 	}
 	
 	@SubscribeEvent
