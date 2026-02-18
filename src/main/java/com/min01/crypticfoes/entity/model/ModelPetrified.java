@@ -3,6 +3,7 @@ package com.min01.crypticfoes.entity.model;
 import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.entity.animation.PetrifiedAnimation;
 import com.min01.crypticfoes.entity.living.EntityPetrified;
+import com.min01.crypticfoes.misc.SmoothAnimationState;
 import com.min01.crypticfoes.util.CrypticClientUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -68,17 +69,13 @@ public class ModelPetrified extends HierarchicalModel<EntityPetrified>
 		this.root().getAllParts().forEach(ModelPart::resetPose);
 		CrypticClientUtil.animateHead(this.head, netHeadYaw, headPitch);
 		
-		float factor = entity.runAnimationState.factor(CrypticClientUtil.MC.getFrameTime());
-		
-		float totalLimb = Math.max(limbSwingAmount - factor, 0.0F) + Math.max(limbSwingAmount * factor, 0.0F);
-		
-		entity.idleAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_IDLE, ageInTicks, totalLimb, 2.5F);
-		entity.idleNoneAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_IDLE_NONE, ageInTicks, totalLimb, 2.5F);
+		entity.idleAnimationState.animateIdle(this, PetrifiedAnimation.PETRIFIED_IDLE, ageInTicks, limbSwingAmount, 2.5F, entity.runAnimationState);
+		entity.idleNoneAnimationState.animateIdle(this, PetrifiedAnimation.PETRIFIED_IDLE_NONE, ageInTicks, limbSwingAmount, 2.5F, entity.runAnimationState);
 		entity.throwAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_THROW, ageInTicks);
 		entity.reloadingAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_RELOADING, ageInTicks);
 
-		this.animateWalk(PetrifiedAnimation.PETRIFIED_WALK, limbSwing, Math.max(limbSwingAmount - factor, 0.0F), 2.5F, 2.5F);
-		this.animateWalk(PetrifiedAnimation.PETRIFIED_WALK_NONE, limbSwing, Math.max(limbSwingAmount * factor, 0.0F), 2.5F, 2.5F);
+		SmoothAnimationState.animateWalk(this, PetrifiedAnimation.PETRIFIED_WALK_NONE, ageInTicks, limbSwing, limbSwingAmount, 2.5F, 2.5F, entity.runAnimationState);
+		entity.runAnimationState.animateWalkWithFactor(this, PetrifiedAnimation.PETRIFIED_WALK, ageInTicks, limbSwing, limbSwingAmount, 2.5F, 2.5F);
 		
 		this.stone.visible = entity.hasStone();
 	}

@@ -3,7 +3,7 @@ package com.min01.crypticfoes.network;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import com.min01.crypticfoes.entity.IPosArray;
+import com.min01.crypticfoes.entity.IAnimatable;
 import com.min01.crypticfoes.misc.CrypticEntityDataSerializers;
 import com.min01.crypticfoes.util.CrypticUtil;
 
@@ -44,7 +44,7 @@ public class UpdatePosArrayPacket
 			if(ctx.get().getDirection().getReceptionSide().isServer())
 			{
 				Entity entity = CrypticUtil.getEntityByUUID(ctx.get().getSender().level, message.entityUUID);
-				if(entity instanceof IPosArray mob) 
+				if(entity instanceof IAnimatable mob) 
 				{
 					mob.getPosArray()[message.array] = message.pos;
 				}
@@ -54,7 +54,7 @@ public class UpdatePosArrayPacket
 				CrypticUtil.getClientLevel(t -> 
 				{
 					Entity entity = CrypticUtil.getEntityByUUID(t, message.entityUUID);
-					if(entity instanceof IPosArray mob) 
+					if(entity instanceof IAnimatable mob) 
 					{
 						mob.getPosArray()[message.array] = message.pos;
 					}

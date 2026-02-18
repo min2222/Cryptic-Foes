@@ -4,7 +4,7 @@ import com.min01.crypticfoes.entity.CrypticEntities;
 import com.min01.crypticfoes.entity.living.EntityPetrified;
 import com.min01.crypticfoes.entity.projectile.EntityPetrifiedStone;
 
-public class PetrifiedShootStoneGoal extends BasicAnimationSkillGoal<EntityPetrified>
+public class PetrifiedShootStoneGoal extends AbstractAnimationGoal<EntityPetrified>
 {
 	public PetrifiedShootStoneGoal(EntityPetrified mob)
 	{

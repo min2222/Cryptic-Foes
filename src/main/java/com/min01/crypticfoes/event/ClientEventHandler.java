@@ -49,17 +49,20 @@ public class ClientEventHandler
 	@SubscribeEvent
 	public static void onFMLClientSetup(FMLClientSetupEvent event)
 	{
-        BlockEntityRenderers.register(CrypticBlocks.CRYPTIC_SKULL_BLOCK_ENTITY.get(), CrypticSkullRenderer::new);
-        BlockEntityRenderers.register(CrypticBlocks.SCREAMER_BLOCK_ENTITY.get(), ScreamerRenderer::new);
-        ItemProperties.register(CrypticItems.MONSTROUS_HORN.get(), ResourceLocation.parse("charge"), (pStack, pLevel, pEntity, pSeed) ->
-        {
-        	if(pEntity != null && pEntity.isUsingItem())
-        	{
-        		return Mth.floor(MonstrousHornItem.getHornCharge(pStack) / 2) + 0.5F;
-        	}
-        	return Mth.floor(MonstrousHornItem.getHornCharge(pStack) / 2);
-        });
-        SkullBlockRenderer.SKIN_BY_TYPE.put(CrypticSkullTypes.HOWLER, ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/entity/howler.png"));
+		event.enqueueWork(() ->
+		{
+	        BlockEntityRenderers.register(CrypticBlocks.CRYPTIC_SKULL_BLOCK_ENTITY.get(), CrypticSkullRenderer::new);
+	        BlockEntityRenderers.register(CrypticBlocks.SCREAMER_BLOCK_ENTITY.get(), ScreamerRenderer::new);
+	        ItemProperties.register(CrypticItems.MONSTROUS_HORN.get(), ResourceLocation.parse("charge"), (pStack, pLevel, pEntity, pSeed) ->
+	        {
+	        	if(pEntity != null && pEntity.isUsingItem())
+	        	{
+	        		return Mth.floor(MonstrousHornItem.getHornCharge(pStack) / 2) + 0.5F;
+	        	}
+	        	return Mth.floor(MonstrousHornItem.getHornCharge(pStack) / 2);
+	        });
+	        SkullBlockRenderer.SKIN_BY_TYPE.put(CrypticSkullTypes.HOWLER, ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/entity/howler.png"));
+		});
 	}
 	
 	@SubscribeEvent

@@ -3,7 +3,7 @@ package com.min01.crypticfoes.entity.model;
 import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.entity.animation.BrancherAnimation;
 import com.min01.crypticfoes.entity.living.EntityBrancher;
-import com.min01.crypticfoes.util.CrypticClientUtil;
+import com.min01.crypticfoes.misc.SmoothAnimationState;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -73,16 +73,12 @@ public class ModelBrancher extends HierarchicalModel<EntityBrancher>
 	{
 		this.root().getAllParts().forEach(ModelPart::resetPose);
 		
-		float factor = entity.runAnimationState.factor(CrypticClientUtil.MC.getFrameTime());
-		
-		float totalLimb = Math.max(limbSwingAmount * factor, 0.0F) + Math.max(limbSwingAmount - factor, 0.0F);
-		
-		entity.idleAnimationState.animate(this, BrancherAnimation.BRANCHER_IDLE, ageInTicks, totalLimb, 2.5F);
+		entity.idleAnimationState.animateIdle(this, BrancherAnimation.BRANCHER_IDLE, ageInTicks, limbSwingAmount, 2.5F, entity.runAnimationState);
 		entity.shiverAnimationState.animate(this, BrancherAnimation.BRANCHER_SHIVER, ageInTicks);
 		entity.explosionAnimationState.animate(this, BrancherAnimation.BRANCHER_EXPLOSION, ageInTicks);
 		
-		this.animateWalk(BrancherAnimation.BRANCHER_WALK, limbSwing, Math.max(limbSwingAmount * factor, 0.0F), 2.5F, 2.5F);
-		this.animateWalk(BrancherAnimation.BRANCHER_RUN, limbSwing, Math.max(limbSwingAmount - factor, 0.0F), 1.5F, 2.5F);
+		SmoothAnimationState.animateWalk(this, BrancherAnimation.BRANCHER_WALK, ageInTicks, limbSwing, limbSwingAmount, 2.5F, 2.5F, entity.runAnimationState);
+		entity.runAnimationState.animateWalkWithFactor(this, BrancherAnimation.BRANCHER_RUN, ageInTicks, limbSwing, limbSwingAmount, 1.5F, 2.5F);
 	}
 	
 	@Override

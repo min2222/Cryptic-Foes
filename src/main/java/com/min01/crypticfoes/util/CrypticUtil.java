@@ -35,6 +35,13 @@ public class CrypticUtil
 	
 	public static final List<BlockPos> SILENCED_BLOCKS = new ArrayList<>();
 	
+    public static float rotlerp(float start, float end, float maxStep) 
+    {
+        float delta = Mth.wrapDegrees(end - start);
+        float clampedDelta = Mth.clamp(delta, -maxStep, maxStep);
+        return Mth.wrapDegrees(start + clampedDelta);
+    }
+    
 	public static boolean isDone(ServerPlayer serverPlayer, String name)
 	{
 		Advancement adv = serverPlayer.server.getAdvancements().getAdvancement(ResourceLocation.parse(name));

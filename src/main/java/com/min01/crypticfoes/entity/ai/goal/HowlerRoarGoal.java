@@ -5,7 +5,7 @@ import com.min01.crypticfoes.entity.living.EntityHowler;
 import com.min01.crypticfoes.entity.projectile.EntityHowlerScream;
 import com.min01.crypticfoes.sound.CrypticSounds;
 
-public class HowlerRoarGoal extends BasicAnimationSkillGoal<EntityHowler>
+public class HowlerRoarGoal extends AbstractAnimationGoal<EntityHowler>
 {
 	public HowlerRoarGoal(EntityHowler mob)
 	{

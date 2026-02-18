@@ -186,9 +186,9 @@ public class EntityHowler extends AbstractAnimatableMonster
     		this.awakeAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 2, this.tickCount);
     		this.fallAnimationState.updateWhen(!this.isHowlerSleeping() && this.isFalling() && this.getAnimationState() == 0, this.tickCount);
     		this.landAnimationState.updateWhen(!this.isHowlerSleeping() && this.getAnimationState() == 3, this.tickCount);
-    		this.roarAnimationState.updateWhen(!this.isHowlerSleeping() && this.isUsingSkill(4), this.tickCount);
+    		this.roarAnimationState.updateWhen(!this.isHowlerSleeping() && this.isAnimationPlaying(4), this.tickCount);
     		this.blinkAnimationState.animateWhen(!this.isHowlerSleeping() && this.ambientTick > 0, this.tickCount);
-    		this.punchAnimationState.updateWhen(!this.isHowlerSleeping() && this.isUsingSkill(5), this.tickCount);
+    		this.punchAnimationState.updateWhen(!this.isHowlerSleeping() && this.isAnimationPlaying(5), this.tickCount);
     		this.flyAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 6, this.tickCount);
     		this.flyStartAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 7, this.tickCount);
     		this.flyEndAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 8, this.tickCount);
@@ -211,8 +211,8 @@ public class EntityHowler extends AbstractAnimatableMonster
         			if(!this.level.canSeeSky(ceilingPos) && CrypticUtil.distanceToY(this, ceilingPos) >= 8.0F)
         			{
             			this.setSleepPos(ceilingPos);
-            			this.setCanMove(false);
-            			this.setCanLook(false);
+            			this.setStopMoveTick(Integer.MAX_VALUE);
+            			this.setStopLookTick(Integer.MAX_VALUE);
             			this.setHowlerSleeping(true);
         			}
         		}
@@ -229,8 +229,8 @@ public class EntityHowler extends AbstractAnimatableMonster
         		else if(this.getAnimationState() == 3 && this.getAnimationTick() <= 0)
         		{
         			this.setAnimationState(0);
-        			this.setCanMove(true);
-        			this.setCanLook(true);
+        			this.setStopMoveTick(0);
+        			this.setStopLookTick(0);
         		}
         	}
     	}
