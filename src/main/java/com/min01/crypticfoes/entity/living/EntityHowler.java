@@ -344,6 +344,10 @@ public class EntityHowler extends AbstractAnimatableMonster
     @Override
     public boolean onAnimationEnd(int animationState)
     {
+    	if(animationState == 4 || animationState == 5)
+    	{
+    		return super.onAnimationEnd(animationState);
+    	}
     	return false;
     }
     

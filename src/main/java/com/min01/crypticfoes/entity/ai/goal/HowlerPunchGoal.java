@@ -36,13 +36,6 @@ public class HowlerPunchGoal extends AbstractAnimationGoal<EntityHowler>
 			}
 		}
 	}
-	
-	@Override
-	public void stop() 
-	{
-		super.stop();
-		this.mob.setAnimationState(0);
-	}
 
 	@Override
 	public int getSkillUsingTime()
