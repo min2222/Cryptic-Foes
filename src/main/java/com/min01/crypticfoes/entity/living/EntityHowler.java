@@ -61,15 +61,15 @@ public class EntityHowler extends AbstractAnimatableMonster
 
 	public final SmoothAnimationState idleAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState sleepAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState awakeAnimationState = new SmoothAnimationState(0.999F);
-	public final SmoothAnimationState fallAnimationState = new SmoothAnimationState(0.999F);
-	public final SmoothAnimationState landAnimationState = new SmoothAnimationState(0.999F);
+	public final SmoothAnimationState awakeAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState fallAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState landAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState roarAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState blinkAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState punchAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState flyAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState flyStartAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState flyEndAnimationState = new SmoothAnimationState(0.999F);
+	public final SmoothAnimationState flyEndAnimationState = new SmoothAnimationState();
 	
 	public int ambientTick;
 	public int targetTick = 200;

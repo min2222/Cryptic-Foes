@@ -78,7 +78,7 @@ public class ModelBrancher extends HierarchicalModel<EntityBrancher>
 		entity.explosionAnimationState.animate(this, BrancherAnimation.BRANCHER_EXPLOSION, ageInTicks);
 		
 		SmoothAnimationState.animateWalk(this, BrancherAnimation.BRANCHER_WALK, ageInTicks, limbSwing, limbSwingAmount, 2.5F, 2.5F, entity.runAnimationState);
-		entity.runAnimationState.animateWalkWithFactor(this, BrancherAnimation.BRANCHER_RUN, ageInTicks, limbSwing, limbSwingAmount, 1.5F, 2.5F);
+		entity.runAnimationState.animateWalk(this, BrancherAnimation.BRANCHER_RUN, ageInTicks, limbSwing, limbSwingAmount, 1.5F, 2.5F);
 	}
 	
 	@Override

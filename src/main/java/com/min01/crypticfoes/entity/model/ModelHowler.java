@@ -111,7 +111,7 @@ public class ModelHowler extends HierarchicalModel<EntityHowler>
 			CrypticClientUtil.animateHead(this.head, netHeadYaw, headPitch);
 		}
 		
-		entity.idleAnimationState.animate(this, HowlerAnimation.HOWLER_IDLE, ageInTicks, limbSwingAmount, 2.5F);
+		entity.idleAnimationState.animateIdle(this, HowlerAnimation.HOWLER_IDLE, ageInTicks, limbSwingAmount, 2.5F);
 		entity.sleepAnimationState.animate(this, HowlerAnimation.HOWLER_SLEEP, ageInTicks);
 		entity.awakeAnimationState.animate(this, HowlerAnimation.HOWLER_AWAKE, ageInTicks);
 		entity.fallAnimationState.animate(this, HowlerAnimation.HOWLER_FALL, ageInTicks);
