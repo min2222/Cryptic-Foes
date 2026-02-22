@@ -342,6 +342,12 @@ public class EntityHowler extends AbstractAnimatableMonster
     }
     
     @Override
+    public boolean onAnimationEnd(int animationState)
+    {
+    	return false;
+    }
+    
+    @Override
     protected void dropCustomDeathLoot(DamageSource pSource, int pLooting, boolean pRecentlyHit) 
     {
     	super.dropCustomDeathLoot(pSource, pLooting, pRecentlyHit);
