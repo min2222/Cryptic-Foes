@@ -1,4 +1,4 @@
-package com.min01.crypticfoes.advancements.critereon;
+package com.min01.crypticfoes.advancements.criterion;
 
 import com.min01.crypticfoes.CrypticFoes;
 

@@ -74,8 +74,8 @@ public class ModelPetrified extends HierarchicalModel<EntityPetrified>
 		entity.throwAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_THROW, ageInTicks);
 		entity.reloadingAnimationState.animate(this, PetrifiedAnimation.PETRIFIED_RELOADING, ageInTicks);
 
-		SmoothAnimationState.animateWalk(this, PetrifiedAnimation.PETRIFIED_WALK_NONE, ageInTicks, limbSwing, limbSwingAmount, 2.5F, 2.5F, entity.runAnimationState);
-		entity.runAnimationState.animateWalk(this, PetrifiedAnimation.PETRIFIED_WALK, ageInTicks, limbSwing, limbSwingAmount, 2.5F, 2.5F);
+		SmoothAnimationState.animateWalk(this, PetrifiedAnimation.PETRIFIED_WALK_NONE, limbSwing, limbSwingAmount, 2.5F, 2.5F, entity.runAnimationState);
+		entity.runAnimationState.animateWalkWithFactor(this, PetrifiedAnimation.PETRIFIED_WALK, limbSwing, limbSwingAmount, 2.5F, 2.5F);
 		
 		this.stone.visible = entity.hasStone();
 	}

@@ -1,8 +1,8 @@
 package com.min01.crypticfoes.advancements;
 
-import com.min01.crypticfoes.advancements.critereon.ItemUsedOnSilencedLocationTrigger;
-import com.min01.crypticfoes.advancements.critereon.SilencingBlendTrigger;
-import com.min01.crypticfoes.advancements.critereon.StunningSpeechTrigger;
+import com.min01.crypticfoes.advancements.criterion.ItemUsedOnSilencedLocationTrigger;
+import com.min01.crypticfoes.advancements.criterion.SilencingBlendTrigger;
+import com.min01.crypticfoes.advancements.criterion.StunningSpeechTrigger;
 
 import net.minecraft.advancements.CriteriaTriggers;
 

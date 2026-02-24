@@ -1,4 +1,4 @@
-package com.min01.crypticfoes.advancements.critereon;
+package com.min01.crypticfoes.advancements.criterion;
 
 import com.google.gson.JsonObject;
 import com.min01.crypticfoes.CrypticFoes;
@@ -10,9 +10,9 @@ import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class StunningSpeechTrigger extends SimpleCriterionTrigger<StunningSpeechTrigger.TriggerInstance>
+public class SilencingBlendTrigger extends SimpleCriterionTrigger<SilencingBlendTrigger.TriggerInstance>
 {
-	public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "stunning_speech");
+	public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "silencing_blend");
 	
 	@Override
 	public ResourceLocation getId() 

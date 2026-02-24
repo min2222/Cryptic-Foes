@@ -132,6 +132,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     	this.entityData.define(SLEEP_POS, BlockPos.ZERO);
     }
     
+    @Override
 	public void registerDefaultGoals()
 	{
 		this.goalSelector.addGoal(0, new FloatGoal(this));
