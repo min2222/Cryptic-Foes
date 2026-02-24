@@ -24,11 +24,18 @@ import net.minecraft.world.phys.Vec3;
 
 public class NoSpinGroundPathNavigation extends GroundPathNavigation
 {
-    protected static final float EPSILON = 1.0E-8F;
+	public static final float EPSILON = 1.0E-8F;
+    public float distanceModifier = 0.5F;
     
     public NoSpinGroundPathNavigation(Mob entity, Level world) 
     {
         super(entity, world);
+    }
+    
+    public NoSpinGroundPathNavigation(Mob entity, Level world, float distanceModifier) 
+    {
+        super(entity, world);
+        this.distanceModifier = distanceModifier;
     }
 
     @Override
@@ -53,11 +60,11 @@ public class NoSpinGroundPathNavigation extends GroundPathNavigation
                 break;
             }
         }
-        Vec3 base = entityPos.add(-this.mob.getBbWidth() * 0.5F, 0.0F, -this.mob.getBbWidth() * 0.5F);
+        Vec3 base = entityPos.add(-this.mob.getBbWidth() * this.distanceModifier, 0.0F, -this.mob.getBbWidth() * this.distanceModifier);
         Vec3 max = base.add(this.mob.getBbWidth(), this.mob.getBbHeight(), this.mob.getBbWidth());
         if(this.tryShortcut(path, new Vec3(this.mob.getX(), this.mob.getY(), this.mob.getZ()), pathLength, base, max)) 
         {
-            if(this.isAt(path, 0.5F) || this.atElevationChange(path) && this.isAt(path, this.mob.getBbWidth() * 0.5F)) 
+            if(this.isAt(path, this.distanceModifier) || this.atElevationChange(path) && this.isAt(path, this.mob.getBbWidth() * this.distanceModifier)) 
             {
                 path.setNextNodeIndex(path.getNextNodeIndex() + 1);
             }
@@ -74,7 +81,7 @@ public class NoSpinGroundPathNavigation extends GroundPathNavigation
     private boolean atElevationChange(Path path) 
     {
         int curr = path.getNextNodeIndex();
-        int end = Math.min(path.getNodeCount(), curr + Mth.ceil(this.mob.getBbWidth() * 0.5F) + 1);
+        int end = Math.min(path.getNodeCount(), curr + Mth.ceil(this.mob.getBbWidth() * this.distanceModifier) + 1);
         int currY = path.getNode(curr).y;
         for(int i = curr + 1; i < end; i++) 
         {
