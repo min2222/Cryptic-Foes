@@ -18,6 +18,11 @@ public class CrypticClientUtil
 {
 	public static final Minecraft MC = Minecraft.getInstance();
 	
+	public static boolean isFirstPersonPlayer(Entity entity)
+	{
+		return entity.equals(MC.cameraEntity) && MC.options.getCameraType().isFirstPerson();
+	}
+	
     public static void drawQuad(PoseStack stack, VertexConsumer consumer, float size, int packedLightIn, float alpha) 
     {
         float minU = 0;

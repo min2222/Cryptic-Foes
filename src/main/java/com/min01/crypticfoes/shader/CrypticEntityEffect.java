@@ -108,6 +108,6 @@ public class CrypticEntityEffect
 		{
 			return false;
 		}
-		return !this.minecraft.gameRenderer.isPanoramicMode() && this.entityTarget != null && this.entityEffect != null && this.enabled;
+		return !this.minecraft.gameRenderer.isPanoramicMode() && CrypticClientUtil.isFirstPersonPlayer(this.minecraft.player) && this.entityTarget != null && this.entityEffect != null && this.enabled;
 	}
 }
