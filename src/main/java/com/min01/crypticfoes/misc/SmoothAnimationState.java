@@ -110,20 +110,20 @@ public class SmoothAnimationState extends AnimationState
 			float factor = state.factor();
 			totalFactor *= 1.0F - factor;
 		}
-		animateWalk(model, definition, limbSwing, limbSwingAmount, maxAnimationSpeed, totalFactor * animationScaleFactor);
+		animateWalk(model, definition, limbSwing, limbSwingAmount, maxAnimationSpeed, animationScaleFactor, totalFactor);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public void animateWalkWithFactor(HierarchicalModel<?> model, AnimationDefinition definition, float limbSwing, float limbSwingAmount, float maxAnimationSpeed, float animationScaleFactor)
 	{
-		animateWalk(model, definition, limbSwing, limbSwingAmount, maxAnimationSpeed, this.factor() * animationScaleFactor);
+		animateWalk(model, definition, limbSwing, limbSwingAmount, maxAnimationSpeed, animationScaleFactor, this.factor());
 	}
 	
 	@OnlyIn(Dist.CLIENT)
-	public static void animateWalk(HierarchicalModel<?> model, AnimationDefinition definition, float limbSwing, float limbSwingAmount, float maxAnimationSpeed, float animationScaleFactor)
+	public static void animateWalk(HierarchicalModel<?> model, AnimationDefinition definition, float limbSwing, float limbSwingAmount, float maxAnimationSpeed, float animationScaleFactor, float factor)
 	{
 		long i = (long)(limbSwing * 50.0F * maxAnimationSpeed);
-		float f = Math.min(limbSwingAmount * animationScaleFactor, 1.0F);
+		float f = Math.min(limbSwingAmount * animationScaleFactor, 1.0F) * factor;
 		KeyframeAnimations.animate(model, definition, i, f, ANIMATION_VECTOR_CACHE);
 	}
 	
