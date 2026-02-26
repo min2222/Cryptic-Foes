@@ -36,14 +36,14 @@ public class AnimationBodyRotationControl<T extends Mob & IAnimatable> extends B
 				{
 					this.headStableTime = 0;
 					this.lastStableYHeadRot = this.mob.yHeadRot;
-					this.rotateHeadTowardsFront();
+					this.rotateBodyIfNecessary();
 				} 
 				else 
 				{
 					++this.headStableTime;
 					if(this.headStableTime > 10) 
 					{
-						this.rotateBodyIfNecessary();
+						this.rotateHeadTowardsFront();
 					}
 				}
 			}
