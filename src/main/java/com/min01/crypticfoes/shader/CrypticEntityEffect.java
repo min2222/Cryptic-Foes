@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import com.google.gson.JsonSyntaxException;
 import com.min01.crypticfoes.CrypticFoes;
-import com.min01.crypticfoes.item.CrypticItems;
 import com.min01.crypticfoes.util.CrypticClientUtil;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -14,8 +13,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EffectInstance;
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraftforge.fml.ModList;
 
 public class CrypticEntityEffect
 {
@@ -100,14 +97,18 @@ public class CrypticEntityEffect
 		{
 			return false;
 		}
-		if(this.minecraft.gameRenderer.currentEffect() != null)
-		{
-			return this.minecraft.gameRenderer.currentEffect().getName().equals("crypticfoes:shaders/post/howler_dummy.json");
-		}
-		else if(!ModList.get().isLoaded("supplementaries") || !this.minecraft.player.getItemBySlot(EquipmentSlot.HEAD).is(CrypticItems.HOWLER_HEAD.get()))
+		if(this.minecraft.gameRenderer.currentEffect() == null)
 		{
 			return false;
 		}
-		return !this.minecraft.gameRenderer.isPanoramicMode() && CrypticClientUtil.isFirstPersonPlayer(this.minecraft.player) && this.entityTarget != null && this.entityEffect != null && this.enabled;
+		if(!this.minecraft.gameRenderer.currentEffect().getName().equals("crypticfoes:shaders/post/howler_dummy.json"))
+		{
+			return false;
+		}
+		if(!CrypticClientUtil.isFirstPersonPlayer(this.minecraft.player))
+		{
+			return false;
+		}
+		return !this.minecraft.gameRenderer.isPanoramicMode() && this.entityTarget != null && this.entityEffect != null && this.enabled;
 	}
 }
