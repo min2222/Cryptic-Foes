@@ -83,12 +83,6 @@ public class SmoothAnimationState extends AnimationState
 	@OnlyIn(Dist.CLIENT)
 	public void animateIdle(HierarchicalModel<?> model, AnimationDefinition definition, float ageInTicks, float limbSwingAmount, float animationScaleFactor, SmoothAnimationState... states) 
 	{
-		this.animateIdle(model, definition, ageInTicks, limbSwingAmount, animationScaleFactor, 0.01F, states);
-	}
-	
-	@OnlyIn(Dist.CLIENT)
-	public void animateIdle(HierarchicalModel<?> model, AnimationDefinition definition, float ageInTicks, float limbSwingAmount, float animationScaleFactor, float threshold, SmoothAnimationState... states) 
-	{
 		float totalFactor = 1.0F;
 		float extraFactor = 0.0F;
 		for(SmoothAnimationState state : states)
@@ -98,7 +92,7 @@ public class SmoothAnimationState extends AnimationState
 			extraFactor += factor;
 		}
 		float limb = Math.min((limbSwingAmount * (totalFactor + extraFactor)) * animationScaleFactor, 1.0F);
-		this.animate(model, definition, ageInTicks, Math.max(this.factor() * (1.0F - limb), threshold), 1.0F);
+		this.animate(model, definition, ageInTicks, this.factor() * (1.0F - limb), 1.0F);
 	}
 	
 	@OnlyIn(Dist.CLIENT)
