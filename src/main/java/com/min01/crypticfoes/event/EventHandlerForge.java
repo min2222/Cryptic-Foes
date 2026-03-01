@@ -1,12 +1,7 @@
 package com.min01.crypticfoes.event;
 
-import java.util.Map;
-import java.util.UUID;
-import java.util.WeakHashMap;
-
 import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.advancements.CrypticCriteriaTriggers;
-import com.min01.crypticfoes.block.FallenLeavesBlock;
 import com.min01.crypticfoes.effect.CrypticEffects;
 import com.min01.crypticfoes.entity.AbstractAnimatableMonster;
 import com.min01.crypticfoes.entity.living.EntityHowler;
@@ -39,7 +34,6 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.Type;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -49,8 +43,6 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = CrypticFoes.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EventHandlerForge 
 {
-	public static final Map<UUID, BlockPos> LEAVES_POS = new WeakHashMap<>();
-
 	@SubscribeEvent
 	public static void onPlayLevelSoundAtPosition(PlayLevelSoundEvent.AtPosition event)
 	{
@@ -118,30 +110,6 @@ public class EventHandlerForge
 		{
 			CrypticUtil.removeSilencedBlocks(event.level);
 		}
-	}
-	
-	@SubscribeEvent
-	public static void onLivingTick(LivingTickEvent event)
-	{
-	    LivingEntity entity = event.getEntity();
-	    if(entity instanceof Player)
-	    {
-		    BlockPos pos = entity.blockPosition();
-		    UUID uuid = entity.getUUID();
-		    if(entity.level.getBlockState(pos).getBlock() instanceof FallenLeavesBlock block)
-		    {
-		        BlockPos leavesPos = LEAVES_POS.get(uuid);
-		        if(!pos.equals(leavesPos)) 
-		        {
-		        	LEAVES_POS.put(uuid, pos);
-		            block.stepOn(entity.level, pos, entity.level.getBlockState(pos), entity);
-		        }
-		    }
-		    else 
-		    {
-		    	LEAVES_POS.remove(uuid);
-		    }
-	    }
 	}
 	
 	@SubscribeEvent

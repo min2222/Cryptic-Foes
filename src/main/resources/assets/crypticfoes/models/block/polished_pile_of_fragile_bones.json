@@ -1,6 +1,0 @@
-{
-	"parent": "minecraft:block/cube_all",
-	"textures": {
-		"all": "crypticfoes:block/polished_pile_of_fragile_bones"
-	}
-}

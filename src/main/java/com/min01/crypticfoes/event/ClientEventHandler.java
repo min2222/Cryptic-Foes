@@ -7,21 +7,13 @@ import com.min01.crypticfoes.block.model.ModelScreamer;
 import com.min01.crypticfoes.blockentity.renderer.CrypticSkullRenderer;
 import com.min01.crypticfoes.blockentity.renderer.ScreamerRenderer;
 import com.min01.crypticfoes.entity.CrypticEntities;
-import com.min01.crypticfoes.entity.model.ModelBrancher;
 import com.min01.crypticfoes.entity.model.ModelHowler;
-import com.min01.crypticfoes.entity.model.ModelPetrified;
-import com.min01.crypticfoes.entity.model.ModelPetrifiedStone;
-import com.min01.crypticfoes.entity.renderer.BrancherRenderer;
 import com.min01.crypticfoes.entity.renderer.HowlerRenderer;
 import com.min01.crypticfoes.entity.renderer.HowlerScreamRenderer;
 import com.min01.crypticfoes.entity.renderer.NoneRenderer;
-import com.min01.crypticfoes.entity.renderer.PetrifiedRenderer;
-import com.min01.crypticfoes.entity.renderer.PetrifiedStoneRenderer;
 import com.min01.crypticfoes.item.CrypticItems;
 import com.min01.crypticfoes.item.MonstrousHornItem;
 import com.min01.crypticfoes.misc.CrypticSkullTypes;
-import com.min01.crypticfoes.particle.BrancherExplosionParticle;
-import com.min01.crypticfoes.particle.BrancherExplosionSeedParticle;
 import com.min01.crypticfoes.particle.CrypticParticles;
 import com.min01.crypticfoes.particle.DustPillarParticle;
 import com.min01.crypticfoes.particle.HowlerShockwaveParticle;
@@ -74,9 +66,6 @@ public class ClientEventHandler
 	@SubscribeEvent
 	public static void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event)
 	{
-		event.registerEntityRenderer(CrypticEntities.PETRIFIED.get(), PetrifiedRenderer::new);
-		event.registerEntityRenderer(CrypticEntities.PETRIFIED_STONE.get(), PetrifiedStoneRenderer::new);
-		event.registerEntityRenderer(CrypticEntities.BRANCHER.get(), BrancherRenderer::new);
 		event.registerEntityRenderer(CrypticEntities.HOWLER.get(), HowlerRenderer::new);
 		event.registerEntityRenderer(CrypticEntities.HOWLER_SCREAM.get(), HowlerScreamRenderer::new);
 		event.registerEntityRenderer(CrypticEntities.CAMERA_SHAKE.get(), NoneRenderer::new);
@@ -91,9 +80,6 @@ public class ClientEventHandler
     @SubscribeEvent
     public static void onRegisterLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event)
     {
-    	event.registerLayerDefinition(ModelPetrified.LAYER_LOCATION, ModelPetrified::createBodyLayer);
-    	event.registerLayerDefinition(ModelPetrifiedStone.LAYER_LOCATION, ModelPetrifiedStone::createBodyLayer);
-    	event.registerLayerDefinition(ModelBrancher.LAYER_LOCATION, ModelBrancher::createBodyLayer);
     	event.registerLayerDefinition(ModelHowler.LAYER_LOCATION, ModelHowler::createBodyLayer);
     	event.registerLayerDefinition(ModelHowlerHead.LAYER_LOCATION, ModelHowlerHead::createHeadModel);
     	event.registerLayerDefinition(ModelScreamer.LAYER_LOCATION, ModelScreamer::createBodyLayer);
@@ -108,8 +94,6 @@ public class ClientEventHandler
 	@SubscribeEvent
 	public static void onRegisterParticleProviders(RegisterParticleProvidersEvent event)
 	{
-		event.registerSpriteSet(CrypticParticles.BRANCHER_EXPLOSION.get(), BrancherExplosionParticle.Provider::new);
-		event.registerSpecial(CrypticParticles.BRANCHER_EXPLOSION_SEED.get(), new BrancherExplosionSeedParticle.Provider());
 		event.registerSpriteSet(CrypticParticles.SILENCING.get(), SilencingParticle.Provider::new);
 		event.registerSpriteSet(CrypticParticles.HOWLER_SHOCKWAVE.get(), HowlerShockwaveParticle.Provider::new);
 		event.registerSpecial(CrypticParticles.DUST_PILLAR.get(), new DustPillarParticle.Provider());

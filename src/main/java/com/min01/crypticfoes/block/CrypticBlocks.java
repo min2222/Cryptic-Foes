@@ -6,8 +6,6 @@ import com.min01.crypticfoes.blockentity.ScreamerBlockEntity;
 import com.min01.crypticfoes.misc.CrypticSkullTypes;
 
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -21,14 +19,6 @@ public class CrypticBlocks
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, CrypticFoes.MODID);
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, CrypticFoes.MODID);
 	
-	public static final RegistryObject<Block> FALLEN_LEAVES = BLOCKS.register("fallen_leaves", () -> new FallenLeavesBlock());
-	public static final RegistryObject<Block> BLOCK_OF_FRAGILE_BONES = BLOCKS.register("block_of_fragile_bones", () -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.BONE_BLOCK)));
-	public static final RegistryObject<Block> PILE_OF_FRAGILE_BONES = BLOCKS.register("pile_of_fragile_bones", () -> new PileofFragileBonesBlock());
-	public static final RegistryObject<Block> POLISHED_PILE_OF_FRAGILE_BONES = BLOCKS.register("polished_pile_of_fragile_bones", () -> new PileofFragileBonesBlock());
-	public static final RegistryObject<Block> WAXED_PILE_OF_FRAGILE_BONES = BLOCKS.register("waxed_pile_of_fragile_bones", () -> new Block(BlockBehaviour.Properties.copy(Blocks.BONE_BLOCK)));
-	public static final RegistryObject<Block> WAXED_POLISHED_PILE_OF_FRAGILE_BONES = BLOCKS.register("waxed_polished_pile_of_fragile_bones", () -> new Block(BlockBehaviour.Properties.copy(Blocks.BONE_BLOCK)));
-    public static final RegistryObject<Block> PILE_OF_FRAGILE_BONES_SLAB = BLOCKS.register("pile_of_fragile_bones_slab", () -> new PileofFragileBonesSlabBlock());
-    public static final RegistryObject<Block> POLISHED_PILE_OF_FRAGILE_BONES_SLAB = BLOCKS.register("polished_pile_of_fragile_bones_slab", () -> new PileofFragileBonesSlabBlock());
     public static final RegistryObject<Block> SCREAMER = BLOCKS.register("screamer", () -> new ScreamerBlock());
     
     public static final RegistryObject<Block> HOWLER_HEAD = BLOCKS.register("howler_head", () -> new CrypticSkullBlock(CrypticSkullTypes.HOWLER, BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.CUSTOM_HEAD).strength(1.0F).pushReaction(PushReaction.DESTROY)));

@@ -1,7 +1,0 @@
-{
-	"parent": "minecraft:block/cube_column",
-	"textures": {
-		"end": "crypticfoes:block/block_of_fragile_bones_top",
-		"side": "crypticfoes:block/block_of_fragile_bones_side"
-	}
-}
