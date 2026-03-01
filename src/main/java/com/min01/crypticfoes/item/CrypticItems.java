@@ -24,6 +24,7 @@ public class CrypticItems
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, CrypticFoes.MODID);
 	
 	public static final RegistryObject<Item> HOWLER_SPAWN_EGG = registerSpawnEgg("howler_spawn_egg", () -> CrypticEntities.HOWLER.get(), 5126973, 8214643);
+	public static final RegistryObject<Item> BUMPY_SPAWN_EGG = registerSpawnEgg("bumpy_spawn_egg", () -> CrypticEntities.BUMPY.get(), 11037495, 16706733);
 	
 	public static final RegistryObject<Item> HOWLER_MEMBRANE = ITEMS.register("howler_membrane", () -> new Item(new Item.Properties()));
 	public static final RegistryObject<Item> MONSTROUS_HORN = ITEMS.register("monstrous_horn", () -> new MonstrousHornItem());

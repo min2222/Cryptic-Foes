@@ -40,10 +40,11 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -51,6 +52,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 public class EntityHowler extends AbstractAnimatableMonster
@@ -86,7 +88,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     			.add(Attributes.MAX_HEALTH, 40.0F)
     			.add(Attributes.ARMOR, 10.0F)
     			.add(Attributes.ATTACK_DAMAGE, 10.0F)
-    			.add(Attributes.KNOCKBACK_RESISTANCE, 100.0F)
+    			.add(Attributes.KNOCKBACK_RESISTANCE, 1.0F)
     			.add(Attributes.MOVEMENT_SPEED, 0.35F)
     			.add(Attributes.FOLLOW_RANGE, 25.0F);
     }
@@ -136,12 +138,19 @@ public class EntityHowler extends AbstractAnimatableMonster
 	public void registerDefaultGoals()
 	{
 		this.goalSelector.addGoal(0, new FloatGoal(this));
-		this.goalSelector.addGoal(0, new WaterAvoidingRandomStrollGoal(this, 0.5F)
+		this.goalSelector.addGoal(0, new RandomStrollGoal(this, 0.5F, this.getMoveInterval(), false)
 		{
 			@Override
 			public boolean canUse()
 			{
 				return super.canUse() && EntityHowler.this.canMoveAround();
+			}
+			
+			@Override
+			protected Vec3 getPosition()
+			{
+				Vec2 radius = EntityHowler.this.getMoveRadius();
+				return LandRandomPos.getPos(this.mob, (int) radius.x, (int) radius.y);
 			}
 		});
 		this.goalSelector.addGoal(0, new RandomLookAroundGoal(this)

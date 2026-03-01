@@ -7,7 +7,9 @@ import com.min01.crypticfoes.block.model.ModelScreamer;
 import com.min01.crypticfoes.blockentity.renderer.CrypticSkullRenderer;
 import com.min01.crypticfoes.blockentity.renderer.ScreamerRenderer;
 import com.min01.crypticfoes.entity.CrypticEntities;
+import com.min01.crypticfoes.entity.model.ModelBumpy;
 import com.min01.crypticfoes.entity.model.ModelHowler;
+import com.min01.crypticfoes.entity.renderer.BumpyRenderer;
 import com.min01.crypticfoes.entity.renderer.HowlerRenderer;
 import com.min01.crypticfoes.entity.renderer.HowlerScreamRenderer;
 import com.min01.crypticfoes.entity.renderer.NoneRenderer;
@@ -68,6 +70,9 @@ public class ClientEventHandler
 	{
 		event.registerEntityRenderer(CrypticEntities.HOWLER.get(), HowlerRenderer::new);
 		event.registerEntityRenderer(CrypticEntities.HOWLER_SCREAM.get(), HowlerScreamRenderer::new);
+
+		event.registerEntityRenderer(CrypticEntities.BUMPY.get(), BumpyRenderer::new);
+		
 		event.registerEntityRenderer(CrypticEntities.CAMERA_SHAKE.get(), NoneRenderer::new);
 	}
 	
@@ -83,6 +88,8 @@ public class ClientEventHandler
     	event.registerLayerDefinition(ModelHowler.LAYER_LOCATION, ModelHowler::createBodyLayer);
     	event.registerLayerDefinition(ModelHowlerHead.LAYER_LOCATION, ModelHowlerHead::createHeadModel);
     	event.registerLayerDefinition(ModelScreamer.LAYER_LOCATION, ModelScreamer::createBodyLayer);
+
+    	event.registerLayerDefinition(ModelBumpy.LAYER_LOCATION, ModelBumpy::createBodyLayer);
     }
     
 	@SubscribeEvent

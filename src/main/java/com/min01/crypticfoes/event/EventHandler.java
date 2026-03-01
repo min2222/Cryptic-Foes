@@ -4,6 +4,7 @@ import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.advancements.CrypticCriteriaTriggers;
 import com.min01.crypticfoes.effect.CrypticEffects;
 import com.min01.crypticfoes.entity.CrypticEntities;
+import com.min01.crypticfoes.entity.living.EntityBumpy;
 import com.min01.crypticfoes.entity.living.EntityHowler;
 import com.min01.crypticfoes.item.CrypticItems;
 
@@ -41,12 +42,14 @@ public class EventHandler
     public static void onEntityAttributeCreation(EntityAttributeCreationEvent event) 
     {
     	event.put(CrypticEntities.HOWLER.get(), EntityHowler.createAttributes().build());
+    	event.put(CrypticEntities.BUMPY.get(), EntityBumpy.createAttributes().build());
     }
     
     @SubscribeEvent
     public static void onSpawnPlacementRegister(SpawnPlacementRegisterEvent event)
     {
     	event.register(CrypticEntities.HOWLER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityHowler::checkHowlerSpawnRules, Operation.AND);
+    	event.register(CrypticEntities.BUMPY.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityBumpy::checkBumpySpawnRules, Operation.AND);
     }
     
     @SubscribeEvent

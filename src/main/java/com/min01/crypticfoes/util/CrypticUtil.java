@@ -22,6 +22,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.entity.LevelEntityGetter;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -34,6 +35,11 @@ public class CrypticUtil
 	public static final Method GET_ENTITY = ObfuscationReflectionHelper.findMethod(Level.class, "m_142646_");
 	
 	public static final List<BlockPos> SILENCED_BLOCKS = new ArrayList<>();
+	
+	public static boolean isNight(LevelAccessor level)
+	{
+		return level.dayTime() % 24000L >= 13000L;
+	}
 	
     public static float rotlerp(float start, float end, float maxStep) 
     {

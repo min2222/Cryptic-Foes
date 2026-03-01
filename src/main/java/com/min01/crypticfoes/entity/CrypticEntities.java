@@ -1,6 +1,7 @@
 package com.min01.crypticfoes.entity;
 
 import com.min01.crypticfoes.CrypticFoes;
+import com.min01.crypticfoes.entity.living.EntityBumpy;
 import com.min01.crypticfoes.entity.living.EntityHowler;
 import com.min01.crypticfoes.entity.projectile.EntityHowlerScream;
 
@@ -17,6 +18,7 @@ public class CrypticEntities
 	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, CrypticFoes.MODID);
 	
 	public static final RegistryObject<EntityType<EntityHowler>> HOWLER = registerEntity("howler", createBuilder(EntityHowler::new, MobCategory.MONSTER).sized(0.75F, 2.625F));
+	public static final RegistryObject<EntityType<EntityBumpy>> BUMPY = registerEntity("bumpy", createBuilder(EntityBumpy::new, MobCategory.CREATURE).sized(1.0F, 1.3125F));
 	
 	public static final RegistryObject<EntityType<EntityHowlerScream>> HOWLER_SCREAM = registerEntity("howler_scream", createBuilder(EntityHowlerScream::new, MobCategory.MISC).sized(0.5F, 0.5F));
 

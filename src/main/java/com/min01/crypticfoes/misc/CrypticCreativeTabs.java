@@ -35,6 +35,7 @@ public class CrypticCreativeTabs
     			output.accept(createPainting(enabledFeatures, CrypticPaintings.RESIN_KEY));
     			output.accept(createPainting(enabledFeatures, CrypticPaintings.DWELLERS_KEY));
     			output.accept(createPainting(enabledFeatures, CrypticPaintings.MOUNTAIN_HOLDER_KEY));
+    			output.accept(CrypticItems.BUMPY_SPAWN_EGG.get());
     		}).build());
     
     public static ItemStack createPainting(CreativeModeTab.ItemDisplayParameters enabledFeatures, ResourceKey<PaintingVariant> key)

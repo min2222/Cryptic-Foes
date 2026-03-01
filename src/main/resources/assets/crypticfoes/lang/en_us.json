@@ -47,5 +47,8 @@
 	"crypticfoes.sound.subtitle.silencing_blend_off": "Silencing off",
 	"crypticfoes.sound.subtitle.cave_salad_burp": "Stunning burp",
 	"crypticfoes.sound.subtitle.screamer_work": "Screamer screams",
-	"crypticfoes.sound.subtitle.screamer_switch": "Screamer switches"
+	"crypticfoes.sound.subtitle.screamer_switch": "Screamer switches",
+	
+	"entity.crypticfoes.bumpy": "Bumpy",
+	"item.crypticfoes.bumpy_spawn_egg": "Bumpy Spawn Egg"
 }
