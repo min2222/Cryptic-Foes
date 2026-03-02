@@ -197,9 +197,9 @@ public class EventHandlerForge
 				level.playSound(player, pos, CrypticSounds.SILENCING_BLEND_OFF.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
 				level.levelEvent(player, 3004, pos, 0);
 				level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, state));
-				stack.hurtAndBreak(1, player, (p_150686_) ->
+				stack.hurtAndBreak(1, player, entity ->
 				{
-					p_150686_.broadcastBreakEvent(event.getHand());
+					entity.broadcastBreakEvent(event.getHand());
 				});
 				player.swing(event.getHand());
 				event.setCanceled(true);
