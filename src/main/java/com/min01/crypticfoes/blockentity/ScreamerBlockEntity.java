@@ -13,8 +13,6 @@ import com.min01.crypticfoes.util.CrypticUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntitySelector;
@@ -63,10 +61,7 @@ public class ScreamerBlockEntity extends BlockEntity
 		    	{
 		    		Vec3 motion = CrypticUtil.getVelocityTowards(Vec3.atBottomCenterOf(pos), t.position().add(0, 1, 0), 1.0F);
 		    		t.setDeltaMovement(motion.x, motion.y, motion.z);
-		    		if(t instanceof ServerPlayer player)
-		    		{
-		    			player.connection.send(new ClientboundSetEntityMotionPacket(t));
-		    		}
+					t.hurtMarked = true;
 					if(charged)
 					{
 						t.addEffect(new MobEffectInstance(CrypticEffects.STUNNED.get(), 100));

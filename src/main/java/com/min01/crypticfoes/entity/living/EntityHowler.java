@@ -18,12 +18,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
@@ -397,10 +395,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     	{
     		Vec3 motion = CrypticUtil.getVelocityTowards(this.position(), t.position().add(0, 1, 0), 1.0F);
     		t.push(motion.x, motion.y, motion.z);
-    		if(t instanceof ServerPlayer player)
-    		{
-    			player.connection.send(new ClientboundSetEntityMotionPacket(t));
-    		}
+			t.hurtMarked = true;
     	});
     	if(!this.level.isClientSide)
     	{
