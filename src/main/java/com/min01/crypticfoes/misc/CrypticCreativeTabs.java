@@ -36,6 +36,11 @@ public class CrypticCreativeTabs
     			output.accept(createPainting(enabledFeatures, CrypticPaintings.DWELLERS_KEY));
     			output.accept(createPainting(enabledFeatures, CrypticPaintings.MOUNTAIN_HOLDER_KEY));
     			output.accept(CrypticItems.BUMPY_SPAWN_EGG.get());
+    			output.accept(CrypticItems.STURDY_SHELL.get());
+    			output.accept(CrypticItems.ROLLING_CHESTPLATE.get());
+    			output.accept(CrypticItems.ROLLING_UPGRADE_SMITHING_TEMPLATE.get());
+    			output.accept(CrypticItems.WEIGHT_BLOCK.get());
+    			output.accept(CrypticItems.BALL.get());
     		}).build());
     
     public static ItemStack createPainting(CreativeModeTab.ItemDisplayParameters enabledFeatures, ResourceKey<PaintingVariant> key)

@@ -18,6 +18,14 @@ public class BumpyRenderer extends MobRenderer<EntityBumpy, ModelBumpy>
 	@Override
 	public ResourceLocation getTextureLocation(EntityBumpy pEntity)
 	{
+		if(pEntity.isAnimationPlaying(1))
+		{
+			return ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/entity/bumpy_shocked.png");
+		}
+		else if(pEntity.isTargetValid())
+		{
+			return ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/entity/bumpy_mad.png");
+		}
 		return ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/entity/bumpy_funny.png");
 	}
 }

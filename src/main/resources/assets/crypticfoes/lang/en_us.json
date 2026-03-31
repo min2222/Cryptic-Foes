@@ -2,10 +2,8 @@
 	"itemGroup.crypticfoes": "Cryptic Foes",
 	"painting.crypticfoes.mountain_holder.title": "Mountain Holder",
 	"painting.crypticfoes.mountain_holder.author": "Rofoo",
-
 	"painting.crypticfoes.resin.title": "Resin",
 	"painting.crypticfoes.resin.author": "Cucuber",
-
 	"entity.crypticfoes.howler": "Howler",
 	"entity.crypticfoes.howler_scream": "Howler Scream",
 	"entity.crypticfoes.camera_shake": "Camera Shake",
@@ -48,7 +46,17 @@
 	"crypticfoes.sound.subtitle.cave_salad_burp": "Stunning burp",
 	"crypticfoes.sound.subtitle.screamer_work": "Screamer screams",
 	"crypticfoes.sound.subtitle.screamer_switch": "Screamer switches",
-	
 	"entity.crypticfoes.bumpy": "Bumpy",
-	"item.crypticfoes.bumpy_spawn_egg": "Bumpy Spawn Egg"
+	"entity.crypticfoes.ball": "Ball",
+	"block.crypticfoes.weight_block": "Weight Block",
+	"item.crypticfoes.bumpy_spawn_egg": "Bumpy Spawn Egg",
+	"item.crypticfoes.sturdy_shell": "Sturdy Shell",
+	"item.crypticfoes.ball": "Ball",
+	"item.crypticfoes.rolling_chestplate": "Rolling Chestplate",
+	"item.crypticfoes.rolling_upgrade_smithing_template": "Rolling Upgrade Smithing Template",
+	"item.crypticfoes.smithing_template.rolling_upgrade.additions_slot_description": "Add Sturdy Shell",
+	"item.crypticfoes.smithing_template.rolling_upgrade.applies_to": "Golden Chestplate",
+	"item.crypticfoes.smithing_template.rolling_upgrade.base_slot_description": "Add Golden Chestplate",
+	"item.crypticfoes.smithing_template.rolling_upgrade.ingredients": "Sturdy Shell",
+	"upgrade.crypticfoes.rolling_upgrade": "Rolling Upgrade"
 }

@@ -1,0 +1,19 @@
+{
+	"variants": {
+		"facing=east": {
+			"model": "crypticfoes:block/weight_block",
+			"y": 90
+		},
+		"facing=north": {
+			"model": "crypticfoes:block/weight_block"
+		},
+		"facing=south": {
+			"model": "crypticfoes:block/weight_block",
+			"y": 180
+		},
+		"facing=west": {
+			"model": "crypticfoes:block/weight_block",
+			"y": 270
+		}
+	}
+}

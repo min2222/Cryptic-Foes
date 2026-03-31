@@ -1,0 +1,15 @@
+{
+	"type": "minecraft:smithing_transform",
+	"addition": {
+		"item": "crypticfoes:sturdy_shell"
+	},
+	"base": {
+		"item": "minecraft:golden_chestplate"
+	},
+	"result": {
+		"item": "crypticfoes:rolling_chestplate"
+	},
+	"template": {
+		"item": "crypticfoes:rolling_upgrade_smithing_template"
+	}
+}

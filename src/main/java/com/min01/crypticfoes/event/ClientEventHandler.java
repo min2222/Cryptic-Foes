@@ -15,6 +15,7 @@ import com.min01.crypticfoes.entity.renderer.HowlerScreamRenderer;
 import com.min01.crypticfoes.entity.renderer.NoneRenderer;
 import com.min01.crypticfoes.item.CrypticItems;
 import com.min01.crypticfoes.item.MonstrousHornItem;
+import com.min01.crypticfoes.item.model.ModelRollingArmor;
 import com.min01.crypticfoes.misc.CrypticSkullTypes;
 import com.min01.crypticfoes.particle.CrypticParticles;
 import com.min01.crypticfoes.particle.DustPillarParticle;
@@ -90,6 +91,7 @@ public class ClientEventHandler
     	event.registerLayerDefinition(ModelScreamer.LAYER_LOCATION, ModelScreamer::createBodyLayer);
 
     	event.registerLayerDefinition(ModelBumpy.LAYER_LOCATION, ModelBumpy::createBodyLayer);
+    	event.registerLayerDefinition(ModelRollingArmor.LAYER_LOCATION, ModelRollingArmor::createBodyLayer);
     }
     
 	@SubscribeEvent
