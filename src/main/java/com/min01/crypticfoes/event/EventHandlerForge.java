@@ -2,9 +2,12 @@ package com.min01.crypticfoes.event;
 
 import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.advancements.CrypticCriteriaTriggers;
+import com.min01.crypticfoes.capabilties.IRollingCapability;
+import com.min01.crypticfoes.capabilties.RollingCapabilityImpl;
 import com.min01.crypticfoes.effect.CrypticEffects;
 import com.min01.crypticfoes.entity.AbstractAnimatableMonster;
-import com.min01.crypticfoes.entity.living.EntityHowler;
+import com.min01.crypticfoes.entity.living.BumpyEntity;
+import com.min01.crypticfoes.entity.living.HowlerEntity;
 import com.min01.crypticfoes.network.CrypticNetwork;
 import com.min01.crypticfoes.network.UpdateStunnedEffectPacket;
 import com.min01.crypticfoes.sound.CrypticSounds;
@@ -31,10 +34,13 @@ import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.event.PlayLevelSoundEvent;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.TickEvent.Type;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
+import net.minecraftforge.event.entity.living.ShieldBlockEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -57,7 +63,7 @@ public class EventHandlerForge
 		{
 			for(Entity entity : CrypticUtil.getAllEntities(level))
 			{
-				if(sound.get() != SoundEvents.BELL_BLOCK || !blockPos.closerToCenterThan(entity.position(), 40) || !(entity instanceof EntityHowler howler) || !howler.isHowlerSleeping() || howler.getAnimationState() != 1 || howler.level.dimension() != level.dimension())
+				if(sound.get() != SoundEvents.BELL_BLOCK || !blockPos.closerToCenterThan(entity.position(), 40) || !(entity instanceof HowlerEntity howler) || !howler.isHowlerSleeping() || howler.getAnimationState() != 1 || howler.level.dimension() != level.dimension())
 				{
 					continue;
 				}
@@ -79,7 +85,7 @@ public class EventHandlerForge
 		{
 			for(Entity entity : CrypticUtil.getAllEntities(level))
 			{
-				if(!sound.get().getLocation().toString().contains("goat_horn") || !blockPos.closerToCenterThan(entity.position(), 40) || !(entity instanceof EntityHowler howler) || !howler.isHowlerSleeping() || howler.getAnimationState() != 1 || howler.level.dimension() != level.dimension())
+				if(!sound.get().getLocation().toString().contains("goat_horn") || !blockPos.closerToCenterThan(entity.position(), 40) || !(entity instanceof HowlerEntity howler) || !howler.isHowlerSleeping() || howler.getAnimationState() != 1 || howler.level.dimension() != level.dimension())
 				{
 					continue;
 				}
@@ -104,6 +110,24 @@ public class EventHandlerForge
 	}
 	
 	@SubscribeEvent
+	public static void onShieldBlock(ShieldBlockEvent event)
+	{
+		DamageSource source = event.getDamageSource();
+		Entity entity = source.getDirectEntity();
+		if(entity instanceof BumpyEntity bumpy)
+		{
+			bumpy.stun();
+		}
+	}
+	
+	@SubscribeEvent
+	public static void onPlayerTick(PlayerTickEvent event)
+	{
+		Player player = event.player;
+		player.getCapability(RollingCapabilityImpl.ROLLING).ifPresent(IRollingCapability::tick);
+	}
+	
+	@SubscribeEvent
 	public static void onLevelTick(LevelTickEvent event)
 	{
 		if(event.phase == Phase.END && event.type == Type.LEVEL)
@@ -113,9 +137,29 @@ public class EventHandlerForge
 	}
 	
 	@SubscribeEvent
+	public static void onLivingKnockback(LivingKnockBackEvent event)
+	{
+		LivingEntity entity = event.getEntity();
+		entity.getCapability(RollingCapabilityImpl.ROLLING).ifPresent(t -> 
+		{
+			if(t.isRolling())
+			{
+				event.setCanceled(true);
+			}
+		});
+	}
+	
+	@SubscribeEvent
 	public static void onLivingDamage(LivingDamageEvent event)
 	{
 		LivingEntity entity = event.getEntity();
+		entity.getCapability(RollingCapabilityImpl.ROLLING).ifPresent(t -> 
+		{
+			if(t.isRolling())
+			{
+				event.setAmount(event.getAmount() * 0.7F);
+			}
+		});
 		if(entity.hasEffect(CrypticEffects.STUNNED.get()))
 		{
 			entity.removeEffect(CrypticEffects.STUNNED.get());

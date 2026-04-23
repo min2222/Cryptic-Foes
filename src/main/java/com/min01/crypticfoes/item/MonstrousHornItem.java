@@ -2,7 +2,7 @@ package com.min01.crypticfoes.item;
 
 import com.min01.crypticfoes.advancements.CrypticCriteriaTriggers;
 import com.min01.crypticfoes.entity.CrypticEntities;
-import com.min01.crypticfoes.entity.projectile.EntityHowlerScream;
+import com.min01.crypticfoes.entity.projectile.HowlerScreamEntity;
 import com.min01.crypticfoes.sound.CrypticSounds;
 
 import net.minecraft.nbt.CompoundTag;
@@ -71,7 +71,7 @@ public class MonstrousHornItem extends Item
 						setScreamTick(pStack, tick + 1);
 						if(tick % 2 == 0)
 						{
-							EntityHowlerScream scream = new EntityHowlerScream(CrypticEntities.HOWLER_SCREAM.get(), pLevel);
+							HowlerScreamEntity scream = new HowlerScreamEntity(CrypticEntities.HOWLER_SCREAM.get(), pLevel);
 							scream.setOwner(pEntity);
 							scream.setPos(pEntity.getEyePosition());
 							scream.shootFromRotation(pEntity, pEntity.getXRot(), pEntity.getYRot(), 0.0F, 0.5F + (charge * 0.25F), 1.0F);

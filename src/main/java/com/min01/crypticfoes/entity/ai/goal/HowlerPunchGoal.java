@@ -1,12 +1,12 @@
 package com.min01.crypticfoes.entity.ai.goal;
 
-import com.min01.crypticfoes.entity.living.EntityHowler;
+import com.min01.crypticfoes.entity.living.HowlerEntity;
 import com.min01.crypticfoes.sound.CrypticSounds;
 import com.min01.crypticfoes.util.CrypticUtil;
 
-public class HowlerPunchGoal extends AbstractAnimationGoal<EntityHowler>
+public class HowlerPunchGoal extends AbstractAnimationGoal<HowlerEntity>
 {
-	public HowlerPunchGoal(EntityHowler mob)
+	public HowlerPunchGoal(HowlerEntity mob)
 	{
 		super(mob);
 	}

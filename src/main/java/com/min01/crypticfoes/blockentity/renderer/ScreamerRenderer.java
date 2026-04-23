@@ -2,7 +2,7 @@ package com.min01.crypticfoes.blockentity.renderer;
 
 import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.block.ScreamerBlock;
-import com.min01.crypticfoes.block.model.ModelScreamer;
+import com.min01.crypticfoes.block.model.ScreamerModel;
 import com.min01.crypticfoes.blockentity.ScreamerBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -21,11 +21,11 @@ public class ScreamerRenderer implements BlockEntityRenderer<ScreamerBlockEntity
 	public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/block/screamer.png");
 	public static final ResourceLocation TEXTURE_CHARGED = ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/block/screamer_charged.png");
 	public static final ResourceLocation TEXTURE_LAYER = ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/block/screamer_charged_layer.png");
-	public final ModelScreamer model;
+	public final ScreamerModel model;
 	
 	public ScreamerRenderer(BlockEntityRendererProvider.Context ctx)
 	{
-		this.model = new ModelScreamer(ctx.bakeLayer(ModelScreamer.LAYER_LOCATION));
+		this.model = new ScreamerModel(ctx.bakeLayer(ScreamerModel.LAYER_LOCATION));
 	}
 	
 	@Override

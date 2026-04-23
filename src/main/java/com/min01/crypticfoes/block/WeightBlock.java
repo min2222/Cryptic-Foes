@@ -3,6 +3,7 @@ package com.min01.crypticfoes.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -52,7 +53,41 @@ public class WeightBlock extends HorizontalDirectionalBlock implements Fallable
 	{
 		if(FallingBlock.isFree(pLevel.getBlockState(pPos.below())) && pPos.getY() >= pLevel.getMinBuildHeight())
 		{
-			FallingBlockEntity.fall(pLevel, pPos, pState);
+			FallingBlockEntity entity = FallingBlockEntity.fall(pLevel, pPos, pState);
+			entity.setHurtsEntities(2.0F, 40);
+		}
+	}
+	
+	@Override
+	public void onLand(Level level, BlockPos pos, BlockState state, BlockState replaceableState, FallingBlockEntity fallingBlock)
+	{
+		if(level.isClientSide)
+		{
+			return;
+		}
+		float fallDistance = Math.max(0.0F, fallingBlock.fallDistance - 1.0F);
+		float breakPower = Mth.clamp(1.5F + (fallDistance * 0.2F), 1.5F, 50.0F);
+		int radius = Mth.clamp(1 + (int)(fallDistance / 10.0F), 1, 3);
+		BlockPos center = pos.below();
+		for(int y = -1; y <= 0; ++y)
+		{
+			for(int x = -radius; x <= radius; ++x)
+			{
+				for(int z = -radius; z <= radius; ++z)
+				{
+					BlockPos targetPos = center.offset(x, y, z);
+					BlockState targetState = level.getBlockState(targetPos);
+					if(targetState.isAir())
+					{
+						continue;
+					}
+					float destroySpeed = targetState.getDestroySpeed(level, targetPos);
+					if(destroySpeed >= 0.0F && destroySpeed <= breakPower)
+					{
+						level.destroyBlock(targetPos, true);
+					}
+				}
+			}
 		}
 	}
 }

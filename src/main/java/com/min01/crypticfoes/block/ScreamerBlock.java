@@ -1,7 +1,7 @@
 package com.min01.crypticfoes.block;
 
 import com.min01.crypticfoes.blockentity.ScreamerBlockEntity;
-import com.min01.crypticfoes.entity.projectile.EntityHowlerScream;
+import com.min01.crypticfoes.entity.projectile.HowlerScreamEntity;
 import com.min01.crypticfoes.sound.CrypticSounds;
 
 import net.minecraft.core.BlockPos;
@@ -110,7 +110,7 @@ public class ScreamerBlock extends BaseEntityBlock
 	@Override
 	public void onProjectileHit(Level pLevel, BlockState pState, BlockHitResult pHit, Projectile pProjectile) 
 	{
-		if(pProjectile instanceof EntityHowlerScream && !pState.getValue(CHARGED))
+		if(pProjectile instanceof HowlerScreamEntity && !pState.getValue(CHARGED))
 		{
 			pLevel.playSound(null, pHit.getBlockPos(), CrypticSounds.SCREAMER_SWITCH.get(), SoundSource.BLOCKS, 0.7F, 1.0F);
 			pLevel.setBlockAndUpdate(pHit.getBlockPos(), pState.setValue(CHARGED, true));

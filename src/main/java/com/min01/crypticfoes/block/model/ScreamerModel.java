@@ -16,12 +16,12 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 
-public class ModelScreamer extends HierarchicalBlockModel<ScreamerBlockEntity>
+public class ScreamerModel extends HierarchicalBlockModel<ScreamerBlockEntity>
 {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "screamer"), "main");
 	private final ModelPart root;
 
-	public ModelScreamer(ModelPart root)
+	public ScreamerModel(ModelPart root)
 	{
 		this.root = root.getChild("root");
 	}

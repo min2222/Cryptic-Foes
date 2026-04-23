@@ -2,20 +2,23 @@ package com.min01.crypticfoes.event;
 
 import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.block.CrypticBlocks;
-import com.min01.crypticfoes.block.model.ModelHowlerHead;
-import com.min01.crypticfoes.block.model.ModelScreamer;
+import com.min01.crypticfoes.block.model.HowlerHeadModel;
+import com.min01.crypticfoes.block.model.ScreamerModel;
 import com.min01.crypticfoes.blockentity.renderer.CrypticSkullRenderer;
 import com.min01.crypticfoes.blockentity.renderer.ScreamerRenderer;
 import com.min01.crypticfoes.entity.CrypticEntities;
-import com.min01.crypticfoes.entity.model.ModelBumpy;
-import com.min01.crypticfoes.entity.model.ModelHowler;
+import com.min01.crypticfoes.entity.model.BallModel;
+import com.min01.crypticfoes.entity.model.BumpyModel;
+import com.min01.crypticfoes.entity.model.HowlerModel;
+import com.min01.crypticfoes.entity.renderer.BallRenderer;
 import com.min01.crypticfoes.entity.renderer.BumpyRenderer;
 import com.min01.crypticfoes.entity.renderer.HowlerRenderer;
 import com.min01.crypticfoes.entity.renderer.HowlerScreamRenderer;
 import com.min01.crypticfoes.entity.renderer.NoneRenderer;
 import com.min01.crypticfoes.item.CrypticItems;
 import com.min01.crypticfoes.item.MonstrousHornItem;
-import com.min01.crypticfoes.item.model.ModelRollingArmor;
+import com.min01.crypticfoes.item.model.RollingArmorBallModel;
+import com.min01.crypticfoes.item.model.RollingArmorModel;
 import com.min01.crypticfoes.misc.CrypticSkullTypes;
 import com.min01.crypticfoes.particle.CrypticParticles;
 import com.min01.crypticfoes.particle.DustPillarParticle;
@@ -29,9 +32,11 @@ import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterEntitySpectatorShadersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -67,10 +72,28 @@ public class ClientEventHandler
 	}
 	
 	@SubscribeEvent
+	public static void onRegisterItemColors(RegisterColorHandlersEvent.Item event)
+	{
+		event.register((stack, tintIndex) ->
+		{
+			if(tintIndex != 0)
+			{
+				return 0xFFFFFF;
+			}
+			if(stack.getItem() instanceof DyeableLeatherItem dyeable)
+			{
+				return dyeable.getColor(stack);
+			}
+			return 0xFFFFFF;
+		}, CrypticItems.BALL.get());
+	}
+	
+	@SubscribeEvent
 	public static void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event)
 	{
 		event.registerEntityRenderer(CrypticEntities.HOWLER.get(), HowlerRenderer::new);
 		event.registerEntityRenderer(CrypticEntities.HOWLER_SCREAM.get(), HowlerScreamRenderer::new);
+		event.registerEntityRenderer(CrypticEntities.BALL.get(), BallRenderer::new);
 
 		event.registerEntityRenderer(CrypticEntities.BUMPY.get(), BumpyRenderer::new);
 		
@@ -80,18 +103,21 @@ public class ClientEventHandler
 	@SubscribeEvent
 	public static void onCreateSkullModels(EntityRenderersEvent.CreateSkullModels event)
 	{
-		event.registerSkullModel(CrypticSkullTypes.HOWLER, new ModelHowlerHead(event.getEntityModelSet().bakeLayer(ModelHowlerHead.LAYER_LOCATION)));
+		event.registerSkullModel(CrypticSkullTypes.HOWLER, new HowlerHeadModel(event.getEntityModelSet().bakeLayer(HowlerHeadModel.LAYER_LOCATION)));
 	}
 	
     @SubscribeEvent
     public static void onRegisterLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event)
     {
-    	event.registerLayerDefinition(ModelHowler.LAYER_LOCATION, ModelHowler::createBodyLayer);
-    	event.registerLayerDefinition(ModelHowlerHead.LAYER_LOCATION, ModelHowlerHead::createHeadModel);
-    	event.registerLayerDefinition(ModelScreamer.LAYER_LOCATION, ModelScreamer::createBodyLayer);
+    	event.registerLayerDefinition(HowlerModel.LAYER_LOCATION, HowlerModel::createBodyLayer);
+    	event.registerLayerDefinition(HowlerHeadModel.LAYER_LOCATION, HowlerHeadModel::createHeadModel);
+    	event.registerLayerDefinition(ScreamerModel.LAYER_LOCATION, ScreamerModel::createBodyLayer);
 
-    	event.registerLayerDefinition(ModelBumpy.LAYER_LOCATION, ModelBumpy::createBodyLayer);
-    	event.registerLayerDefinition(ModelRollingArmor.LAYER_LOCATION, ModelRollingArmor::createBodyLayer);
+    	event.registerLayerDefinition(BumpyModel.LAYER_LOCATION, BumpyModel::createBodyLayer);
+    	event.registerLayerDefinition(RollingArmorModel.LAYER_LOCATION, RollingArmorModel::createBodyLayer);
+    	event.registerLayerDefinition(RollingArmorBallModel.LAYER_LOCATION, RollingArmorBallModel::createBodyLayer);
+    	
+    	event.registerLayerDefinition(BallModel.LAYER_LOCATION, BallModel::createBodyLayer);
     }
     
 	@SubscribeEvent

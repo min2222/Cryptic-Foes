@@ -1,8 +1,8 @@
 package com.min01.crypticfoes.entity.renderer.layer;
 
 import com.min01.crypticfoes.CrypticFoes;
-import com.min01.crypticfoes.entity.living.EntityHowler;
-import com.min01.crypticfoes.entity.model.ModelHowler;
+import com.min01.crypticfoes.entity.living.HowlerEntity;
+import com.min01.crypticfoes.entity.model.HowlerModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -13,15 +13,15 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
 
-public class HowlerLayer extends RenderLayer<EntityHowler, ModelHowler>
+public class HowlerLayer extends RenderLayer<HowlerEntity, HowlerModel>
 {
-	public HowlerLayer(RenderLayerParent<EntityHowler, ModelHowler> pRenderer)
+	public HowlerLayer(RenderLayerParent<HowlerEntity, HowlerModel> pRenderer)
 	{
 		super(pRenderer);
 	}
 
 	@Override
-	public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, EntityHowler entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
+	public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, HowlerEntity entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
 	{
 		if(!entity.isInvisible())
 		{

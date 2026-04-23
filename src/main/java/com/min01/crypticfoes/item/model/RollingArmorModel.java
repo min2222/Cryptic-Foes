@@ -16,12 +16,12 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 
-public class ModelRollingArmor<T extends LivingEntity> extends HumanoidModel<T> 
+public class RollingArmorModel<T extends LivingEntity> extends HumanoidModel<T> 
 {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "rolling_armor"), "main");
 	public final ModelPart Body;
 
-	public ModelRollingArmor(ModelPart root)
+	public RollingArmorModel(ModelPart root)
 	{
 		super(root);
 		this.Body = root.getChild("Body");

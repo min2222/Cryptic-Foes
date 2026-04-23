@@ -5,7 +5,8 @@ import java.util.function.Consumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.min01.crypticfoes.item.model.ModelRollingArmor;
+import com.min01.crypticfoes.capabilties.RollingCapabilityImpl;
+import com.min01.crypticfoes.item.model.RollingArmorModel;
 import com.min01.crypticfoes.misc.CrypticArmorMaterials;
 import com.min01.crypticfoes.util.CrypticClientUtil;
 
@@ -13,8 +14,10 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 public class RollingChestplateItem extends ArmorItem
@@ -33,11 +36,23 @@ public class RollingChestplateItem extends ArmorItem
 			@NotNull
 			public HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) 
 			{
-				ModelRollingArmor<?> armorModel = new ModelRollingArmor<>(CrypticClientUtil.MC.getEntityModels().bakeLayer(ModelRollingArmor.LAYER_LOCATION));
+				RollingArmorModel<?> armorModel = new RollingArmorModel<>(CrypticClientUtil.MC.getEntityModels().bakeLayer(RollingArmorModel.LAYER_LOCATION));
 				armorModel.Body.visible = equipmentSlot == EquipmentSlot.CHEST;
 				return armorModel;
 			}
 		});
+	}
+	
+	@Override
+	public void onArmorTick(ItemStack stack, Level level, Player player) 
+	{
+		if(player.isSprinting())
+		{
+			player.getCapability(RollingCapabilityImpl.ROLLING).ifPresent(t -> 
+			{
+				t.setRolling(player.isShiftKeyDown());
+			});
+		}
 	}
 	
 	@Override

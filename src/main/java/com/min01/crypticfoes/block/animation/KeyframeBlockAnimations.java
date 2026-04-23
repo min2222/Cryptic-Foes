@@ -27,14 +27,14 @@ public class KeyframeBlockAnimations
 		{
 			Optional<ModelPart> optional = pModel.getAnyDescendantWithName(entry.getKey());
 			List<AnimationChannel> list = entry.getValue();
-			optional.ifPresent((p_232330_) ->
+			optional.ifPresent(part ->
 			{
-				list.forEach((p_288241_) ->
+				list.forEach(channel ->
 				{
-					Keyframe[] akeyframe = p_288241_.keyframes();
-					int i = Math.max(0, Mth.binarySearch(0, akeyframe.length, (p_232315_) ->
+					Keyframe[] akeyframe = channel.keyframes();
+					int i = Math.max(0, Mth.binarySearch(0, akeyframe.length, (index) ->
 					{
-						return f <= akeyframe[p_232315_].timestamp();
+						return f <= akeyframe[index].timestamp();
 					}) - 1);
 					int j = Math.min(akeyframe.length - 1, i + 1);
 					Keyframe keyframe = akeyframe[i];
@@ -50,7 +50,7 @@ public class KeyframeBlockAnimations
 						f2 = 0.0F;
 					}
 					keyframe1.interpolation().apply(pAnimationVecCache, f2, akeyframe, i, j, pScale);
-					p_288241_.target().apply(p_232330_, pAnimationVecCache);
+					channel.target().apply(part, pAnimationVecCache);
 				});
 			});
 		}
@@ -65,12 +65,12 @@ public class KeyframeBlockAnimations
 			List<AnimationChannel> list = entry.getValue();
 			optional.ifPresent((p_232330_) ->
 			{
-				list.forEach((p_288241_) ->
+				list.forEach(channel ->
 				{
-					Keyframe[] akeyframe = p_288241_.keyframes();
-					int i = Math.max(0, Mth.binarySearch(0, akeyframe.length, (p_232315_) ->
+					Keyframe[] akeyframe = channel.keyframes();
+					int i = Math.max(0, Mth.binarySearch(0, akeyframe.length, (index) ->
 					{
-						return f <= akeyframe[p_232315_].timestamp();
+						return f <= akeyframe[index].timestamp();
 					}) - 1);
 					int j = Math.min(akeyframe.length - 1, i + 1);
 					Keyframe keyframe = akeyframe[i];
@@ -86,7 +86,7 @@ public class KeyframeBlockAnimations
 						f2 = 0.0F;
 					}
 					keyframe1.interpolation().apply(pAnimationVecCache, f2, akeyframe, i, j, pScale);
-					p_288241_.target().apply(p_232330_, pAnimationVecCache);
+					channel.target().apply(p_232330_, pAnimationVecCache);
 				});
 			});
 		}

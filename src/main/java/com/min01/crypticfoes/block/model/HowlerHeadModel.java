@@ -16,13 +16,13 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 
-public class ModelHowlerHead extends CrypticSkullModelBase
+public class HowlerHeadModel extends CrypticSkullModelBase
 {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "howler_head"), "main");
 	private final ModelPart root;
 	private final ModelPart head;
 
-	public ModelHowlerHead(ModelPart root) 
+	public HowlerHeadModel(ModelPart root) 
 	{
 		this.root = root;
 		this.head = root.getChild("head");

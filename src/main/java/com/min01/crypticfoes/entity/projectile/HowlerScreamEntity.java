@@ -29,14 +29,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-public class EntityHowlerScream extends ThrowableProjectile
+public class HowlerScreamEntity extends ThrowableProjectile
 {
-	public static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(EntityHowlerScream.class, EntityDataSerializers.OPTIONAL_UUID);
-	public static final EntityDataAccessor<Integer> STUN_DURATION = SynchedEntityData.defineId(EntityHowlerScream.class, EntityDataSerializers.INT);
-	public static final EntityDataAccessor<Float> RANGE = SynchedEntityData.defineId(EntityHowlerScream.class, EntityDataSerializers.FLOAT);
+	public static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(HowlerScreamEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+	public static final EntityDataAccessor<Integer> STUN_DURATION = SynchedEntityData.defineId(HowlerScreamEntity.class, EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Float> RANGE = SynchedEntityData.defineId(HowlerScreamEntity.class, EntityDataSerializers.FLOAT);
 	public float alpha = 1.0F;
 	
-	public EntityHowlerScream(EntityType<? extends ThrowableProjectile> pEntityType, Level pLevel)
+	public HowlerScreamEntity(EntityType<? extends ThrowableProjectile> pEntityType, Level pLevel)
 	{
 		super(pEntityType, pLevel);
 	}

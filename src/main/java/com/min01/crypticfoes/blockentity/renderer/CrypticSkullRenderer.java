@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 import com.min01.crypticfoes.block.model.CrypticSkullModelBase;
-import com.min01.crypticfoes.block.model.ModelHowlerHead;
+import com.min01.crypticfoes.block.model.HowlerHeadModel;
 import com.min01.crypticfoes.blockentity.CrypticSkullBlockEntity;
 import com.min01.crypticfoes.misc.CrypticSkullTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -40,7 +40,7 @@ public class CrypticSkullRenderer extends SkullBlockRenderer
 	public static Map<SkullBlock.Type, SkullModelBase> createCrypticSkullRenderers(EntityModelSet pEntityModelSet)
 	{
 		ImmutableMap.Builder<SkullBlock.Type, SkullModelBase> builder = ImmutableMap.builder();
-		builder.put(CrypticSkullTypes.HOWLER, new ModelHowlerHead(pEntityModelSet.bakeLayer(ModelHowlerHead.LAYER_LOCATION)));
+		builder.put(CrypticSkullTypes.HOWLER, new HowlerHeadModel(pEntityModelSet.bakeLayer(HowlerHeadModel.LAYER_LOCATION)));
 		return builder.build();
 	}
 
@@ -71,7 +71,7 @@ public class CrypticSkullRenderer extends SkullBlockRenderer
 		} 
 		else
 		{
-			pPoseStack.translate(0.5F - (float) pDirection.getStepX() * 0.25F, 0.25F,	0.5F - (float) pDirection.getStepZ() * 0.25F);
+			pPoseStack.translate(0.5F - (float) pDirection.getStepX() * 0.25F, 0.25F, 0.5F - (float) pDirection.getStepZ() * 0.25F);
 		}
 		pPoseStack.scale(-1.0F, -1.0F, 1.0F);
 		VertexConsumer consumer = pBufferSource.getBuffer(pRenderType);

@@ -34,7 +34,7 @@ public class CrypticItems
 	public static final RegistryObject<Item> ROLLING_UPGRADE_SMITHING_TEMPLATE = ITEMS.register("rolling_upgrade_smithing_template", () -> new RollingSmithingTemplateItem());
 	public static final RegistryObject<Item> ROLLING_CHESTPLATE = ITEMS.register("rolling_chestplate", () -> new RollingChestplateItem(new Item.Properties()));
 	public static final RegistryObject<Item> WEIGHT_BLOCK = registerBlockItem("weight_block", () -> CrypticBlocks.WEIGHT_BLOCK.get(), new Item.Properties());
-	public static final RegistryObject<Item> BALL = ITEMS.register("ball", () -> new Item(new Item.Properties()));
+	public static final RegistryObject<Item> BALL = ITEMS.register("ball", () -> new BallItem());
 
 	public static final RegistryObject<Item> HOWLER_HEAD = ITEMS.register("howler_head", () -> new StandingAndWallBlockItem(CrypticBlocks.HOWLER_HEAD.get(), CrypticBlocks.HOWLER_WALL_HEAD.get(), (new Item.Properties()).rarity(Rarity.UNCOMMON), Direction.DOWN));
 	

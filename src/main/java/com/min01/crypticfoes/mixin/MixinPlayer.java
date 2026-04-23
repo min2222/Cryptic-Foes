@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.min01.crypticfoes.entity.CrypticEntities;
-import com.min01.crypticfoes.entity.projectile.EntityHowlerScream;
+import com.min01.crypticfoes.entity.projectile.HowlerScreamEntity;
 import com.min01.crypticfoes.misc.CrypticTags;
 import com.min01.crypticfoes.sound.CrypticSounds;
 
@@ -29,7 +29,7 @@ public class MixinPlayer
 		{
 			cir.cancel();
 
-			EntityHowlerScream scream = new EntityHowlerScream(CrypticEntities.HOWLER_SCREAM.get(), level);
+			HowlerScreamEntity scream = new HowlerScreamEntity(CrypticEntities.HOWLER_SCREAM.get(), level);
 			scream.setOwner(player);
 			scream.setPos(player.getEyePosition());
 			scream.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 0.75F, 1.0F);

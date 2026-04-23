@@ -53,11 +53,11 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
-public class EntityHowler extends AbstractAnimatableMonster
+public class HowlerEntity extends AbstractAnimatableMonster
 {
-	public static final EntityDataAccessor<Boolean> IS_SLEEPING = SynchedEntityData.defineId(EntityHowler.class, EntityDataSerializers.BOOLEAN);
-	public static final EntityDataAccessor<Boolean> IS_FALLING = SynchedEntityData.defineId(EntityHowler.class, EntityDataSerializers.BOOLEAN);
-	public static final EntityDataAccessor<BlockPos> SLEEP_POS = SynchedEntityData.defineId(EntityHowler.class, EntityDataSerializers.BLOCK_POS);
+	public static final EntityDataAccessor<Boolean> IS_SLEEPING = SynchedEntityData.defineId(HowlerEntity.class, EntityDataSerializers.BOOLEAN);
+	public static final EntityDataAccessor<Boolean> IS_FALLING = SynchedEntityData.defineId(HowlerEntity.class, EntityDataSerializers.BOOLEAN);
+	public static final EntityDataAccessor<BlockPos> SLEEP_POS = SynchedEntityData.defineId(HowlerEntity.class, EntityDataSerializers.BLOCK_POS);
 
 	public final SmoothAnimationState idleAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState sleepAnimationState = new SmoothAnimationState();
@@ -74,7 +74,7 @@ public class EntityHowler extends AbstractAnimatableMonster
 	public int ambientTick;
 	public int targetTick = 200;
 	
-	public EntityHowler(EntityType<? extends Monster> pEntityType, Level pLevel) 
+	public HowlerEntity(EntityType<? extends Monster> pEntityType, Level pLevel) 
 	{
 		super(pEntityType, pLevel);
 		this.posArray = new Vec3[1];
@@ -113,7 +113,7 @@ public class EntityHowler extends AbstractAnimatableMonster
         	@Override
         	protected AABB getTargetSearchArea(double p_26069_)
         	{
-        		if(((EntityHowler) this.mob).isHowlerSleeping())
+        		if(((HowlerEntity) this.mob).isHowlerSleeping())
         		{
             		return this.mob.getBoundingBox().inflate(15.0D, this.mob.level.getMaxBuildHeight(), 15.0D);
         		}
@@ -141,13 +141,13 @@ public class EntityHowler extends AbstractAnimatableMonster
 			@Override
 			public boolean canUse()
 			{
-				return super.canUse() && EntityHowler.this.canMoveAround();
+				return super.canUse() && HowlerEntity.this.canMoveAround();
 			}
 			
 			@Override
 			protected Vec3 getPosition()
 			{
-				Vec2 radius = EntityHowler.this.getMoveRadius();
+				Vec2 radius = HowlerEntity.this.getMoveRadius();
 				return LandRandomPos.getPos(this.mob, (int) radius.x, (int) radius.y);
 			}
 		});
@@ -156,7 +156,7 @@ public class EntityHowler extends AbstractAnimatableMonster
 			@Override
 			public boolean canUse()
 			{
-				return super.canUse() && EntityHowler.this.canLookAround();
+				return super.canUse() && HowlerEntity.this.canLookAround();
 			}
 		});
 		this.goalSelector.addGoal(0, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F)
@@ -164,7 +164,7 @@ public class EntityHowler extends AbstractAnimatableMonster
 			@Override
 			public boolean canUse()
 			{
-				return super.canUse() && EntityHowler.this.canLookAround();
+				return super.canUse() && HowlerEntity.this.canLookAround();
 			}
 		});
 		this.goalSelector.addGoal(0, new LookAtPlayerGoal(this, Mob.class, 8.0F)
@@ -172,7 +172,7 @@ public class EntityHowler extends AbstractAnimatableMonster
 			@Override
 			public boolean canUse()
 			{
-				return super.canUse() && EntityHowler.this.canLookAround();
+				return super.canUse() && HowlerEntity.this.canLookAround();
 			}
 		});
 	}
@@ -390,7 +390,7 @@ public class EntityHowler extends AbstractAnimatableMonster
     {
     	this.playSound(CrypticSounds.HOWLER_LAND.get(), 4.0F, 1.0F);
     	EntityCameraShake.cameraShake(this.level, this.position(), 15.0F, 0.25F, 0, 20);
-    	List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(3.0F), t -> !(t instanceof EntityHowler));
+    	List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(3.0F), t -> !(t instanceof HowlerEntity));
     	list.forEach(t -> 
     	{
     		Vec3 motion = CrypticUtil.getVelocityTowards(this.position(), t.position().add(0, 1, 0), 1.0F);

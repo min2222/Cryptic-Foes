@@ -2,7 +2,7 @@ package com.min01.crypticfoes.entity.model;
 
 import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.entity.animation.BumpyAnimation;
-import com.min01.crypticfoes.entity.living.EntityBumpy;
+import com.min01.crypticfoes.entity.living.BumpyEntity;
 import com.min01.crypticfoes.misc.SmoothAnimationState;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -18,12 +18,12 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 
-public class ModelBumpy extends HierarchicalModel<EntityBumpy>
+public class BumpyModel extends HierarchicalModel<BumpyEntity>
 {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "bumpy"), "main");
 	private final ModelPart root;
 
-	public ModelBumpy(ModelPart root)
+	public BumpyModel(ModelPart root)
 	{
 		this.root = root.getChild("root");
 	}
@@ -60,7 +60,7 @@ public class ModelBumpy extends HierarchicalModel<EntityBumpy>
 	}
 
 	@Override
-	public void setupAnim(EntityBumpy entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) 
+	public void setupAnim(BumpyEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) 
 	{
 		this.root().getAllParts().forEach(ModelPart::resetPose);
 		entity.idleAnimationState.animateIdle(this, BumpyAnimation.IDLE, ageInTicks, limbSwingAmount, 2.5F);

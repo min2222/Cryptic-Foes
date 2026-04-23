@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.min01.crypticfoes.entity.AbstractAnimatableCreature;
+import com.min01.crypticfoes.entity.ai.control.AnimationBodyRotationControl;
 import com.min01.crypticfoes.entity.ai.goal.LookAtTargetGoal;
 import com.min01.crypticfoes.entity.ai.goal.MoveToTargetGoal;
 import com.min01.crypticfoes.misc.SmoothAnimationState;
@@ -25,17 +26,17 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
-public class EntityBumpy extends AbstractAnimatableCreature
+public class BumpyEntity extends AbstractAnimatableCreature
 {
-	public static final EntityDataAccessor<Integer> HIT_TIME = SynchedEntityData.defineId(EntityBumpy.class, EntityDataSerializers.INT);
-	public static final EntityDataAccessor<Boolean> IS_RAMMING = SynchedEntityData.defineId(EntityBumpy.class, EntityDataSerializers.BOOLEAN);
+	public static final EntityDataAccessor<Integer> HIT_TIME = SynchedEntityData.defineId(BumpyEntity.class, EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Boolean> IS_RAMMING = SynchedEntityData.defineId(BumpyEntity.class, EntityDataSerializers.BOOLEAN);
 	
 	public final SmoothAnimationState idleAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState blockingAnimationState = new SmoothAnimationState();
@@ -51,10 +52,9 @@ public class EntityBumpy extends AbstractAnimatableCreature
 	public final SmoothAnimationState stunnedEndAnimationState = new SmoothAnimationState();
 	
 	public int blockTime;
-	public int rollRotation;
-	public int rollTick;
+	public double rollRotation;
 	
-	public EntityBumpy(EntityType<? extends PathfinderMob> pEntityType, Level pLevel)
+	public BumpyEntity(EntityType<? extends PathfinderMob> pEntityType, Level pLevel)
 	{
 		super(pEntityType, pLevel);
 	}
@@ -81,7 +81,7 @@ public class EntityBumpy extends AbstractAnimatableCreature
     		public void start() 
     		{
     			super.start();
-    			EntityBumpy.this.roar();
+    			BumpyEntity.this.roar();
     		}
     	});
     }
@@ -104,6 +104,10 @@ public class EntityBumpy extends AbstractAnimatableCreature
     public void tick() 
     {
     	super.tick();
+    	if(this.blockTime > 0)
+    	{
+    		this.blockTime--;
+    	}
     	if(this.level.isClientSide)
     	{
     		this.idleAnimationState.updateWhen(this.getAnimationState() == 0, this.tickCount);
@@ -121,29 +125,8 @@ public class EntityBumpy extends AbstractAnimatableCreature
     	}
     	else
     	{
-        	if(this.tickCount % 60 == 0 && this.getNavigation().isDone() && this.getAnimationState() == 0)
-        	{
-        		List<EntityBumpy> list = this.level.getEntitiesOfClass(EntityBumpy.class, this.getBoundingBox().inflate(3.0F), t -> t != this && t.isAlive());
-        		list.forEach(t -> 
-        		{
-        			float dist = this.distanceTo(t);
-        			if(dist >= 5)
-        			{
-        				this.getNavigation().moveTo(t, 1.2F);
-        			}
-        			else if(dist <= 3)
-        			{
-        				Vec3 pos = t.position().add(CrypticUtil.getVelocityTowards(t.position(), this.position(), 0.5F));
-        				this.getNavigation().moveTo(pos.x, pos.y, pos.z, 1.0F);
-        			}
-        		});
-        	}
         	if(this.getAnimationState() == 6)
         	{
-        		if(!this.horizontalCollision)
-        		{
-            		this.rollTick++;
-        		}
         		if(this.getTarget() == null || !this.getTarget().isAlive())
         		{
         			this.rollRotation = 0;
@@ -158,53 +141,60 @@ public class EntityBumpy extends AbstractAnimatableCreature
         		{
         			if(this.rollRotation == 0)
         			{
-        				List<EntityBumpy> list = this.level.getEntitiesOfClass(EntityBumpy.class, this.getBoundingBox().inflate(5.0F), t -> t.isAlive() && t.getAnimationState() == 6);
+        				List<BumpyEntity> list = this.level.getEntitiesOfClass(BumpyEntity.class, this.getBoundingBox().inflate(5.0F), t -> t.isAlive() && t.getAnimationState() == 6);
         				list.sort(Comparator.comparing(Entity::getUUID));
-        				this.rollRotation = (360 / Math.max(list.size(), 1)) * (list.indexOf(this) + 1);
+        				this.rollRotation = Math.toRadians((360 / Math.max(list.size(), 1)) * (list.indexOf(this) + 1));
         			}
-            		this.rollRotation += 3;
-            		if(!this.isRamming() && Math.random() <= 0.005F)
+            		if(!this.isRamming())
             		{
-            			this.setRamming(true);
-            		}
-            		if(this.isRamming())
-            		{
-            			if(this.horizontalCollision)
+            			if(this.tickCount % this.random.nextInt(100, 250) == 0 && this.random.nextFloat() <= 0.5F)
             			{
-            				if(this.rollTick % 3 == 0 && this.getAnimationState() == 6)
-            				{
-            					this.setAnimationState(8);
-            					this.setAnimationTick(20);
-            					this.setStopMoveTick(this.getAnimationTick());
-            					this.setStopLookTick(this.getAnimationTick());
-            				}
-            			}
-            			else
-            			{
-            				if(this.distanceTo(this.getTarget()) <= 1.5F)
-            				{
-                				this.doHurtTarget(this.getTarget());
-                    			this.setRamming(false);
-            				}
+                			this.setRamming(true);
+                			this.setAnimationTick(30);
+                			this.getNavigation().stop();
             			}
             		}
+            		else if(this.getAnimationTick() <= 0)
+        			{
+            			if(CrypticUtil.isWithinMeleeAttackRange(this, this.getTarget(), 1.0F))
+            			{
+            				this.doHurtTarget(this.getTarget());
+                			this.setRamming(false);
+            			}
+        			}
         		}
         	}
-    	}
-    	if(this.blockTime > 0)
-    	{
-    		this.blockTime--;
-    	}
-    	if(this.horizontalCollision && !this.isRamming())
-    	{
-    		this.bumpToBlock();
+        	else
+        	{
+            	if(this.horizontalCollision)
+            	{
+            		this.bumpToBlock();
+            	}
+            	if(this.tickCount % 60 == 0 && this.getNavigation().isDone())
+            	{
+            		List<BumpyEntity> list = this.level.getEntitiesOfClass(BumpyEntity.class, this.getBoundingBox().inflate(3.0F), t -> t != this && t.isAlive());
+            		list.forEach(t -> 
+            		{
+            			float dist = this.distanceTo(t);
+            			if(dist >= 5)
+            			{
+            				this.getNavigation().moveTo(t, 1.2F);
+            			}
+            			else if(dist <= 3)
+            			{
+            				Vec3 pos = t.position().add(CrypticUtil.getVelocityTowards(t.position(), this.position(), 0.5F));
+            				this.getNavigation().moveTo(pos.x, pos.y, pos.z, 1.0F);
+            			}
+            		});
+            	}
+        	}
     	}
     }
     
     @Override
     public boolean hurt(DamageSource pSource, float pAmount)
     {
-    	if(!pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && this.getAnimationState() != 9)
+    	if(!pSource.is(DamageTypeTags.BYPASSES_ARMOR) && this.getAnimationState() != 9)
     	{
     		if(this.getAnimationState() == 0)
     		{
@@ -233,6 +223,18 @@ public class EntityBumpy extends AbstractAnimatableCreature
     	this.bump(pEntity);
     }
     
+    public void stun()
+    {
+		if(this.getAnimationState() == 6)
+		{
+			this.setAnimationState(8);
+			this.setAnimationTick(20);
+			this.setDeltaMovement(Vec3.ZERO);
+			this.setStopMoveTick(this.getAnimationTick());
+			this.setStopLookTick(this.getAnimationTick());
+		}
+    }
+    
     public void roar()
     {
 		this.setAnimationState(this.random.nextBoolean() ? 2 : 3);
@@ -241,7 +243,7 @@ public class EntityBumpy extends AbstractAnimatableCreature
 		this.getNavigation().stop();
 		if(this.getTarget() != null && this.getTarget().isAlive())
 		{
-			List<EntityBumpy> list = this.level.getEntitiesOfClass(EntityBumpy.class, this.getBoundingBox().inflate(10.0F), t -> t != this && t.isAlive() && t.getTarget() == null);
+			List<BumpyEntity> list = this.level.getEntitiesOfClass(BumpyEntity.class, this.getBoundingBox().inflate(10.0F), t -> t != this && t.isAlive() && t.getTarget() == null);
 			list.forEach(t -> 
 			{
 				t.setHitTime(3);
@@ -263,7 +265,7 @@ public class EntityBumpy extends AbstractAnimatableCreature
     
     public void bump(Entity entity)
     {
-    	if(entity instanceof EntityBumpy bumpy && bumpy.getAnimationState() == 0 && this.getAnimationState() == 0)
+    	if(entity instanceof BumpyEntity bumpy && bumpy.getAnimationState() == 0 && this.getAnimationState() == 0)
     	{
     		this.setAnimationState(1);
     		this.setAnimationTick(34);
@@ -284,24 +286,38 @@ public class EntityBumpy extends AbstractAnimatableCreature
     {
     	if(this.getAnimationState() == 6 && !this.isRamming())
     	{
-    		Vec2 rot = new Vec2(0.0F, this.rollRotation);
-    		Vec3 pos = CrypticUtil.getLookPos(rot, this.getTarget().position(), 0, 0, 12);
-    		this.getNavigation().moveTo(pos.x, pos.y, pos.z, 1.5F);
+    		this.rollRotation += 0.05F;
+    		
+            double radius = 12.0;
+            Vec3 targetPos = this.getTarget().position();
+
+            double posX = targetPos.x + (radius * Math.cos(this.rollRotation));
+            double posZ = targetPos.z + (radius * Math.sin(this.rollRotation));
+            double posY = targetPos.y;
+
+            this.getNavigation().moveTo(posX, posY, posZ, 1.75F);
     	}
-    	else if(this.isRamming())
+    	else if(this.getAnimationTick() <= 0)
     	{
-    		this.getNavigation().moveTo(this.getTarget(), 1.5F);
+    		//this.getRamPos();
+            this.getNavigation().moveTo(this.getTarget(), 3.0F);
     	}
-    	else
+    }
+    
+    @Override
+    public float maxMoveTurnY()
+    {
+    	if(this.getAnimationState() == 6)
     	{
-    		super.moveToTarget();
+    		return 60.0F;
     	}
+    	return super.maxMoveTurnY();
     }
     
     @Override
     public void lookAtTarget() 
     {
-    	if(this.getAnimationState() != 6)
+    	if(this.getAnimationState() != 6 || this.isRamming())
     	{
         	super.lookAtTarget();
     	}
@@ -360,13 +376,15 @@ public class EntityBumpy extends AbstractAnimatableCreature
     }
     
     @Override
+    protected BodyRotationControl createBodyControl()
+    {
+    	return new BumpyBodyRotationControl(this);
+    }
+    
+    @Override
     public boolean canCollideWith(Entity pEntity) 
     {
-    	if(pEntity instanceof EntityBumpy)
-    	{
-    		return false;
-    	}
-    	return super.canCollideWith(pEntity);
+    	return super.canCollideWith(pEntity) && !(pEntity instanceof BumpyEntity);
     }
     
     public static boolean checkBumpySpawnRules(EntityType<? extends PathfinderMob> pType, ServerLevelAccessor pLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom)
@@ -408,5 +426,22 @@ public class EntityBumpy extends AbstractAnimatableCreature
     public boolean isRamming()
     {
     	return this.entityData.get(IS_RAMMING);
+    }
+    
+    public class BumpyBodyRotationControl extends AnimationBodyRotationControl<BumpyEntity>
+    {
+		public BumpyBodyRotationControl(BumpyEntity pMob) 
+		{
+			super(pMob);
+		}
+    	
+		@Override
+		public void clientTick() 
+		{
+			if(BumpyEntity.this.getAnimationState() != 8 && BumpyEntity.this.getAnimationState() != 9 && BumpyEntity.this.getAnimationState() != 10)
+			{
+				super.clientTick();
+			}
+		}
     }
 }

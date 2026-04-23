@@ -5,7 +5,7 @@ import java.util.List;
 import com.min01.crypticfoes.block.CrypticBlocks;
 import com.min01.crypticfoes.block.ScreamerBlock;
 import com.min01.crypticfoes.effect.CrypticEffects;
-import com.min01.crypticfoes.entity.living.EntityHowler;
+import com.min01.crypticfoes.entity.living.HowlerEntity;
 import com.min01.crypticfoes.misc.SmoothAnimationState;
 import com.min01.crypticfoes.particle.CrypticParticles;
 import com.min01.crypticfoes.sound.CrypticSounds;
@@ -56,7 +56,7 @@ public class ScreamerBlockEntity extends BlockEntity
 			if(block.tickCount == 34)
 			{
 				boolean charged = state.getValue(ScreamerBlock.CHARGED);
-		    	List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, new AABB(-6.0F, 0.0F, -6.0F, 6.0F, 6.0F, 6.0F).move(pos), EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(t -> !(t instanceof EntityHowler)));
+		    	List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, new AABB(-6.0F, 0.0F, -6.0F, 6.0F, 6.0F, 6.0F).move(pos), EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(t -> !(t instanceof HowlerEntity)));
 		    	list.forEach(t -> 
 		    	{
 		    		Vec3 motion = CrypticUtil.getVelocityTowards(Vec3.atBottomCenterOf(pos), t.position().add(0, 1, 0), 1.0F);

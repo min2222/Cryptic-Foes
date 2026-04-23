@@ -1,20 +1,32 @@
 package com.min01.crypticfoes.event;
 
 import com.min01.crypticfoes.CrypticFoes;
+import com.min01.crypticfoes.capabilties.RollingCapabilityImpl;
 import com.min01.crypticfoes.effect.CrypticEffects;
 import com.min01.crypticfoes.entity.EntityCameraShake;
+import com.min01.crypticfoes.item.model.RollingArmorBallModel;
 import com.min01.crypticfoes.shader.CrypticEntityEffect;
 import com.min01.crypticfoes.util.CrypticClientUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 
+import net.minecraft.client.player.Input;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ComputeFovModifierEvent;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.client.event.RenderArmEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent.Stage;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -22,6 +34,8 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = CrypticFoes.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientEventHandlerForge
 {
+	public static final ResourceLocation BALL_TEXTURE = ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "textures/armor/rolling_armor_ball.png");
+	
 	@SubscribeEvent
 	public static void onRenderArm(RenderArmEvent event)
 	{
@@ -29,6 +43,55 @@ public class ClientEventHandlerForge
 		{
 	        RenderSystem.setShaderColor(100.0F, 100.0F, 100.0F, 1.0F);
 		}
+	}
+	
+	@SubscribeEvent
+	public static void onRenderPlayerPre(RenderPlayerEvent.Pre event)
+	{
+		Player player = event.getEntity();
+		PoseStack poseStack = event.getPoseStack();
+		MultiBufferSource bufferSource = event.getMultiBufferSource();
+		RollingArmorBallModel<Player> model = new RollingArmorBallModel<>(CrypticClientUtil.MC.getEntityModels().bakeLayer(RollingArmorBallModel.LAYER_LOCATION));
+		float partialTick = event.getPartialTick();
+		float yBodyRot = Mth.rotLerp(partialTick, player.yBodyRotO, player.yBodyRot);
+		player.getCapability(RollingCapabilityImpl.ROLLING).ifPresent(t -> 
+		{
+			if(t.isRolling())
+			{
+				event.setCanceled(true);
+				poseStack.pushPose();
+				poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - yBodyRot));
+				poseStack.scale(-1.0F, -1.0F, 1.0F);
+				poseStack.translate(0.0F, -1.5F, 0.0F);
+				model.setupAnim(player, 0, 0, player.tickCount + partialTick, t.getRollingYaw() - yBodyRot, 0);
+				model.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityCutoutNoCull(BALL_TEXTURE)), event.getPackedLight(), OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+				poseStack.popPose();
+			}
+		});
+	}
+	
+	@SubscribeEvent
+	public static void onMovementInputUpdate(MovementInputUpdateEvent event)
+	{
+		Player player = event.getEntity();
+		Input input = event.getInput();
+		player.getCapability(RollingCapabilityImpl.ROLLING).ifPresent(t -> 
+		{
+			if(t.isRolling())
+			{
+			    float baseLeft = 0.0F;
+			    float baseForward = input.forwardImpulse * 3.5F;
+			    float delta = t.getRollingYaw() - player.getYHeadRot();
+			    float rad = delta * Mth.DEG_TO_RAD;
+			    float cos = Mth.cos(rad);
+			    float sin = Mth.sin(rad);
+			    float rotatedLeft = baseLeft * cos - baseForward * sin;
+			    float rotatedForward = baseLeft * sin + baseForward * cos;
+			    input.leftImpulse = rotatedLeft;
+			    input.forwardImpulse = rotatedForward;
+			    input.down = false;
+			}
+		});
 	}
 	
 	@SubscribeEvent

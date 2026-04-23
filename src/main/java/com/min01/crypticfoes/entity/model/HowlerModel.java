@@ -2,7 +2,7 @@ package com.min01.crypticfoes.entity.model;
 
 import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.entity.animation.HowlerAnimation;
-import com.min01.crypticfoes.entity.living.EntityHowler;
+import com.min01.crypticfoes.entity.living.HowlerEntity;
 import com.min01.crypticfoes.util.CrypticClientUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -18,7 +18,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 
-public class ModelHowler extends HierarchicalModel<EntityHowler>
+public class HowlerModel extends HierarchicalModel<HowlerEntity>
 {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "howler"), "main");
 	private final ModelPart root;
@@ -28,7 +28,7 @@ public class ModelHowler extends HierarchicalModel<EntityHowler>
 	private final ModelPart body_no_hands;
 	private final ModelPart head;
 
-	public ModelHowler(ModelPart root) 
+	public HowlerModel(ModelPart root) 
 	{
 		this.root = root.getChild("root");
 		this.howlersleeppivot = this.root.getChild("howlersleeppivot");
@@ -102,7 +102,7 @@ public class ModelHowler extends HierarchicalModel<EntityHowler>
 	}
 
 	@Override
-	public void setupAnim(EntityHowler entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) 
+	public void setupAnim(HowlerEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) 
 	{
 		this.root().getAllParts().forEach(ModelPart::resetPose);
 		

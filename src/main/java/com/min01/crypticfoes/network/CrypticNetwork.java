@@ -25,6 +25,7 @@ public class CrypticNetwork
 		CHANNEL.registerMessage(ID++, AddSilencingParticlePacket.class, AddSilencingParticlePacket::write, AddSilencingParticlePacket::read, AddSilencingParticlePacket::handle);
 		CHANNEL.registerMessage(ID++, UpdateSilencedBlocksPacket.class, UpdateSilencedBlocksPacket::write, UpdateSilencedBlocksPacket::read, UpdateSilencedBlocksPacket::handle);
 		CHANNEL.registerMessage(ID++, UpdateStunnedEffectPacket.class, UpdateStunnedEffectPacket::write, UpdateStunnedEffectPacket::read, UpdateStunnedEffectPacket::handle);
+		CHANNEL.registerMessage(ID++, UpdateRollingCapabilityPacket.class, UpdateRollingCapabilityPacket::write, UpdateRollingCapabilityPacket::read, UpdateRollingCapabilityPacket::handle);
 	}
 	
     public static <MSG> void sendToServer(MSG message) 
