@@ -65,9 +65,15 @@ public class WeightBlock extends HorizontalDirectionalBlock implements Fallable
 		{
 			return;
 		}
-		float fallDistance = Math.max(0.0F, fallingBlock.fallDistance - 1.0F);
-		float breakPower = Mth.clamp(1.5F + (fallDistance * 0.2F), 1.5F, 50.0F);
-		int radius = Mth.clamp(1 + (int)(fallDistance / 10.0F), 1, 3);
+		int startY = fallingBlock.getStartPos().getY();
+		int landY = pos.getY();
+		int fallBlocks = Math.max(0, startY - landY);
+		if(fallBlocks <= 3)
+		{
+			return;
+		}
+		float breakPower = Mth.clamp((fallBlocks - 3) * 0.25F, 0.0F, 50.0F);
+		int radius = fallBlocks < 10 ? 1 : (fallBlocks < 18 ? 2 : 3);
 		BlockPos center = pos.below();
 		for(int y = -1; y <= 0; ++y)
 		{

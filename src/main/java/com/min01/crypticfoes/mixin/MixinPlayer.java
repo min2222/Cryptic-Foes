@@ -5,6 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.min01.crypticfoes.capabilties.RollingCapabilityImpl;
 import com.min01.crypticfoes.entity.CrypticEntities;
 import com.min01.crypticfoes.entity.projectile.HowlerScreamEntity;
 import com.min01.crypticfoes.misc.CrypticTags;
@@ -21,6 +22,19 @@ import net.minecraft.world.level.Level;
 @Mixin(value = Player.class, priority = -10000)
 public class MixinPlayer
 {
+	@Inject(at = @At("HEAD"), method = "isStayingOnGroundSurface", cancellable = true)
+	private void crypticfoes$rollingAllowWalkOffEdge(CallbackInfoReturnable<Boolean> cir)
+	{
+		Player player = Player.class.cast(this);
+		player.getCapability(RollingCapabilityImpl.ROLLING).ifPresent(cap ->
+		{
+			if(cap.isRolling())
+			{
+				cir.setReturnValue(false);
+			}
+		});
+	}
+	
 	@Inject(at = @At("HEAD"), method = "eat", cancellable = true)
 	private void eat(Level level, ItemStack stack, CallbackInfoReturnable<ItemStack> cir)
 	{

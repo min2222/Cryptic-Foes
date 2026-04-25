@@ -7,6 +7,7 @@ import com.min01.crypticfoes.entity.AbstractAnimatableCreature;
 import com.min01.crypticfoes.entity.ai.control.AnimationBodyRotationControl;
 import com.min01.crypticfoes.entity.ai.goal.LookAtTargetGoal;
 import com.min01.crypticfoes.entity.ai.goal.MoveToTargetGoal;
+import com.min01.crypticfoes.misc.CrypticEntityDataSerializers;
 import com.min01.crypticfoes.misc.SmoothAnimationState;
 import com.min01.crypticfoes.util.CrypticUtil;
 
@@ -31,12 +32,14 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 public class BumpyEntity extends AbstractAnimatableCreature
 {
 	public static final EntityDataAccessor<Integer> HIT_TIME = SynchedEntityData.defineId(BumpyEntity.class, EntityDataSerializers.INT);
 	public static final EntityDataAccessor<Boolean> IS_RAMMING = SynchedEntityData.defineId(BumpyEntity.class, EntityDataSerializers.BOOLEAN);
+	public static final EntityDataAccessor<Vec3> RAM_POS = SynchedEntityData.defineId(BumpyEntity.class, CrypticEntityDataSerializers.VEC3.get());
 	
 	public final SmoothAnimationState idleAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState blockingAnimationState = new SmoothAnimationState();
@@ -57,6 +60,7 @@ public class BumpyEntity extends AbstractAnimatableCreature
 	public BumpyEntity(EntityType<? extends PathfinderMob> pEntityType, Level pLevel)
 	{
 		super(pEntityType, pLevel);
+		this.setMaxUpStep(1.0F);
 	}
 	
     public static AttributeSupplier.Builder createAttributes()
@@ -98,6 +102,7 @@ public class BumpyEntity extends AbstractAnimatableCreature
     	super.defineSynchedData();
     	this.entityData.define(HIT_TIME, 0);
     	this.entityData.define(IS_RAMMING, false);
+    	this.entityData.define(RAM_POS, Vec3.ZERO);
     }
     
     @Override
@@ -156,10 +161,23 @@ public class BumpyEntity extends AbstractAnimatableCreature
             		}
             		else if(this.getAnimationTick() <= 0)
         			{
-            			if(CrypticUtil.isWithinMeleeAttackRange(this, this.getTarget(), 1.0F))
+            			if(this.getRamPos().equals(Vec3.ZERO))
             			{
-            				this.doHurtTarget(this.getTarget());
-                			this.setRamming(false);
+            				this.setRamPos(CrypticUtil.getLookPos(new Vec2(this.getXRot(), this.yHeadRot), this.position(), 0, 0, 12.0F));
+            			}
+            			else
+            			{
+            				if(this.getNavigation().isDone())
+            				{
+                    			this.setRamming(false);
+                    			this.setRamPos(Vec3.ZERO);
+            				}
+            				else if(CrypticUtil.isWithinMeleeAttackRange(this, this.getTarget(), 1.0F))
+                			{
+                				this.doHurtTarget(this.getTarget());
+                    			this.setRamming(false);
+                    			this.setRamPos(Vec3.ZERO);
+                			}
             			}
         			}
         		}
@@ -299,8 +317,8 @@ public class BumpyEntity extends AbstractAnimatableCreature
     	}
     	else if(this.getAnimationTick() <= 0)
     	{
-    		//this.getRamPos();
-            this.getNavigation().moveTo(this.getTarget(), 3.0F);
+    		Vec3 pos = this.getRamPos();
+            this.getNavigation().moveTo(pos.x, pos.y, pos.z, 3.0F);
     	}
     }
     
@@ -317,7 +335,12 @@ public class BumpyEntity extends AbstractAnimatableCreature
     @Override
     public void lookAtTarget() 
     {
-    	if(this.getAnimationState() != 6 || this.isRamming())
+    	if(!this.getRamPos().equals(Vec3.ZERO))
+    	{
+    		Vec3 pos = this.getRamPos();
+    		this.getLookControl().setLookAt(pos.x, pos.y, pos.z, 100.0F, 100.0F);
+    	}
+    	else if(this.getAnimationState() != 6 || (this.isRamming() && this.getAnimationTick() > 0))
     	{
         	super.lookAtTarget();
     	}
@@ -426,6 +449,16 @@ public class BumpyEntity extends AbstractAnimatableCreature
     public boolean isRamming()
     {
     	return this.entityData.get(IS_RAMMING);
+    }
+    
+    public void setRamPos(Vec3 pos)
+    {
+    	this.entityData.set(RAM_POS, pos);
+    }
+    
+    public Vec3 getRamPos()
+    {
+    	return this.entityData.get(RAM_POS);
     }
     
     public class BumpyBodyRotationControl extends AnimationBodyRotationControl<BumpyEntity>

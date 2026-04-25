@@ -25,9 +25,12 @@ public class RollingCapabilityImpl implements IRollingCapability
 {
 	public static final Capability<IRollingCapability> ROLLING = CapabilityManager.get(new CapabilityToken<>() {});
 	
+	private static final int MAX_ROLLING_TICKS = 7 * 20;
+	
 	private float rollingYaw;
 	private boolean isRolling;
 	private int rollingTick;
+	private boolean rollingExhausted;
 	private final Entity entity;
 	
 	public RollingCapabilityImpl(Entity entity)
@@ -41,6 +44,7 @@ public class RollingCapabilityImpl implements IRollingCapability
 		CompoundTag nbt = new CompoundTag();
 		nbt.putBoolean("isRolling", this.isRolling);
 		nbt.putInt("RollingTick", this.rollingTick);
+		nbt.putBoolean("RollingExhausted", this.rollingExhausted);
 		nbt.putFloat("RollingYaw", this.rollingYaw);
 		return nbt;
 	}
@@ -50,23 +54,54 @@ public class RollingCapabilityImpl implements IRollingCapability
 	{
 		this.setRolling(nbt.getBoolean("isRolling"));
 		this.rollingTick = nbt.getInt("RollingTick");
+		this.rollingExhausted = nbt.getBoolean("RollingExhausted");
 		this.rollingYaw = nbt.getFloat("RollingYaw");
 	}
 	
 	@Override
 	public void tick() 
 	{
+		if(this.entity.level().isClientSide)
+		{
+			return;
+		}
 		if(this.entity instanceof LivingEntity living)
 		{
-			this.setRolling(this.entity.isShiftKeyDown() && this.entity.isSprinting() && living.getItemBySlot(EquipmentSlot.CHEST).is(CrypticItems.ROLLING_CHESTPLATE.get()));
-			if(this.isRolling())
+			if(this.rollingExhausted)
 			{
-				this.entity.setPose(Pose.SWIMMING);
+				if(!this.entity.isShiftKeyDown() || !this.entity.isSprinting())
+				{
+					this.rollingExhausted = false;
+					this.rollingTick = 0;
+				}
+				this.setRolling(false);
+				return;
+			}
+			boolean wantsRoll = this.entity.isShiftKeyDown() && this.entity.isSprinting() && living.getItemBySlot(EquipmentSlot.CHEST).is(CrypticItems.ROLLING_CHESTPLATE.get());
+			if(wantsRoll)
+			{
+				if(!this.isRolling())
+				{
+					this.rollingTick = 0;
+				}
+				this.setRolling(true);
+				this.rollingTick++;
+				if(this.rollingTick >= MAX_ROLLING_TICKS)
+				{
+					this.rollingExhausted = true;
+					this.setRolling(false);
+					return;
+				}
 				List<LivingEntity> list = this.entity.level.getEntitiesOfClass(LivingEntity.class, this.entity.getBoundingBox().inflate(0.5F), t -> t != this.entity && !t.isAlliedTo(this.entity));
 				list.forEach(t -> 
 				{
 					t.hurt(this.entity.damageSources().mobAttack(living), 5.0F);
 				});
+			}
+			else
+			{
+				this.rollingTick = 0;
+				this.setRolling(false);
 			}
 		}
 	}
@@ -76,11 +111,18 @@ public class RollingCapabilityImpl implements IRollingCapability
 	{
 	    boolean prev = this.isRolling;
 	    this.isRolling = value;
+	    if(value)
+	    {
+			this.entity.setPose(Pose.SWIMMING);
+	    }
 	    if(!prev && value)
 	    {
 	        this.rollingYaw = this.entity.getYHeadRot();
 	    }
-	    this.sendUpdatePacket();
+	    if(prev != this.isRolling)
+	    {
+	    	this.sendUpdatePacket();
+	    }
 	}
 	
 	@Override
@@ -93,6 +135,12 @@ public class RollingCapabilityImpl implements IRollingCapability
 	public void setRollingYaw(float yaw)
 	{
 		this.rollingYaw = yaw;
+	}
+	
+	@Override
+	public void setRollingTick(int tick)
+	{
+		this.rollingTick = tick;
 	}
 	
 	@Override

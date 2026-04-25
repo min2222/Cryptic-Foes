@@ -50,6 +50,7 @@ public class UpdateRollingCapabilityPacket
 					entity.getCapability(RollingCapabilityImpl.ROLLING).ifPresent(cap -> 
 					{
 						cap.setRolling(message.isRolling);
+						cap.setRollingTick(message.rollingTick);
 						cap.setRollingYaw(message.rollingYaw);
 					});
 				});

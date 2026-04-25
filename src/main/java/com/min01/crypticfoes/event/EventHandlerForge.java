@@ -123,6 +123,10 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onPlayerTick(PlayerTickEvent event)
 	{
+		if(event.player.level().isClientSide)
+		{
+			return;
+		}
 		Player player = event.player;
 		player.getCapability(RollingCapabilityImpl.ROLLING).ifPresent(IRollingCapability::tick);
 	}
