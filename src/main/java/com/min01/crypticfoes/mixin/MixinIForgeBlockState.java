@@ -2,6 +2,7 @@ package com.min01.crypticfoes.mixin;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 
 import com.min01.crypticfoes.util.CrypticUtil;
 
@@ -19,6 +20,7 @@ public interface MixinIForgeBlockState extends IForgeBlockState
 {
 	@SuppressWarnings("deprecation")
 	@Override
+	@Overwrite(remap = false)
 	default SoundType getSoundType(LevelReader level, BlockPos pos, @Nullable Entity entity) 
 	{
 		SoundType original = BlockState.class.cast(this).getBlock().getSoundType(BlockState.class.cast(this), level, pos, entity);

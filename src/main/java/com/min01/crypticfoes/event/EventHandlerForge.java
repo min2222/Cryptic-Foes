@@ -123,7 +123,7 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onPlayerTick(PlayerTickEvent event)
 	{
-		if(event.player.level().isClientSide)
+		if(event.player.level.isClientSide || event.phase != Phase.END)
 		{
 			return;
 		}
@@ -215,6 +215,13 @@ public class EventHandlerForge
 		{
 			event.setCanceled(true);
 		}
+		entity.getCapability(RollingCapabilityImpl.ROLLING).ifPresent(t -> 
+		{
+			if(t.isRolling())
+			{
+				event.setCanceled(true);
+			}
+		});
 	}
 	
 	@SubscribeEvent
@@ -228,6 +235,13 @@ public class EventHandlerForge
 		{
 			event.setCanceled(true);
 		}
+		player.getCapability(RollingCapabilityImpl.ROLLING).ifPresent(t -> 
+		{
+			if(t.isRolling())
+			{
+				event.setCanceled(true);
+			}
+		});
 		if(CrypticUtil.isBlockSilenced(level, pos))
 		{
 			if(player instanceof ServerPlayer serverPlayer)

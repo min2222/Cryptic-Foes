@@ -16,6 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -53,7 +54,8 @@ public class BumpyEntity extends AbstractAnimatableCreature
 	public final SmoothAnimationState stunnedStartAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState stunnedIdleAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState stunnedEndAnimationState = new SmoothAnimationState();
-	
+
+	public int bumpCooldown;
 	public int blockTime;
 	public double rollRotation;
 	
@@ -70,7 +72,8 @@ public class BumpyEntity extends AbstractAnimatableCreature
     			.add(Attributes.ARMOR, 15.0F)
     			.add(Attributes.KNOCKBACK_RESISTANCE, 1.0F)
     			.add(Attributes.ATTACK_DAMAGE, 6.0F)
-    			.add(Attributes.MOVEMENT_SPEED, 0.2F);
+    			.add(Attributes.MOVEMENT_SPEED, 0.2F)
+    			.add(Attributes.FOLLOW_RANGE, 40.0F);
     }
     
     @Override
@@ -113,6 +116,10 @@ public class BumpyEntity extends AbstractAnimatableCreature
     	{
     		this.blockTime--;
     	}
+    	if(this.bumpCooldown > 0)
+    	{
+    		this.bumpCooldown--;
+    	}
     	if(this.level.isClientSide)
     	{
     		this.idleAnimationState.updateWhen(this.getAnimationState() == 0, this.tickCount);
@@ -141,6 +148,7 @@ public class BumpyEntity extends AbstractAnimatableCreature
         			this.setAnimationTick(12);
         			this.setStopMoveTick(this.getAnimationState());
         			this.setStopLookTick(this.getAnimationState());
+        			this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.2F);
         		}
         		else
         		{
@@ -152,7 +160,7 @@ public class BumpyEntity extends AbstractAnimatableCreature
         			}
             		if(!this.isRamming())
             		{
-            			if(this.tickCount % this.random.nextInt(100, 250) == 0 && this.random.nextFloat() <= 0.5F)
+            			if(this.tickCount % this.random.nextInt(100, 250) == 0 && this.random.nextFloat() <= 0.5F && this.distanceTo(this.getTarget()) >= 3.0F)
             			{
                 			this.setRamming(true);
                 			this.setAnimationTick(30);
@@ -188,20 +196,15 @@ public class BumpyEntity extends AbstractAnimatableCreature
             	{
             		this.bumpToBlock();
             	}
-            	if(this.tickCount % 60 == 0 && this.getNavigation().isDone())
+            	if(this.tickCount % 60 == 0)
             	{
-            		List<BumpyEntity> list = this.level.getEntitiesOfClass(BumpyEntity.class, this.getBoundingBox().inflate(3.0F), t -> t != this && t.isAlive());
+            		List<BumpyEntity> list = this.level.getEntitiesOfClass(BumpyEntity.class, this.getBoundingBox().inflate(5.0F), t -> t != this && t.isAlive());
             		list.forEach(t -> 
             		{
             			float dist = this.distanceTo(t);
-            			if(dist >= 5)
+            			if(dist >= 6.0F)
             			{
-            				this.getNavigation().moveTo(t, 1.2F);
-            			}
-            			else if(dist <= 3)
-            			{
-            				Vec3 pos = t.position().add(CrypticUtil.getVelocityTowards(t.position(), this.position(), 0.5F));
-            				this.getNavigation().moveTo(pos.x, pos.y, pos.z, 1.0F);
+            				this.getNavigation().moveTo(t, 0.8F);
             			}
             		});
             	}
@@ -256,6 +259,8 @@ public class BumpyEntity extends AbstractAnimatableCreature
     public void roar()
     {
 		this.setAnimationState(this.random.nextBoolean() ? 2 : 3);
+		this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25F);
+		this.playSound(SoundEvents.NOTE_BLOCK_BELL.get(), 5.0F, 1.0F);
 		this.setAnimationTick(40);
 		this.setStopMoveTick(this.getAnimationTick());
 		this.getNavigation().stop();
@@ -271,31 +276,40 @@ public class BumpyEntity extends AbstractAnimatableCreature
     
     public void bumpToBlock()
     {
-    	if(this.getAnimationState() == 0)
+    	if(!this.level.isClientSide)
     	{
-    		this.setAnimationState(1);
-    		this.setAnimationTick(34);
-    		this.setStopMoveTick(this.getAnimationTick());
-    		this.setStopLookTick(this.getAnimationTick());
-    		this.getNavigation().stop();
+        	if(this.getAnimationState() == 0 && this.bumpCooldown <= 0)
+        	{
+        		this.setAnimationState(1);
+        		this.setAnimationTick(34);
+        		this.setStopMoveTick(this.getAnimationTick());
+        		this.setStopLookTick(this.getAnimationTick());
+        		this.getNavigation().stop();
+        		this.bumpCooldown = 100;
+        	}
     	}
     }
     
     public void bump(Entity entity)
     {
-    	if(entity instanceof BumpyEntity bumpy && bumpy.getAnimationState() == 0 && this.getAnimationState() == 0)
+    	if(!this.level.isClientSide)
     	{
-    		this.setAnimationState(1);
-    		this.setAnimationTick(34);
-    		this.setStopMoveTick(this.getAnimationTick());
-    		this.setStopLookTick(this.getAnimationTick());
-    		this.getNavigation().stop();
-    		
-    		bumpy.setAnimationState(-1);
-    		bumpy.setAnimationTick(4);
-    		bumpy.setStopMoveTick(bumpy.getAnimationTick());
-    		bumpy.setStopLookTick(bumpy.getAnimationTick());
-    		bumpy.getNavigation().stop();
+        	if(entity instanceof BumpyEntity bumpy && bumpy.getAnimationState() == 0 && this.getAnimationState() == 0 && this.bumpCooldown <= 0)
+        	{
+        		this.setAnimationState(1);
+        		this.setAnimationTick(34);
+        		this.setStopMoveTick(this.getAnimationTick());
+        		this.setStopLookTick(this.getAnimationTick());
+        		this.getNavigation().stop();
+        		this.bumpCooldown = 100;
+        		
+        		bumpy.setAnimationState(-1);
+        		bumpy.setAnimationTick(4);
+        		bumpy.setStopMoveTick(bumpy.getAnimationTick());
+        		bumpy.setStopLookTick(bumpy.getAnimationTick());
+        		bumpy.getNavigation().stop();
+        		bumpy.bumpCooldown = 100;
+        	}
     	}
     }
     
@@ -318,7 +332,7 @@ public class BumpyEntity extends AbstractAnimatableCreature
     	else if(this.getAnimationTick() <= 0)
     	{
     		Vec3 pos = this.getRamPos();
-            this.getNavigation().moveTo(pos.x, pos.y, pos.z, 3.0F);
+            this.getNavigation().moveTo(pos.x, pos.y, pos.z, 2.0F);
     	}
     }
     
@@ -421,6 +435,7 @@ public class BumpyEntity extends AbstractAnimatableCreature
     	super.addAdditionalSaveData(pCompound);
     	pCompound.putInt("HitTime", this.getHitTime());
     	pCompound.putBoolean("isRamming", this.isRamming());
+    	pCompound.putInt("BumpCooldown", this.bumpCooldown);
     }
     
     @Override
@@ -429,6 +444,7 @@ public class BumpyEntity extends AbstractAnimatableCreature
     	super.readAdditionalSaveData(pCompound);
     	this.setHitTime(pCompound.getInt("HitTime"));
     	this.setRamming(pCompound.getBoolean("isRamming"));
+    	this.bumpCooldown = pCompound.getInt("BumpCooldown");
     }
     
     public void setHitTime(int value)

@@ -15,6 +15,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -61,7 +62,7 @@ public class RollingCapabilityImpl implements IRollingCapability
 	@Override
 	public void tick() 
 	{
-		if(this.entity.level().isClientSide)
+		if(this.entity.level.isClientSide)
 		{
 			return;
 		}
@@ -92,7 +93,7 @@ public class RollingCapabilityImpl implements IRollingCapability
 					this.setRolling(false);
 					return;
 				}
-				List<LivingEntity> list = this.entity.level.getEntitiesOfClass(LivingEntity.class, this.entity.getBoundingBox().inflate(0.5F), t -> t != this.entity && !t.isAlliedTo(this.entity));
+				List<LivingEntity> list = this.entity.level.getEntitiesOfClass(LivingEntity.class, this.entity.getBoundingBox().inflate(1.0F), t -> t != this.entity && !t.isAlliedTo(this.entity));
 				list.forEach(t -> 
 				{
 					t.hurt(this.entity.damageSources().mobAttack(living), 5.0F);
@@ -111,9 +112,13 @@ public class RollingCapabilityImpl implements IRollingCapability
 	{
 	    boolean prev = this.isRolling;
 	    this.isRolling = value;
-	    if(value)
+	    if(this.entity instanceof Player player)
 	    {
-			this.entity.setPose(Pose.SWIMMING);
+	    	player.setForcedPose(value ? Pose.SWIMMING : null);
+	    }
+	    else if(value)
+	    {
+	    	this.entity.setPose(Pose.SWIMMING);
 	    }
 	    if(!prev && value)
 	    {

@@ -1,5 +1,8 @@
 package com.min01.crypticfoes.block;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -72,28 +75,73 @@ public class WeightBlock extends HorizontalDirectionalBlock implements Fallable
 		{
 			return;
 		}
-		float breakPower = Mth.clamp((fallBlocks - 3) * 0.25F, 0.0F, 50.0F);
-		int radius = fallBlocks < 10 ? 1 : (fallBlocks < 18 ? 2 : 3);
-		BlockPos center = pos.below();
-		for(int y = -1; y <= 0; ++y)
+		float breakPower = Mth.clamp((fallBlocks - 3) * 0.25F, 0.0F, 40.0F);
+		float blastRadius = Mth.clamp(0.8F + (fallBlocks - 3) * 0.12F, 0.8F, 4.5F);
+		Set<BlockPos> toBreak = this.collectBlocksToBreak(level, pos.below(), breakPower, blastRadius, level.random);
+		toBreak.forEach(targetPos ->
 		{
-			for(int x = -radius; x <= radius; ++x)
+			BlockState targetState = level.getBlockState(targetPos);
+			if(!targetState.isAir() && targetState != state)
 			{
-				for(int z = -radius; z <= radius; ++z)
+				level.destroyBlock(targetPos, true);
+			}
+		});
+	}
+	
+	private Set<BlockPos> collectBlocksToBreak(Level level, BlockPos center, float breakPower, float blastRadius, RandomSource random)
+	{
+		Set<BlockPos> result = new HashSet<>();
+		int grid = 16;
+		float step = 0.3F;
+		for(int x = 0; x < grid; ++x)
+		{
+			for(int y = 0; y < grid; ++y)
+			{
+				for(int z = 0; z < grid; ++z)
 				{
-					BlockPos targetPos = center.offset(x, y, z);
-					BlockState targetState = level.getBlockState(targetPos);
-					if(targetState.isAir())
+					if(x != 0 && x != grid - 1 && y != 0 && y != grid - 1 && z != 0 && z != grid - 1)
 					{
 						continue;
 					}
-					float destroySpeed = targetState.getDestroySpeed(level, targetPos);
-					if(destroySpeed >= 0.0F && destroySpeed <= breakPower)
+					double dx = (float)x / 15.0F * 2.0F - 1.0F;
+					double dy = (float)y / 15.0F * 2.0F - 1.0F;
+					double dz = (float)z / 15.0F * 2.0F - 1.0F;
+					double len = Math.sqrt(dx * dx + dy * dy + dz * dz);
+					dx /= len;
+					dy /= len;
+					dz /= len;
+					float strength = blastRadius * (0.7F + random.nextFloat() * 0.6F);
+					double px = center.getX() + 0.5D;
+					double py = center.getY() + 0.5D;
+					double pz = center.getZ() + 0.5D;
+					while(strength > 0.0F)
 					{
-						level.destroyBlock(targetPos, true);
+						BlockPos targetPos = BlockPos.containing(px, py, pz);
+						if(!level.isInWorldBounds(targetPos))
+						{
+							break;
+						}
+						BlockState targetState = level.getBlockState(targetPos);
+						if(!targetState.isAir())
+						{
+							float destroySpeed = targetState.getDestroySpeed(level, targetPos);
+							if(destroySpeed >= 0.0F)
+							{
+								strength -= (destroySpeed + 0.3F) * 0.3F;
+								if(destroySpeed <= breakPower && strength > 0.0F)
+								{
+									result.add(targetPos.immutable());
+								}
+							}
+						}
+						px += dx * (double)step;
+						py += dy * (double)step;
+						pz += dz * (double)step;
+						strength -= 0.225F;
 					}
 				}
 			}
 		}
+		return result;
 	}
 }
