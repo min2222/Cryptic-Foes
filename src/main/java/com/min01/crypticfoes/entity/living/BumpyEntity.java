@@ -53,7 +53,7 @@ public class BumpyEntity extends AbstractAnimatableCreature
 	public final SmoothAnimationState rollEndAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState stunnedStartAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState stunnedIdleAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState stunnedEndAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState stunnedEndAnimationState = new SmoothAnimationState(0.5F, true);
 
 	public int bumpCooldown;
 	public int blockTime;
@@ -133,7 +133,7 @@ public class BumpyEntity extends AbstractAnimatableCreature
     		this.rollEndAnimationState.updateWhen(this.isAnimationPlaying(7), this.tickCount);
     		this.stunnedStartAnimationState.updateWhen(this.isAnimationPlaying(8), this.tickCount);
     		this.stunnedIdleAnimationState.updateWhen(this.isAnimationPlaying(9), this.tickCount);
-    		this.stunnedEndAnimationState.animateWhen(this.isAnimationPlaying(10), this.tickCount);
+    		this.stunnedEndAnimationState.updateWhen(this.isAnimationPlaying(10), this.tickCount);
     	}
     	else
     	{

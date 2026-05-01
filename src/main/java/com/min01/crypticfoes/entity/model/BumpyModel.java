@@ -74,7 +74,7 @@ public class BumpyModel extends HierarchicalModel<BumpyEntity>
 		entity.rollEndAnimationState.animate(this, BumpyAnimation.ROLL_END, ageInTicks);
 		entity.stunnedStartAnimationState.animate(this, BumpyAnimation.STUNNED_START, ageInTicks);
 		entity.stunnedIdleAnimationState.animate(this, BumpyAnimation.STUNNED_IDLE, ageInTicks);
-		this.animate(entity.stunnedEndAnimationState, BumpyAnimation.STUNNED_END, ageInTicks);
+		entity.stunnedEndAnimationState.animate(this, BumpyAnimation.STUNNED_END, ageInTicks);
 		SmoothAnimationState.animateWalk(this, BumpyAnimation.WALK, limbSwing, limbSwingAmount, 2.5F, 2.5F);
 	}
 	

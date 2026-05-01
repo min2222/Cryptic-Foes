@@ -93,7 +93,7 @@ public class RollingCapabilityImpl implements IRollingCapability
 					this.setRolling(false);
 					return;
 				}
-				List<LivingEntity> list = this.entity.level.getEntitiesOfClass(LivingEntity.class, this.entity.getBoundingBox().inflate(1.0F), t -> t != this.entity && !t.isAlliedTo(this.entity));
+				List<LivingEntity> list = this.entity.level.getEntitiesOfClass(LivingEntity.class, this.entity.getBoundingBox().inflate(0.5F), t -> t != this.entity && !t.isAlliedTo(this.entity));
 				list.forEach(t -> 
 				{
 					t.hurt(this.entity.damageSources().mobAttack(living), 5.0F);
