@@ -40,6 +40,7 @@ public class BallRenderer extends EntityRenderer<BallEntity>
 		pPoseStack.pushPose();
 		pPoseStack.scale(-1.0F, -1.0F, 1.0F);
 		pPoseStack.translate(0.0F, -1.5F, 0.0F);
+		this.model.setupAnim(pEntity, 0, 0, 0, pEntity.getRollZ(pPartialTicks), pEntity.getRollX(pPartialTicks));
 		this.model.renderToBuffer(pPoseStack, pBuffer.getBuffer(RenderType.entityCutoutNoCull(this.getTextureLocation(pEntity))), pPackedLight, OverlayTexture.NO_OVERLAY, red, green, blue, 1.0F);
 		pPoseStack.popPose();
 	}

@@ -31,8 +31,8 @@ public class BallModel extends EntityModel<BallEntity>
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		partdefinition.addOrReplaceChild("root", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, -10.0F, -5.0F, 10.0F, 10.0F, 10.0F, new CubeDeformation(0.0F))
-		.texOffs(0, 20).addBox(-5.0F, -10.0F, -5.0F, 10.0F, 10.0F, 10.0F, new CubeDeformation(0.25F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+		partdefinition.addOrReplaceChild("root", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, -5.0F, -5.0F, 10.0F, 10.0F, 10.0F, new CubeDeformation(0.0F))
+		.texOffs(0, 20).addBox(-5.0F, -5.0F, -5.0F, 10.0F, 10.0F, 10.0F, new CubeDeformation(0.25F)), PartPose.offset(0.0F, 19.0F, 0.0F));
 
 		return LayerDefinition.create(meshdefinition, 64, 64);
 	}
@@ -40,7 +40,8 @@ public class BallModel extends EntityModel<BallEntity>
 	@Override
 	public void setupAnim(BallEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) 
 	{
-
+		this.root.zRot = (float) Math.toRadians(netHeadYaw);
+		this.root.xRot = (float) Math.toRadians(headPitch);
 	}
 
 	@Override
