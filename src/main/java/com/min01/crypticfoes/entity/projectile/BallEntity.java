@@ -36,6 +36,10 @@ import net.minecraft.world.phys.Vec3;
 public class BallEntity extends Projectile implements ItemSupplier
 {
 	private static final EntityDataAccessor<ItemStack> DATA_ITEM_STACK = SynchedEntityData.defineId(BallEntity.class, EntityDataSerializers.ITEM_STACK);
+	
+	private static final float ROLL_RADIUS = 0.3125F;
+	private static final float ROLL_SPIN_MULTIPLIER = 0.42F;
+	private static final float MAX_SPIN_STEP_DEG = 30.0F;
 	   
 	private float rollX;
 	private float rollZ;
@@ -328,9 +332,18 @@ public class BallEntity extends Projectile implements ItemSupplier
 		{
 			return;
 		}
-		float radius = 0.3125F;
-		float rotationDegrees = (float)(horizontalDistance / radius * (180.0D / Math.PI));
-		this.rollX += (float)(dz / horizontalDistance) * rotationDegrees;
-		this.rollZ -= (float)(dx / horizontalDistance) * rotationDegrees;
+		float rotationDegrees = (float)(horizontalDistance / (double)ROLL_RADIUS * (180.0D / Math.PI)) * ROLL_SPIN_MULTIPLIER;
+		float spinX = (float)(dz / horizontalDistance) * rotationDegrees;
+		float spinZ = -(float)(dx / horizontalDistance) * rotationDegrees;
+		float magSq = spinX * spinX + spinZ * spinZ;
+		if(magSq > MAX_SPIN_STEP_DEG * MAX_SPIN_STEP_DEG)
+		{
+			float mag = Mth.sqrt(magSq);
+			float scale = MAX_SPIN_STEP_DEG / mag;
+			spinX *= scale;
+			spinZ *= scale;
+		}
+		this.rollX += spinX;
+		this.rollZ += spinZ;
 	}
 }
