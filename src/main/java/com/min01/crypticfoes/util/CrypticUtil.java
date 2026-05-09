@@ -41,6 +41,11 @@ public class CrypticUtil
 		return level.dayTime() % 24000L >= 13000L;
 	}
 	
+	public static float percent(float baseValue, float percent)
+	{
+		return baseValue * percent / 100.0F;
+	}
+	
     public static float rotlerp(float start, float end, float maxStep) 
     {
         float delta = Mth.wrapDegrees(end - start);

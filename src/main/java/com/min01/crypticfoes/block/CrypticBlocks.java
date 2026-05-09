@@ -23,6 +23,9 @@ public class CrypticBlocks
 	
     public static final RegistryObject<Block> SCREAMER = BLOCKS.register("screamer", () -> new ScreamerBlock());
     
+    public static final RegistryObject<Block> SILENCING_BLEND_BLOCK = BLOCKS.register("silencing_blend_block", () -> new Block(BlockBehaviour.Properties.copy(Blocks.HONEYCOMB_BLOCK)));
+    public static final RegistryObject<Block> HOWLER_MEMBRANE_BLOCK = BLOCKS.register("howler_membrane_block", () -> new Block(BlockBehaviour.Properties.copy(Blocks.HONEYCOMB_BLOCK)));
+    
     public static final RegistryObject<Block> HOWLER_HEAD = BLOCKS.register("howler_head", () -> new CrypticSkullBlock(CrypticSkullTypes.HOWLER, BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.CUSTOM_HEAD).strength(1.0F).pushReaction(PushReaction.DESTROY)));
     public static final RegistryObject<Block> HOWLER_WALL_HEAD = BLOCKS.register("howler_wall_head", () -> new CrypticWallSkullBlock(CrypticSkullTypes.HOWLER, BlockBehaviour.Properties.of().strength(1.0F).lootFrom(() -> HOWLER_HEAD.get()).pushReaction(PushReaction.DESTROY)));
     public static final RegistryObject<Block> WEIGHT_BLOCK = BLOCKS.register("weight_block", () -> new WeightBlock(BlockBehaviour.Properties.copy(Blocks.ANVIL).pushReaction(PushReaction.NORMAL).sound(SoundType.METAL)));

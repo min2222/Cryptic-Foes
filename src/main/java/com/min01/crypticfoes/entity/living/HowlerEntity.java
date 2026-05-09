@@ -3,7 +3,7 @@ package com.min01.crypticfoes.entity.living;
 import java.util.List;
 
 import com.min01.crypticfoes.entity.AbstractAnimatableMonster;
-import com.min01.crypticfoes.entity.EntityCameraShake;
+import com.min01.crypticfoes.entity.CameraShakeEntity;
 import com.min01.crypticfoes.entity.ai.goal.HowlerPunchGoal;
 import com.min01.crypticfoes.entity.ai.goal.HowlerRoarGoal;
 import com.min01.crypticfoes.entity.ai.goal.LookAtTargetGoal;
@@ -389,7 +389,7 @@ public class HowlerEntity extends AbstractAnimatableMonster
     public void createShockwave()
     {
     	this.playSound(CrypticSounds.HOWLER_LAND.get(), 4.0F, 1.0F);
-    	EntityCameraShake.cameraShake(this.level, this.position(), 15.0F, 0.25F, 0, 20);
+    	CameraShakeEntity.cameraShake(this.level, this.position(), 15.0F, 0.25F, 0, 20);
     	List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(3.0F), t -> !(t instanceof HowlerEntity));
     	list.forEach(t -> 
     	{

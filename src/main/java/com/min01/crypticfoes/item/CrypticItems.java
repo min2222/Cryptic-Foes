@@ -27,8 +27,10 @@ public class CrypticItems
 	public static final RegistryObject<Item> BUMPY_SPAWN_EGG = registerSpawnEgg("bumpy_spawn_egg", () -> CrypticEntities.BUMPY.get(), 11037495, 16706733);
 	
 	public static final RegistryObject<Item> HOWLER_MEMBRANE = ITEMS.register("howler_membrane", () -> new Item(new Item.Properties()));
+	public static final RegistryObject<Item> HOWLER_MEMBRANE_BLOCK = registerBlockItem("howler_membrane_block", () -> CrypticBlocks.HOWLER_MEMBRANE_BLOCK.get(), new Item.Properties());
 	public static final RegistryObject<Item> MONSTROUS_HORN = ITEMS.register("monstrous_horn", () -> new MonstrousHornItem());
 	public static final RegistryObject<Item> SILENCING_BLEND = ITEMS.register("silencing_blend", () -> new SilencingBlendItem());
+	public static final RegistryObject<Item> SILENCING_BLEND_BLOCK = registerBlockItem("silencing_blend_block", () -> CrypticBlocks.SILENCING_BLEND_BLOCK.get(), new Item.Properties());
 	public static final RegistryObject<Item> CAVE_SALAD = ITEMS.register("cave_salad", () -> new CaveSaladItem());
 	public static final RegistryObject<Item> STURDY_SHELL = ITEMS.register("sturdy_shell", () -> new Item(new Item.Properties()));
 	public static final RegistryObject<Item> ROLLING_UPGRADE_SMITHING_TEMPLATE = ITEMS.register("rolling_upgrade_smithing_template", () -> new RollingSmithingTemplateItem());

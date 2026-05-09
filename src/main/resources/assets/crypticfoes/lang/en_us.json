@@ -15,6 +15,8 @@
 	"block.crypticfoes.howler_head": "Howler Head",
 	"block.crypticfoes.howler_wall_head": "Howler Wall Head",
 	"block.crypticfoes.screamer": "Screamer",
+	"block.crypticfoes.silencing_blend_block": "Silencing Blend Block",
+	"block.crypticfoes.howler_membrane_block": "Howler Membrane Block",
 	"painting.crypticfoes.dwellers.title": "Dwellers",
 	"painting.crypticfoes.dwellers.author": "Cucuber",
 	"effect.crypticfoes.stunned": "Stunned",
@@ -58,5 +60,11 @@
 	"item.crypticfoes.smithing_template.rolling_upgrade.applies_to": "Golden Chestplate",
 	"item.crypticfoes.smithing_template.rolling_upgrade.base_slot_description": "Add Golden Chestplate",
 	"item.crypticfoes.smithing_template.rolling_upgrade.ingredients": "Sturdy Shell",
-	"upgrade.crypticfoes.rolling_upgrade": "Rolling Upgrade"
+	"upgrade.crypticfoes.rolling_upgrade": "Rolling Upgrade",
+	"enchantment.crypticfoes.patience": "Patience",
+	"enchantment.crypticfoes.patience.desc": "Increases maximum rolling time for 2 seconds for each level.",
+	"enchantment.crypticfoes.accelerate": "Accelerate",
+	"enchantment.crypticfoes.accelerate.desc": "Speed you up the longer you roll.",
+	"enchantment.crypticfoes.mobility": "Mobility",
+	"enchantment.crypticfoes.mobility.desc": "Allows you to rotate during rolling."
 }

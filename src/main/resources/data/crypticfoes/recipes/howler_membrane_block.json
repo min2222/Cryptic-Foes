@@ -1,0 +1,17 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"key": {
+		"#": {
+			"item": "crypticfoes:howler_membrane"
+		}
+	},
+	"pattern": [
+		"##",
+		"##"
+	],
+	"result": {
+		"item": "crypticfoes:howler_membrane_block"
+	},
+	"show_notification": true
+}

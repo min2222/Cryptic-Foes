@@ -1,0 +1,17 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"key": {
+		"#": {
+			"item": "crypticfoes:silencing_blend"
+		}
+	},
+	"pattern": [
+		"##",
+		"##"
+	],
+	"result": {
+		"item": "crypticfoes:silencing_blend_block"
+	},
+	"show_notification": true
+}

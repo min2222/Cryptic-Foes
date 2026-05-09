@@ -22,5 +22,11 @@ public interface IRollingCapability extends ICapabilitySerializable<CompoundTag>
 	
 	void setRollingTick(int tick);
 	
+	int getRollingTick();
+	
 	void setRollingYaw(float yaw);
+	
+	void setRollingSpeed(float speed);
+	
+	float getRollingSpeed();
 }

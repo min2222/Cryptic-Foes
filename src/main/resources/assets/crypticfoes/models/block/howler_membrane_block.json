@@ -1,0 +1,7 @@
+{
+	"parent": "minecraft:block/cube_column",
+	"textures": {
+		"end": "crypticfoes:block/howler_membrane_block_top",
+		"side": "crypticfoes:block/howler_membrane_block_side"
+	}
+}

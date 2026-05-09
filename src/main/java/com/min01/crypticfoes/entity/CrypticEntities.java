@@ -24,7 +24,7 @@ public class CrypticEntities
 	public static final RegistryObject<EntityType<HowlerScreamEntity>> HOWLER_SCREAM = registerEntity("howler_scream", createBuilder(HowlerScreamEntity::new, MobCategory.MISC).sized(0.5F, 0.5F));
 	public static final RegistryObject<EntityType<BallEntity>> BALL = registerEntity("ball", createBuilder(BallEntity::new, MobCategory.MISC).sized(0.625F, 0.625F));
 
-	public static final RegistryObject<EntityType<EntityCameraShake>> CAMERA_SHAKE = registerEntity("camera_shake", EntityType.Builder.<EntityCameraShake>of(EntityCameraShake::new, MobCategory.MISC).sized(0.0F, 0.0F));
+	public static final RegistryObject<EntityType<CameraShakeEntity>> CAMERA_SHAKE = registerEntity("camera_shake", EntityType.Builder.<CameraShakeEntity>of(CameraShakeEntity::new, MobCategory.MISC).sized(0.0F, 0.0F));
 	
 	public static <T extends Entity> EntityType.Builder<T> createBuilder(EntityType.EntityFactory<T> factory, MobCategory category)
 	{

@@ -1,0 +1,6 @@
+{
+	"parent": "block/cube_all",
+	"textures": {
+		"all": "crypticfoes:block/silencing_blend_block"
+	}
+}

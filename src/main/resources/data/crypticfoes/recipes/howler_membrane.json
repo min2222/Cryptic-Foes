@@ -1,0 +1,13 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"category": "misc",
+	"ingredients": [
+		{
+			"item": "crypticfoes:howler_membrane_block"
+		}
+	],
+	"result": {
+		"count": 4,
+		"item": "crypticfoes:howler_membrane"
+	}
+}

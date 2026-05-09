@@ -1,6 +1,7 @@
 package com.min01.crypticfoes.misc;
 
 import com.min01.crypticfoes.CrypticFoes;
+import com.min01.crypticfoes.enchantment.CrypticEnchantments;
 import com.min01.crypticfoes.item.CrypticItems;
 
 import net.minecraft.core.Holder;
@@ -27,7 +28,9 @@ public class CrypticCreativeTabs
     		{
     			output.accept(CrypticItems.HOWLER_SPAWN_EGG.get());
     			output.accept(CrypticItems.HOWLER_MEMBRANE.get());
+    			output.accept(CrypticItems.HOWLER_MEMBRANE_BLOCK.get());
     			output.accept(CrypticItems.SILENCING_BLEND.get());
+    			output.accept(CrypticItems.SILENCING_BLEND_BLOCK.get());
     			output.accept(CrypticItems.CAVE_SALAD.get());
     			output.accept(CrypticItems.MONSTROUS_HORN.get());
     			output.accept(CrypticItems.SCREAMER.get());
@@ -41,6 +44,7 @@ public class CrypticCreativeTabs
     			output.accept(CrypticItems.ROLLING_UPGRADE_SMITHING_TEMPLATE.get());
     			output.accept(CrypticItems.WEIGHT_BLOCK.get());
     			output.accept(CrypticItems.BALL.get());
+    			CrypticEnchantments.addAllEnchantsToCreativeTab(output, CrypticEnchantments.ROLLING_CHESTPLATE);
     		}).build());
     
     public static ItemStack createPainting(CreativeModeTab.ItemDisplayParameters enabledFeatures, ResourceKey<PaintingVariant> key)

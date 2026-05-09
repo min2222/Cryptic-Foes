@@ -3,6 +3,7 @@ package com.min01.crypticfoes;
 import com.min01.crypticfoes.block.CrypticBlocks;
 import com.min01.crypticfoes.capabilties.CrypticCapabilities;
 import com.min01.crypticfoes.effect.CrypticEffects;
+import com.min01.crypticfoes.enchantment.CrypticEnchantments;
 import com.min01.crypticfoes.entity.CrypticEntities;
 import com.min01.crypticfoes.item.CrypticItems;
 import com.min01.crypticfoes.misc.CrypticCreativeTabs;
@@ -38,6 +39,7 @@ public class CrypticFoes
 		CrypticParticles.PARTICLES.register(bus);
 		CrypticSounds.SOUNDS.register(bus);
 		CrypticPaintings.PAINTING_VARIANTS.register(bus);
+		CrypticEnchantments.ENCHANTMENTS.register(bus);
 		
 		CrypticNetwork.registerMessages();
 		MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, CrypticCapabilities::onAttachEntityCapabilities);

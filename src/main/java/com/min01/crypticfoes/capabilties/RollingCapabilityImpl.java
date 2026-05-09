@@ -5,9 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.min01.crypticfoes.enchantment.CrypticEnchantments;
 import com.min01.crypticfoes.item.CrypticItems;
 import com.min01.crypticfoes.network.CrypticNetwork;
 import com.min01.crypticfoes.network.UpdateRollingCapabilityPacket;
+import com.min01.crypticfoes.network.UpdateRollingSpeedPacket;
+import com.min01.crypticfoes.util.CrypticUtil;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -25,9 +28,8 @@ import net.minecraftforge.network.PacketDistributor;
 public class RollingCapabilityImpl implements IRollingCapability
 {
 	public static final Capability<IRollingCapability> ROLLING = CapabilityManager.get(new CapabilityToken<>() {});
-	
-	private static final int MAX_ROLLING_TICKS = 7 * 20;
-	
+
+	private float rollingSpeed;
 	private float rollingYaw;
 	private boolean isRolling;
 	private int rollingTick;
@@ -47,6 +49,7 @@ public class RollingCapabilityImpl implements IRollingCapability
 		nbt.putInt("RollingTick", this.rollingTick);
 		nbt.putBoolean("RollingExhausted", this.rollingExhausted);
 		nbt.putFloat("RollingYaw", this.rollingYaw);
+		nbt.putFloat("RollingSpeed", this.rollingSpeed);
 		return nbt;
 	}
 
@@ -57,6 +60,7 @@ public class RollingCapabilityImpl implements IRollingCapability
 		this.rollingTick = nbt.getInt("RollingTick");
 		this.rollingExhausted = nbt.getBoolean("RollingExhausted");
 		this.rollingYaw = nbt.getFloat("RollingYaw");
+		this.rollingSpeed = nbt.getFloat("RollingSpeed");
 	}
 	
 	@Override
@@ -87,7 +91,14 @@ public class RollingCapabilityImpl implements IRollingCapability
 				}
 				this.setRolling(true);
 				this.rollingTick++;
-				if(this.rollingTick >= MAX_ROLLING_TICKS)
+				float speed = 3.5F;
+				int level = living.getItemBySlot(EquipmentSlot.CHEST).getEnchantmentLevel(CrypticEnchantments.ACCELERATE.get());
+				if(level > 0)
+				{
+					speed += CrypticUtil.percent(this.rollingTick / 20.0F, 15 * level);
+				}
+				this.setRollingSpeed(speed);
+				if(this.rollingTick >= this.getMaxRollingTick(living))
 				{
 					this.rollingExhausted = true;
 					this.setRolling(false);
@@ -107,6 +118,14 @@ public class RollingCapabilityImpl implements IRollingCapability
 		}
 	}
 	
+	public int getMaxRollingTick(LivingEntity living)
+	{
+		int tick = 140;
+		int level = living.getItemBySlot(EquipmentSlot.CHEST).getEnchantmentLevel(CrypticEnchantments.PATIENCE.get());
+		tick += (40 * level);
+		return tick;
+	}
+	
 	@Override
 	public void setRolling(boolean value) 
 	{
@@ -120,7 +139,7 @@ public class RollingCapabilityImpl implements IRollingCapability
 	    {
 	    	this.entity.setPose(Pose.SWIMMING);
 	    }
-	    if(!prev && value)
+	    if(!prev && value )
 	    {
 	        this.rollingYaw = this.entity.getYHeadRot();
 	    }
@@ -149,9 +168,36 @@ public class RollingCapabilityImpl implements IRollingCapability
 	}
 	
 	@Override
+	public int getRollingTick() 
+	{
+		return this.rollingTick;
+	}
+	
+	@Override
 	public float getRollingYaw() 
 	{
 		return this.rollingYaw;
+	}
+	
+	@Override
+	public void setRollingSpeed(float speed)
+	{
+		this.rollingSpeed = speed;
+		this.sendSpeedUpdatePacket();
+	}
+	
+	@Override
+	public float getRollingSpeed()
+	{
+		return this.rollingSpeed;
+	}
+	
+	private void sendSpeedUpdatePacket() 
+	{
+		if(!this.entity.level.isClientSide)
+		{
+			CrypticNetwork.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> this.entity), new UpdateRollingSpeedPacket(this.entity.getUUID(), this.rollingSpeed));
+		}
 	}
 	
 	private void sendUpdatePacket() 
