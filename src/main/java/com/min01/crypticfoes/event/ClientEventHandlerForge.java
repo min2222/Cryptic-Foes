@@ -87,6 +87,7 @@ public class ClientEventHandlerForge
 		{
 			if(t.isRolling())
 			{
+				//FIXME not working, seems like impulse have cap
 				float speed = t.getRollingSpeed();
 			    float baseLeft = 0.0F;
 			    float baseForward = input.forwardImpulse * speed;
