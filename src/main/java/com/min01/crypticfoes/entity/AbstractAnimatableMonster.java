@@ -8,7 +8,9 @@ import com.min01.crypticfoes.entity.ai.control.FlyingLookControl;
 import com.min01.crypticfoes.entity.ai.navigation.NoSpinFlyingPathNavigation;
 import com.min01.crypticfoes.entity.ai.navigation.NoSpinGroundPathNavigation;
 import com.min01.crypticfoes.entity.ai.navigation.NoSpinWaterBoundPathNavigation;
+import com.min01.crypticfoes.misc.AnimationEntries;
 import com.min01.crypticfoes.misc.MobClassification;
+import com.min01.crypticfoes.misc.ModelPartPositions;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -62,8 +64,9 @@ public abstract class AbstractAnimatableMonster extends Monster implements IAnim
 	
 	public float rollAngleO = 0.0F;
 	public float rollAngle = 0.0F;
-	
-	public Vec3[] posArray;
+
+	public final AnimationEntries animationEntries = new AnimationEntries();
+	public final ModelPartPositions modelPositions;
 	
 	public AbstractAnimatableMonster(EntityType<? extends Monster> pEntityType, Level pLevel)
 	{
@@ -84,6 +87,7 @@ public abstract class AbstractAnimatableMonster extends Monster implements IAnim
 			this.moveControl = new AnimationMoveControl<>(this);
 		}
 		this.noCulling = true;
+		this.modelPositions = new ModelPartPositions(this);
 	}
 	
 	@Override
@@ -486,8 +490,14 @@ public abstract class AbstractAnimatableMonster extends Monster implements IAnim
     	this.setStopMoveTick(pCompound.getInt("StopMoveTick"));
     	this.setAnimationTick(pCompound.getInt("AnimationTick"));
     	this.setAnimationState(pCompound.getInt("AnimationState"));
-		this.setSwim(pCompound.getBoolean("isSwim"));
-		this.setFlying(pCompound.getBoolean("isFlying"));
+		if(pCompound.contains("isSwim"))
+		{
+			this.setSwim(pCompound.getBoolean("isSwim"));
+		}
+		if(pCompound.contains("isFlying"))
+		{
+			this.setFlying(pCompound.getBoolean("isFlying"));
+		}
     }
     
     @Override
@@ -559,9 +569,9 @@ public abstract class AbstractAnimatableMonster extends Monster implements IAnim
 	}
     
     @Override
-    public Vec3[] getPosArray()
+    public ModelPartPositions getModelPositions()
     {
-    	return this.posArray;
+    	return this.modelPositions;
     }
 	
 	public void setTargetValid(boolean value)
@@ -689,13 +699,13 @@ public abstract class AbstractAnimatableMonster extends Monster implements IAnim
 		return this.entityData.get(IS_FLYING);
 	}
 	
-	public static boolean checkWaterSpawnRules(EntityType<? extends PathfinderMob> pType, ServerLevelAccessor pServerLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom) 
-    {
-		return pServerLevel.getBlockState(pPos.below()).is(Blocks.WATER) && pServerLevel.getBlockState(pPos.above()).is(Blocks.WATER);
-    }
-	
 	public MobClassification getMobClassification()
 	{
 		return MobClassification.LAND;
 	}
+	
+	public static boolean checkWaterSpawnRules(EntityType<? extends PathfinderMob> pType, ServerLevelAccessor pServerLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom) 
+    {
+		return pServerLevel.getBlockState(pPos.below()).is(Blocks.WATER) && pServerLevel.getBlockState(pPos.above()).is(Blocks.WATER);
+    }
 }

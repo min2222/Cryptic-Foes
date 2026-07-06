@@ -9,6 +9,7 @@ import com.min01.crypticfoes.entity.ai.goal.HowlerRoarGoal;
 import com.min01.crypticfoes.entity.ai.goal.LookAtTargetGoal;
 import com.min01.crypticfoes.entity.ai.goal.MoveToTargetGoal;
 import com.min01.crypticfoes.item.CrypticItems;
+import com.min01.crypticfoes.misc.PositionTypes;
 import com.min01.crypticfoes.misc.SmoothAnimationState;
 import com.min01.crypticfoes.particle.CrypticParticles;
 import com.min01.crypticfoes.sound.CrypticSounds;
@@ -60,6 +61,7 @@ public class HowlerEntity extends AbstractAnimatableMonster
 	public static final EntityDataAccessor<BlockPos> SLEEP_POS = SynchedEntityData.defineId(HowlerEntity.class, EntityDataSerializers.BLOCK_POS);
 
 	public final SmoothAnimationState idleAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState walkAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState sleepAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState awakeAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState fallAnimationState = new SmoothAnimationState();
@@ -77,7 +79,8 @@ public class HowlerEntity extends AbstractAnimatableMonster
 	public HowlerEntity(EntityType<? extends Monster> pEntityType, Level pLevel) 
 	{
 		super(pEntityType, pLevel);
-		this.posArray = new Vec3[1];
+		this.animationEntries.addWalkEntry(this.walkAnimationState, 2.5F);
+		this.modelPositions.addModelPos("head", Vec3.ZERO);
 	}
 	
     public static AttributeSupplier.Builder createAttributes()
@@ -190,6 +193,7 @@ public class HowlerEntity extends AbstractAnimatableMonster
     			this.ambientTick--;
         	}
     		this.idleAnimationState.updateWhen(!this.isHowlerSleeping() && this.getAnimationState() == 0, this.tickCount);
+    		this.walkAnimationState.updateWhen(!this.isHowlerSleeping(), this.tickCount);
     		this.sleepAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 1, this.tickCount);
     		this.awakeAnimationState.updateWhen(this.isHowlerSleeping() && this.getAnimationState() == 2, this.tickCount);
     		this.fallAnimationState.updateWhen(!this.isHowlerSleeping() && this.isFalling() && this.getAnimationState() == 0, this.tickCount);
@@ -215,7 +219,7 @@ public class HowlerEntity extends AbstractAnimatableMonster
         		}
         		if(this.targetTick >= 200 && !this.level.canSeeSky(this.blockPosition()) && this.getAnimationState() == 0 && this.onGround() && this.level.getBlockState(this.getOnPos().above()).isAir())
         		{
-        			BlockPos ceilingPos = CrypticUtil.getCeilingPos(this.level, this.getX(), this.getY(), this.getZ());
+        			BlockPos ceilingPos = CrypticUtil.getPosition(this.level, this.position(), PositionTypes.CEILING);
         			if(!this.level.canSeeSky(ceilingPos) && CrypticUtil.distanceToY(this, ceilingPos) >= 8.0F)
         			{
             			this.setSleepPos(ceilingPos);
@@ -350,6 +354,12 @@ public class HowlerEntity extends AbstractAnimatableMonster
     }
     
     @Override
+    public double getMeleeAttackRangeSqr(LivingEntity pEntity) 
+    {
+        return (double)(this.getBbWidth() * 5.0F * this.getBbWidth() * 5.0F + pEntity.getBbWidth());
+    }
+    
+    @Override
     public boolean onAnimationEnd(int animationState)
     {
     	if(animationState == 4 || animationState == 5)
@@ -412,8 +422,9 @@ public class HowlerEntity extends AbstractAnimatableMonster
 
     public static boolean checkHowlerSpawnRules(EntityType<? extends Monster> pType, ServerLevelAccessor pLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom)
     {
-    	BlockPos ceilingPos = CrypticUtil.getCeilingPos(pLevel, pPos.getX(), pPos.getY(), pPos.getZ());
-    	BlockPos groundPos = CrypticUtil.getGroundPos(pLevel,  pPos.getX(), pPos.getY(), pPos.getZ());
+    	Vec3 pos = Vec3.atBottomCenterOf(pPos);
+    	BlockPos ceilingPos = CrypticUtil.getPosition(pLevel, pos, PositionTypes.CEILING);
+    	BlockPos groundPos = CrypticUtil.getPosition(pLevel,  pos, PositionTypes.GROUND);
     	return !pLevel.getBiome(pPos).is(Biomes.DEEP_DARK) && pPos.getY() < 0 && CrypticUtil.distanceToY(pPos, ceilingPos) >= 8.0F && !pLevel.canSeeSky(ceilingPos) && !pLevel.canSeeSky(groundPos) && pLevel.getDifficulty() != Difficulty.PEACEFUL && isDarkEnoughToSpawn(pLevel, pPos, pRandom) && checkMobSpawnRules(pType, pLevel, pSpawnType, pPos, pRandom);
     }
     
@@ -430,7 +441,7 @@ public class HowlerEntity extends AbstractAnimatableMonster
     	super.handleEntityEvent(pId);
     	if(pId == 99)
     	{
-    		BlockPos groundPos = CrypticUtil.getGroundPos(this.level, this.getX(), this.getY() + 1, this.getZ()).above();
+    		BlockPos groundPos = CrypticUtil.getPosition(this.level, this.position(), PositionTypes.GROUND).above();
     		this.level.addParticle(CrypticParticles.HOWLER_SHOCKWAVE.get(), this.getX(), groundPos.getY() + 0.01F, this.getZ(), 20.0F, 0.0F, 0.0F);
     	}
     }

@@ -2,7 +2,6 @@ package com.min01.crypticfoes.entity.ai.goal;
 
 import com.min01.crypticfoes.entity.living.HowlerEntity;
 import com.min01.crypticfoes.sound.CrypticSounds;
-import com.min01.crypticfoes.util.CrypticUtil;
 
 public class HowlerPunchGoal extends AbstractAnimationGoal<HowlerEntity>
 {
@@ -22,7 +21,7 @@ public class HowlerPunchGoal extends AbstractAnimationGoal<HowlerEntity>
 	@Override
 	public boolean canUse() 
 	{
-		return super.canUse() && CrypticUtil.isWithinMeleeAttackRange(this.mob, this.mob.getTarget(), 5.0F) && !this.mob.isHowlerSleeping() && !this.mob.isFalling();
+		return super.canUse() && this.mob.isWithinMeleeAttackRange(this.mob.getTarget()) && !this.mob.isHowlerSleeping() && !this.mob.isFalling();
 	}
 	
 	@Override
@@ -30,7 +29,7 @@ public class HowlerPunchGoal extends AbstractAnimationGoal<HowlerEntity>
 	{
 		if(this.mob.getTarget() != null)
 		{
-			if(CrypticUtil.isWithinMeleeAttackRange(this.mob, this.mob.getTarget(), 5.0F))
+			if(this.mob.isWithinMeleeAttackRange(this.mob.getTarget()))
 			{
 				this.mob.doHurtTarget(this.mob.getTarget());
 			}

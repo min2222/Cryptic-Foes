@@ -3,7 +3,6 @@ package com.min01.crypticfoes.entity.model;
 import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.entity.animation.BumpyAnimation;
 import com.min01.crypticfoes.entity.living.BumpyEntity;
-import com.min01.crypticfoes.misc.SmoothAnimationState;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -63,7 +62,7 @@ public class BumpyModel extends HierarchicalModel<BumpyEntity>
 	public void setupAnim(BumpyEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) 
 	{
 		this.root().getAllParts().forEach(ModelPart::resetPose);
-		entity.idleAnimationState.animateIdle(this, BumpyAnimation.IDLE, ageInTicks, limbSwingAmount, 2.5F);
+		entity.idleAnimationState.animateIdle(this, BumpyAnimation.IDLE, ageInTicks, limbSwingAmount, entity.animationEntries.walkEntries);
 		entity.blockingAnimationState.animate(this, BumpyAnimation.BLOCKING, ageInTicks);
 		entity.bumpAnimationState.animate(this, BumpyAnimation.BUMP, ageInTicks);
 		entity.roar1AnimationState.animate(this, BumpyAnimation.ROAR_1, ageInTicks);
@@ -75,7 +74,7 @@ public class BumpyModel extends HierarchicalModel<BumpyEntity>
 		entity.stunnedStartAnimationState.animate(this, BumpyAnimation.STUNNED_START, ageInTicks);
 		entity.stunnedIdleAnimationState.animate(this, BumpyAnimation.STUNNED_IDLE, ageInTicks);
 		entity.stunnedEndAnimationState.animate(this, BumpyAnimation.STUNNED_END, ageInTicks);
-		SmoothAnimationState.animateWalk(this, BumpyAnimation.WALK, limbSwing, limbSwingAmount, 2.5F, 2.5F);
+		entity.walkAnimationState.animateWalk(this, BumpyAnimation.WALK, limbSwing, limbSwingAmount, 2.5F, 2.5F, entity.animationEntries.extraEntries);
 	}
 	
 	@Override

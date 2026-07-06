@@ -31,15 +31,12 @@ public class HowlerRoarGoal extends AbstractAnimationGoal<HowlerEntity>
 		super.tick();
 		if(this.mob.getAnimationTick() <= this.getSkillUsingTime() - this.getSkillWarmupTime() && this.mob.getAnimationTick() >= this.getSkillUsingTime() - 70) 
     	{
-			if(this.mob.posArray[0] != null)
-			{
-				HowlerScreamEntity scream = new HowlerScreamEntity(CrypticEntities.HOWLER_SCREAM.get(), this.mob.level);
-				scream.setOwner(this.mob);
-				scream.setPos(this.mob.posArray[0]);
-				scream.shootFromRotation(this.mob, this.mob.getXRot(), this.mob.getYHeadRot(), 0.0F, 0.8F, 1.0F);
-				scream.setNoGravity(true);
-				this.mob.level.addFreshEntity(scream);
-			}
+			HowlerScreamEntity scream = new HowlerScreamEntity(CrypticEntities.HOWLER_SCREAM.get(), this.mob.level);
+			scream.setOwner(this.mob);
+			scream.setPos(this.mob.modelPositions.getModelPos("head"));
+			scream.shootFromRotation(this.mob, this.mob.getXRot(), this.mob.getYHeadRot(), 0.0F, 0.8F, 1.0F);
+			scream.setNoGravity(true);
+			this.mob.level.addFreshEntity(scream);
     	}
 	}
 	

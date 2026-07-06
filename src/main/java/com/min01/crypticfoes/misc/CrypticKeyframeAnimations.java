@@ -21,7 +21,7 @@ public final class CrypticKeyframeAnimations
 	private static final float TWO_PI = (float)(Math.PI * 2.0);
 	private static final float FULL_TURN_EPS = 0.18F;
 	
-	public static void animate(HierarchicalModel<?> pModel, AnimationDefinition pAnimationDefinition, long pAccumulatedTime, float positionScale, float rotationScale, boolean fadeSnapFullTurnRotationOnly, Vector3f pAnimationVecCache)
+	public static void animate(HierarchicalModel<?> pModel, AnimationDefinition pAnimationDefinition, long pAccumulatedTime, float positionScale, float rotationScale, boolean snap, Vector3f pAnimationVecCache)
 	{
 		float f = getElapsedSeconds(pAnimationDefinition, pAccumulatedTime);
 		boolean pastClipEnd = !pAnimationDefinition.looping() && f >= pAnimationDefinition.lengthInSeconds() - 1.0e-4F;
@@ -41,7 +41,7 @@ public final class CrypticKeyframeAnimations
 						{
 							scale = 0.0F;
 						}
-						else if(fadeSnapFullTurnRotationOnly && fullTurn)
+						else if(snap && fullTurn)
 						{
 							scale = 0.0F;
 						}

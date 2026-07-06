@@ -1,5 +1,8 @@
 package com.min01.crypticfoes.entity.renderer;
 
+import org.joml.Vector2f;
+import org.joml.Vector4f;
+
 import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.entity.projectile.HowlerScreamEntity;
 import com.min01.crypticfoes.util.CrypticClientUtil;
@@ -37,7 +40,7 @@ public class HowlerScreamRenderer extends EntityRenderer<HowlerScreamEntity>
 		pPoseStack.mulPose(Axis.XP.rotationDegrees(xRot));
 		pPoseStack.scale(scale, scale, scale);
 		pPoseStack.translate(0, 0.5F, 0);
-		CrypticClientUtil.drawQuad(pPoseStack, pBuffer.getBuffer(RenderType.entityTranslucent(this.getTextureLocation(pEntity))), 1.0F, pPackedLight, pEntity.alpha);
+		CrypticClientUtil.drawQuad(pPoseStack, pBuffer.getBuffer(RenderType.entityTranslucent(this.getTextureLocation(pEntity))), new Vector2f(1.0F, 1.0F), new Vector4f(1.0F, 1.0F, 1.0F, pEntity.alpha), pPackedLight);
 		pPoseStack.popPose();
 	}
 

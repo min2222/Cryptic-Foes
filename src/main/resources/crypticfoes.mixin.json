@@ -2,6 +2,7 @@
 	"required": true,
 	"minVersion": "0.8",
 	"package": "com.min01.crypticfoes.mixin",
+	"plugin": "com.min01.crypticfoes.misc.CrypticMixinPlugin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
 		"MixinVibrationSystem",

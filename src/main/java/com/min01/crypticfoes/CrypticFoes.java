@@ -31,7 +31,7 @@ public class CrypticFoes
 		CrypticEntities.ENTITY_TYPES.register(bus);
 		CrypticItems.ITEMS.register(bus);
 		CrypticEntityDataSerializers.SERIALIZERS.register(bus);
-		CrypticEffects.EFFECTS.register(bus);
+		CrypticEffects.MOB_EFFECTS.register(bus);
 		CrypticEffects.POTIONS.register(bus);
 		CrypticBlocks.BLOCKS.register(bus);
 		CrypticBlocks.BLOCK_ENTITIES.register(bus);

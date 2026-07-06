@@ -12,32 +12,32 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkEvent;
 
-public class UpdatePosArrayPacket 
+public class UpdateModelPositionPacket 
 {
 	private final UUID entityUUID;
-	private final int array;
 	private final Vec3 pos;
+	private final String partName;
 
-	public UpdatePosArrayPacket(UUID uuid, Vec3 pos, int array) 
+	public UpdateModelPositionPacket(UUID uuid, Vec3 pos, String partName) 
 	{
 		this.entityUUID = uuid;
 		this.pos = pos;
-		this.array = array;
+		this.partName = partName;
 	}
 
-	public static UpdatePosArrayPacket read(FriendlyByteBuf buf)
+	public static UpdateModelPositionPacket read(FriendlyByteBuf buf)
 	{
-		return new UpdatePosArrayPacket(buf.readUUID(), CrypticEntityDataSerializers.readVec3(buf), buf.readInt());
+		return new UpdateModelPositionPacket(buf.readUUID(), CrypticEntityDataSerializers.readVec3(buf), buf.readUtf());
 	}
 
 	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeUUID(this.entityUUID);
 		CrypticEntityDataSerializers.writeVec3(buf, this.pos);
-		buf.writeInt(this.array);
+		buf.writeUtf(this.partName);
 	}
 
-	public static boolean handle(UpdatePosArrayPacket message, Supplier<NetworkEvent.Context> ctx)
+	public static boolean handle(UpdateModelPositionPacket message, Supplier<NetworkEvent.Context> ctx)
 	{
 		ctx.get().enqueueWork(() ->
 		{
@@ -46,19 +46,8 @@ public class UpdatePosArrayPacket
 				Entity entity = CrypticUtil.getEntityByUUID(ctx.get().getSender().level, message.entityUUID);
 				if(entity instanceof IAnimatable mob) 
 				{
-					mob.getPosArray()[message.array] = message.pos;
+					mob.getModelPositions().putModelPos(message.partName, message.pos);
 				}
-			}
-			else
-			{
-				CrypticUtil.getClientLevel(t -> 
-				{
-					Entity entity = CrypticUtil.getEntityByUUID(t, message.entityUUID);
-					if(entity instanceof IAnimatable mob) 
-					{
-						mob.getPosArray()[message.array] = message.pos;
-					}
-				});
 			}
 		});
 		ctx.get().setPacketHandled(true);

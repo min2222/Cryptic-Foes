@@ -111,7 +111,7 @@ public class HowlerModel extends HierarchicalModel<HowlerEntity>
 			CrypticClientUtil.animateHead(this.head, netHeadYaw, headPitch);
 		}
 		
-		entity.idleAnimationState.animateIdle(this, HowlerAnimation.HOWLER_IDLE, ageInTicks, limbSwingAmount, 2.5F);
+		entity.idleAnimationState.animateIdle(this, HowlerAnimation.HOWLER_IDLE, ageInTicks, limbSwingAmount, entity.animationEntries.walkEntries);
 		entity.sleepAnimationState.animate(this, HowlerAnimation.HOWLER_SLEEP, ageInTicks);
 		entity.awakeAnimationState.animate(this, HowlerAnimation.HOWLER_AWAKE, ageInTicks);
 		entity.fallAnimationState.animate(this, HowlerAnimation.HOWLER_FALL, ageInTicks);
@@ -122,7 +122,7 @@ public class HowlerModel extends HierarchicalModel<HowlerEntity>
 		entity.flyStartAnimationState.animate(this, HowlerAnimation.HOWLER_FLY_START, ageInTicks);
 		entity.flyEndAnimationState.animate(this, HowlerAnimation.HOWLER_FLY_END, ageInTicks);
 		this.animate(entity.blinkAnimationState, HowlerAnimation.HOWLER_BLINK, ageInTicks);
-		this.animateWalk(HowlerAnimation.HOWLER_WALK, limbSwing, limbSwingAmount, 2.5F, 2.5F);
+		entity.walkAnimationState.animateWalk(this, HowlerAnimation.HOWLER_WALK, limbSwing, limbSwingAmount, 2.5F, 2.5F);
 	}
 	
 	@Override

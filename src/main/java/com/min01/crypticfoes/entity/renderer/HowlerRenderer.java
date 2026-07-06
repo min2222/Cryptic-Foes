@@ -4,16 +4,12 @@ import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.entity.living.HowlerEntity;
 import com.min01.crypticfoes.entity.model.HowlerModel;
 import com.min01.crypticfoes.entity.renderer.layer.HowlerLayer;
-import com.min01.crypticfoes.network.CrypticNetwork;
-import com.min01.crypticfoes.network.UpdatePosArrayPacket;
-import com.min01.crypticfoes.util.CrypticClientUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.phys.Vec3;
 
 public class HowlerRenderer extends MobRenderer<HowlerEntity, HowlerModel>
 {
@@ -27,9 +23,7 @@ public class HowlerRenderer extends MobRenderer<HowlerEntity, HowlerModel>
 	public void render(HowlerEntity pEntity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) 
 	{
 		super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
-		Vec3 pos1 = CrypticClientUtil.getWorldPosition(pEntity, this.model.root(), new Vec3(0.0F, pEntity.yBodyRot, 0.0F), "howlersleeppivot", "howler", "body", "body_no_hands", "head");
-		pEntity.posArray[0] = pos1;
-		CrypticNetwork.sendToServer(new UpdatePosArrayPacket(pEntity.getUUID(), pos1, 0));
+		pEntity.modelPositions.setModelPos(pEntity, this.model.root());
 	}
 
 	@Override

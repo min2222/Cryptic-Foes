@@ -1,7 +1,8 @@
 package com.min01.crypticfoes.entity;
 
+import com.min01.crypticfoes.misc.ModelPartPositions;
+
 import net.minecraft.world.phys.Vec2;
-import net.minecraft.world.phys.Vec3;
 
 public interface IAnimatable
 {
@@ -29,7 +30,7 @@ public interface IAnimatable
 
 	void lookAtTarget();
 	
-	Vec3[] getPosArray();
+	ModelPartPositions getModelPositions();
 	
 	default int getMoveInterval()
 	{

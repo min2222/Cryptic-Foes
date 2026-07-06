@@ -10,10 +10,10 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class CrypticEffects 
 {
-	public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, CrypticFoes.MODID);
+	public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, CrypticFoes.MODID);
 	public static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(ForgeRegistries.POTIONS, CrypticFoes.MODID);
 	
-	public static final RegistryObject<MobEffect> STUNNED = EFFECTS.register("stunned", () -> new StunnedEffect());
+	public static final RegistryObject<MobEffect> STUNNED = MOB_EFFECTS.register("stunned", () -> new StunnedEffect());
 	
 	public static void init()
 	{

@@ -43,6 +43,7 @@ public class BumpyEntity extends AbstractAnimatableCreature
 	public static final EntityDataAccessor<Vec3> RAM_POS = SynchedEntityData.defineId(BumpyEntity.class, CrypticEntityDataSerializers.VEC3.get());
 	
 	public final SmoothAnimationState idleAnimationState = new SmoothAnimationState();
+	public final SmoothAnimationState walkAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState blockingAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState bumpAnimationState = new SmoothAnimationState();
 	public final SmoothAnimationState roar1AnimationState = new SmoothAnimationState();
@@ -63,6 +64,8 @@ public class BumpyEntity extends AbstractAnimatableCreature
 	{
 		super(pEntityType, pLevel);
 		this.setMaxUpStep(1.0F);
+		this.animationEntries.addWalkEntry(this.walkAnimationState, 2.5F);
+		this.animationEntries.addExtraEntry(this.rollAnimationState);
 	}
 	
     public static AttributeSupplier.Builder createAttributes()
@@ -123,6 +126,7 @@ public class BumpyEntity extends AbstractAnimatableCreature
     	if(this.level.isClientSide)
     	{
     		this.idleAnimationState.updateWhen(this.getAnimationState() == 0, this.tickCount);
+    		this.walkAnimationState.updateWhen(true, this.tickCount);
     		this.blockingAnimationState.updateWhen(this.blockTime > 0, this.tickCount);
     		this.bumpAnimationState.updateWhen(this.isAnimationPlaying(1), this.tickCount);
     		this.roar1AnimationState.updateWhen(this.isAnimationPlaying(2), this.tickCount);
@@ -180,7 +184,7 @@ public class BumpyEntity extends AbstractAnimatableCreature
                     			this.setRamming(false);
                     			this.setRamPos(Vec3.ZERO);
             				}
-            				else if(CrypticUtil.isWithinMeleeAttackRange(this, this.getTarget(), 1.0F))
+            				else if(this.isWithinMeleeAttackRange(this.getTarget()))
                 			{
                 				this.doHurtTarget(this.getTarget());
                     			this.setRamming(false);
@@ -210,6 +214,12 @@ public class BumpyEntity extends AbstractAnimatableCreature
             	}
         	}
     	}
+    }
+
+    @Override
+    public double getMeleeAttackRangeSqr(LivingEntity pEntity) 
+    {
+        return (double)(this.getBbWidth() * 1.0F * this.getBbWidth() * 1.0F + pEntity.getBbWidth());
     }
     
     @Override

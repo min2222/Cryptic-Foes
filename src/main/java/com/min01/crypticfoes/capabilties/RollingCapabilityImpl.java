@@ -139,7 +139,7 @@ public class RollingCapabilityImpl implements IRollingCapability
 	    {
 	    	this.entity.setPose(Pose.SWIMMING);
 	    }
-	    if(!prev && value )
+	    if(!prev && value)
 	    {
 	        this.rollingYaw = this.entity.getYHeadRot();
 	    }
