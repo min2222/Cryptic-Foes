@@ -1,5 +1,7 @@
 package com.min01.crypticfoes.entity;
 
+import org.joml.Vector2f;
+
 import com.min01.crypticfoes.entity.ai.control.AnimationBodyRotationControl;
 import com.min01.crypticfoes.entity.ai.control.AnimationFlyingMoveControl;
 import com.min01.crypticfoes.entity.ai.control.AnimationMoveControl;
@@ -11,13 +13,13 @@ import com.min01.crypticfoes.entity.ai.navigation.NoSpinWaterBoundPathNavigation
 import com.min01.crypticfoes.misc.AnimationEntries;
 import com.min01.crypticfoes.misc.MobClassification;
 import com.min01.crypticfoes.misc.ModelPartPositions;
+import com.min01.crypticfoes.misc.MovementData;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -46,7 +48,6 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 
@@ -61,11 +62,9 @@ public abstract class AbstractAnimatableCreature extends PathfinderMob implement
 	public static final EntityDataAccessor<Boolean> IS_FLYING = SynchedEntityData.defineId(AbstractAnimatableCreature.class, EntityDataSerializers.BOOLEAN);
 	public static final EntityDataAccessor<Boolean> IS_SWIM = SynchedEntityData.defineId(AbstractAnimatableCreature.class, EntityDataSerializers.BOOLEAN);
 	
-	public float rollAngleO = 0.0F;
-	public float rollAngle = 0.0F;
-
 	public final AnimationEntries animationEntries = new AnimationEntries();
 	public final ModelPartPositions modelPositions;
+	public MovementData movementData;
 	
 	public AbstractAnimatableCreature(EntityType<? extends PathfinderMob> pEntityType, Level pLevel)
 	{
@@ -113,41 +112,33 @@ public abstract class AbstractAnimatableCreature extends PathfinderMob implement
 	{
 		if(this.getMobClassification() == MobClassification.WATER)
 		{
-			this.goalSelector.addGoal(0, new RandomStrollGoal(this, 1.0F, this.getMoveInterval(), false)
+			this.goalSelector.addGoal(0, new RandomStrollGoal(this, 1.0F, this.movementData.ground.interval, false)
 			{
 				@Override
 				public boolean canUse()
 				{
-					if(super.canUse() && AbstractAnimatableCreature.this.canMoveAround())
-					{
-						return !AbstractAnimatableCreature.this.isInWater();
-					}
-					return false;
+					return super.canUse() && AbstractAnimatableCreature.this.canMoveAround() && !AbstractAnimatableCreature.this.isInWater();
 				}
 				
 				@Override
 				protected Vec3 getPosition()
 				{
-					Vec2 radius = AbstractAnimatableCreature.this.getMoveRadius();
+					Vector2f radius = AbstractAnimatableCreature.this.movementData.ground.radius;
 					return DefaultRandomPos.getPos(this.mob, (int) radius.x, (int) radius.y);
 				}
 			});
-			this.goalSelector.addGoal(0, new RandomStrollGoal(this, 1.0F, this.getSwimInterval(), false)
+			this.goalSelector.addGoal(0, new RandomStrollGoal(this, 1.0F, this.movementData.swim.interval, false)
 			{
 				@Override
 				public boolean canUse()
 				{
-					if(super.canUse() && AbstractAnimatableCreature.this.canMoveAround())
-					{
-						return AbstractAnimatableCreature.this.isInWater();
-					}
-					return false;
+					return super.canUse() && AbstractAnimatableCreature.this.canMoveAround() && AbstractAnimatableCreature.this.isInWater();
 				}
 				
 				@Override
 				protected Vec3 getPosition()
 				{
-					Vec2 radius = AbstractAnimatableCreature.this.getSwimRadius();
+					Vector2f radius = AbstractAnimatableCreature.this.movementData.swim.radius;
 					return BehaviorUtils.getRandomSwimmablePos(this.mob, (int) radius.x, (int) radius.y);
 				}
 			});
@@ -155,7 +146,7 @@ public abstract class AbstractAnimatableCreature extends PathfinderMob implement
 		else if(this.getMobClassification() == MobClassification.AIR)
 		{
 			this.goalSelector.addGoal(0, new FloatGoal(this));
-			this.goalSelector.addGoal(0, new RandomStrollGoal(this, 1.0F, this.getMoveInterval(), false)
+			this.goalSelector.addGoal(0, new RandomStrollGoal(this, 1.0F, this.movementData.ground.interval, false)
 			{
 				@Override
 				public boolean canUse()
@@ -166,11 +157,11 @@ public abstract class AbstractAnimatableCreature extends PathfinderMob implement
 				@Override
 				protected Vec3 getPosition()
 				{
-					Vec2 radius = AbstractAnimatableCreature.this.getMoveRadius();
+					Vector2f radius = AbstractAnimatableCreature.this.movementData.ground.radius;
 					return LandRandomPos.getPos(this.mob, (int) radius.x, (int) radius.y);
 				}
 			});
-			this.goalSelector.addGoal(0, new RandomStrollGoal(this, 1.0F, this.getFlyInterval(), false)
+			this.goalSelector.addGoal(0, new RandomStrollGoal(this, 1.0F, this.movementData.fly.interval, false)
 			{
 				@Override
 				public boolean canUse()
@@ -181,7 +172,7 @@ public abstract class AbstractAnimatableCreature extends PathfinderMob implement
 				@Override
 				protected Vec3 getPosition()
 				{
-					Vec2 radius = AbstractAnimatableCreature.this.getFlyRadius();
+					Vector2f radius = AbstractAnimatableCreature.this.movementData.fly.radius;
 					Vec3 vec3 = this.mob.getViewVector(0.0F);
 					Vec3 vec31 = HoverRandomPos.getPos(this.mob, (int) radius.x, (int) radius.y, vec3.x, vec3.z, ((float)Math.PI / 2.0F), 3, 1);
 					return vec31 != null ? vec31 : AirAndWaterRandomPos.getPos(this.mob, (int) radius.x, (int) radius.y, -2, vec3.x, vec3.z, (double)((float)Math.PI / 2.0F));
@@ -191,7 +182,7 @@ public abstract class AbstractAnimatableCreature extends PathfinderMob implement
 		else
 		{
 			this.goalSelector.addGoal(0, new FloatGoal(this));
-			this.goalSelector.addGoal(0, new RandomStrollGoal(this, 1.0F, this.getMoveInterval(), false)
+			this.goalSelector.addGoal(0, new RandomStrollGoal(this, 1.0F, this.movementData.ground.interval, false)
 			{
 				@Override
 				public boolean canUse()
@@ -202,7 +193,7 @@ public abstract class AbstractAnimatableCreature extends PathfinderMob implement
 				@Override
 				protected Vec3 getPosition()
 				{
-					Vec2 radius = AbstractAnimatableCreature.this.getMoveRadius();
+					Vector2f radius = AbstractAnimatableCreature.this.movementData.ground.radius;
 					return LandRandomPos.getPos(this.mob, (int) radius.x, (int) radius.y);
 				}
 			});
@@ -390,27 +381,6 @@ public abstract class AbstractAnimatableCreature extends PathfinderMob implement
 				this.setAnimationPlaying(false);
 			}
 		}
-		
-	    Vec3 movement = this.getDeltaMovement();
-	    float speed = (float) movement.length();
-	    this.rollAngleO = this.rollAngle;
-	    boolean flag = false;
-	    if(this.getMobClassification() == MobClassification.WATER)
-	    {
-	    	flag = this.isInWater();
-	    }
-	    else if(this.getMobClassification() == MobClassification.AIR)
-	    {
-	    	flag = this.isFlying();
-	    }
-	    if(speed > this.getRollThreshold() && flag) 
-	    {
-	        this.rollAngle += (this.getTargetRoll(movement) - this.rollAngle) * this.getRollAmount();
-	    }
-	    else
-	    {
-	        this.rollAngle *= 0.9F;
-	    }
     }
     
     @Override
@@ -572,6 +542,16 @@ public abstract class AbstractAnimatableCreature extends PathfinderMob implement
     {
     	return this.modelPositions;
     }
+    
+    @Override
+    public MovementData getMovementData()
+    {
+    	if(this.movementData == null)
+    	{
+    		this.movementData = new MovementData();
+    	}
+    	return this.movementData;
+    }
 	
 	public void setTargetValid(boolean value)
 	{
@@ -657,26 +637,6 @@ public abstract class AbstractAnimatableCreature extends PathfinderMob implement
     {
     	return this.getAnimationState() == state && this.isAnimationPlaying();
     }
-    
-	public float getRollAngle(float partialTicks)
-	{
-		return Mth.lerp(partialTicks, this.rollAngleO, this.rollAngle);
-	}
-	
-	public float getTargetRoll(Vec3 movement)
-	{
-		return (float) (Math.toDegrees(Math.atan2(movement.x, movement.z)) * 0.01F);
-	}
-	
-	public float getRollThreshold()
-	{
-		return 0.05F;
-	}
-	
-	public float getRollAmount()
-	{
-		return 0.01F;
-	}
 	
 	public void setSwim(boolean isSwim)
 	{

@@ -4,9 +4,6 @@ import java.util.List;
 
 import org.joml.Vector3f;
 
-import com.min01.crypticfoes.block.animation.KeyframeBlockAnimations;
-import com.min01.crypticfoes.block.model.CrypticSkullModelBase;
-import com.min01.crypticfoes.block.model.HierarchicalBlockModel;
 import com.min01.crypticfoes.misc.AnimationEntries.WalkAnimationEntry;
 import com.min01.crypticfoes.util.CrypticClientUtil;
 
@@ -62,23 +59,6 @@ public class SmoothAnimationState extends AnimationState
 	public float factor()
 	{
 		return Mth.lerp(CrypticClientUtil.MC.getPartialTick(), this.factorOld, this.factor);
-	}
-	
-	@OnlyIn(Dist.CLIENT)
-	public void animateBlock(HierarchicalBlockModel<?> model, AnimationDefinition definition, float ageInTicks) 
-	{
-		this.updateTime(ageInTicks, 1.0F);
-		KeyframeBlockAnimations.animate(model, definition, this.getAccumulatedTime(), this.factor(), ANIMATION_VECTOR_CACHE);
-	}
-	
-	@OnlyIn(Dist.CLIENT)
-	public void animateSkullBlock(CrypticSkullModelBase model, AnimationDefinition definition, float ageInTicks) 
-	{
-		this.updateTime(ageInTicks, 1.0F);
-		this.ifStarted(t -> 
-		{
-			KeyframeBlockAnimations.animate(model, definition, t.getAccumulatedTime(), this.factor(), ANIMATION_VECTOR_CACHE);
-		});
 	}
 	
 	@OnlyIn(Dist.CLIENT)

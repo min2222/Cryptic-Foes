@@ -4,40 +4,31 @@ import com.min01.crypticfoes.CrypticFoes;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
-public class CrypticTags
+public class CrypticTags 
 {
-	public static class CrypticEntity
+	public static final TagKey<Item> BURP_FOODS = createItem("burp_foods");
+	public static final TagKey<Block> BREAKABLE_BY_SCREAM = createBlock("breakable_by_scream");
+	public static final TagKey<EntityType<?>> RESIST_TO_STUN = createEntityType("resist_to_stun");
+	
+	public static TagKey<Item> createItem(String name) 
 	{
-		public static final TagKey<EntityType<?>> RESIST_TO_STUN = create("resist_to_stun");
-		
-		private static TagKey<EntityType<?>> create(String name) 
-		{
-			return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, name));
-		}
+		return ItemTags.create(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, name));
 	}
 	
-	public static class CrypticItems
+	public static TagKey<Block> createBlock(String name) 
 	{
-		public static final TagKey<Item> BURP_FOODS = create("burp_foods");
-		
-		private static TagKey<Item> create(String name) 
-		{
-			return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, name));
-		}
+		return BlockTags.create(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, name));
 	}
 	
-	public static class CrypticBlocks
+	public static TagKey<EntityType<?>> createEntityType(String name)
 	{
-		public static final TagKey<Block> BREAKABLE_BY_SCREAM = create("breakable_by_scream");
-		
-		private static TagKey<Block> create(String name) 
-		{
-			return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, name));
-		}
+		return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, name));
 	}
 }

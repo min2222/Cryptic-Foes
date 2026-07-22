@@ -59,7 +59,7 @@ public class ScreamerModel extends HierarchicalBlockModel<ScreamerBlockEntity>
 	public void setupAnim(ScreamerBlockEntity blockEntity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) 
 	{
 		this.root().getAllParts().forEach(ModelPart::resetPose);
-		blockEntity.screamAnimationState.animateBlock(this, ScreamerAnimation.SCREAM, ageInTicks);
+		this.animate(blockEntity.screamAnimationState, ScreamerAnimation.SCREAM, ageInTicks);
 	}
 	
 	@Override

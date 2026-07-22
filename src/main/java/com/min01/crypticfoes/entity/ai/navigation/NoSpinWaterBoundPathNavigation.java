@@ -84,7 +84,7 @@ public class NoSpinWaterBoundPathNavigation extends WaterBoundPathNavigation
     private boolean isAt(Path path, float threshold) 
     {
         final Vec3 pathPos = path.getNextEntityPos(this.mob);
-        return Mth.abs((float) (this.mob.getX() - pathPos.x)) < threshold && Mth.abs((float) (this.mob.getZ() - pathPos.z)) < threshold;
+        return Mth.abs((float) (this.mob.getX() - pathPos.x)) < threshold && Mth.abs((float) (this.mob.getZ() - pathPos.z)) < threshold && Math.abs(this.mob.getY() - pathPos.y) < threshold;
     }
 
     private boolean atElevationChange(Path path) 

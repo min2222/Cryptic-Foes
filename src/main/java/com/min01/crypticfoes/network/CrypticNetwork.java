@@ -11,22 +11,18 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class CrypticNetwork 
 {
-	private static final String PROTOCOL_VERSION = "1";
-	public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, CrypticFoes.MODID),
-			() -> PROTOCOL_VERSION,
-			PROTOCOL_VERSION::equals,
-			PROTOCOL_VERSION::equals
-	);
+	public static final String PROTOCOL_VERSION = "1";
+	public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, CrypticFoes.MODID), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
 	
-	public static int ID = 0;
 	public static void registerMessages()
 	{
-		CHANNEL.registerMessage(ID++, UpdateModelPositionPacket.class, UpdateModelPositionPacket::write, UpdateModelPositionPacket::read, UpdateModelPositionPacket::handle);
-		CHANNEL.registerMessage(ID++, AddSilencingParticlePacket.class, AddSilencingParticlePacket::write, AddSilencingParticlePacket::read, AddSilencingParticlePacket::handle);
-		CHANNEL.registerMessage(ID++, UpdateSilencedBlocksPacket.class, UpdateSilencedBlocksPacket::write, UpdateSilencedBlocksPacket::read, UpdateSilencedBlocksPacket::handle);
-		CHANNEL.registerMessage(ID++, UpdateStunnedEffectPacket.class, UpdateStunnedEffectPacket::write, UpdateStunnedEffectPacket::read, UpdateStunnedEffectPacket::handle);
-		CHANNEL.registerMessage(ID++, UpdateRollingCapabilityPacket.class, UpdateRollingCapabilityPacket::write, UpdateRollingCapabilityPacket::read, UpdateRollingCapabilityPacket::handle);
-		CHANNEL.registerMessage(ID++, UpdateRollingSpeedPacket.class, UpdateRollingSpeedPacket::write, UpdateRollingSpeedPacket::read, UpdateRollingSpeedPacket::handle);
+		int id = 0;
+		CHANNEL.registerMessage(id++, UpdateModelPositionPacket.class, UpdateModelPositionPacket::write, UpdateModelPositionPacket::read, UpdateModelPositionPacket::handle);
+		CHANNEL.registerMessage(id++, AddSilencingParticlePacket.class, AddSilencingParticlePacket::write, AddSilencingParticlePacket::read, AddSilencingParticlePacket::handle);
+		CHANNEL.registerMessage(id++, UpdateSilencedBlocksPacket.class, UpdateSilencedBlocksPacket::write, UpdateSilencedBlocksPacket::read, UpdateSilencedBlocksPacket::handle);
+		CHANNEL.registerMessage(id++, UpdateStunnedEffectPacket.class, UpdateStunnedEffectPacket::write, UpdateStunnedEffectPacket::read, UpdateStunnedEffectPacket::handle);
+		CHANNEL.registerMessage(id++, UpdateRollingCapabilityPacket.class, UpdateRollingCapabilityPacket::write, UpdateRollingCapabilityPacket::read, UpdateRollingCapabilityPacket::handle);
+		CHANNEL.registerMessage(id++, UpdateRollingSpeedPacket.class, UpdateRollingSpeedPacket::write, UpdateRollingSpeedPacket::read, UpdateRollingSpeedPacket::handle);
 	}
 	
     public static <MSG> void sendToServer(MSG message) 

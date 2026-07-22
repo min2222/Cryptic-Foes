@@ -24,7 +24,7 @@ public class CrypticEntityDataSerializers
 		return buf;
 	}
 	
-	public static Vec3 readVec3(ByteBuf buf)
+	public static Vec3 readVec3(FriendlyByteBuf buf)
 	{
 		return new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
 	}

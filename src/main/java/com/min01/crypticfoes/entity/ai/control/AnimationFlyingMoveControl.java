@@ -1,6 +1,9 @@
 package com.min01.crypticfoes.entity.ai.control;
 
+import org.joml.Vector2f;
+
 import com.min01.crypticfoes.entity.IAnimatable;
+import com.min01.crypticfoes.misc.MovementData;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
@@ -10,16 +13,19 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 public class AnimationFlyingMoveControl<T extends Mob & IAnimatable> extends MoveControl 
 {
 	public final T mob;
+	public final MovementData movementData;
 	
-	public AnimationFlyingMoveControl(T mob)
+	public AnimationFlyingMoveControl(T pMob)
 	{
-		super(mob);
-		this.mob = mob;
+		super(pMob);
+		this.mob = pMob;
+		this.movementData = pMob.getMovementData();
 	}
 
 	@Override
-	public void tick() 
+	public void tick()
 	{
+		Vector2f turn = this.movementData.fly.turn;
 		if(this.operation == MoveControl.Operation.MOVE_TO)
 		{
 			double d0 = this.wantedX - this.mob.getX();
@@ -33,7 +39,7 @@ public class AnimationFlyingMoveControl<T extends Mob & IAnimatable> extends Mov
 			else 
 			{
 				float f = (float) (Mth.atan2(d2, d0) * (double) (180.0F / (float) Math.PI)) - 90.0F;
-				this.mob.setYRot(this.rotlerp(this.mob.getYRot(), f, this.mob.maxFlyTurnY()));
+				this.mob.setYRot(this.rotlerp(this.mob.getYRot(), f, turn.y));
 				this.mob.yBodyRot = this.mob.getYRot();
 				this.mob.yHeadRot = this.mob.getYRot();
 				float f1 = (float) (this.speedModifier * this.mob.getAttributeValue(Attributes.FLYING_SPEED));
@@ -42,7 +48,7 @@ public class AnimationFlyingMoveControl<T extends Mob & IAnimatable> extends Mov
 				if(Math.abs(d1) > (double) 1.0E-5F || Math.abs(d4) > (double) 1.0E-5F) 
 				{
 					float f3 = -((float) (Mth.atan2(d1, d4) * (double) (180.0F / (float) Math.PI)));
-					f3 = Mth.clamp(Mth.wrapDegrees(f3), (float) (-this.mob.maxFlyTurnX()), (float) this.mob.maxFlyTurnX());
+					f3 = Mth.clamp(Mth.wrapDegrees(f3), (float) (-turn.x), (float) turn.x);
 					this.mob.setXRot(this.rotlerp(this.mob.getXRot(), f3, 5.0F));
 				}
 				float f6 = Mth.cos(this.mob.getXRot() * ((float) Math.PI / 180.0F));

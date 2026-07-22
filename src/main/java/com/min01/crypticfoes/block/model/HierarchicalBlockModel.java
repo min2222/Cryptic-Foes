@@ -2,9 +2,8 @@ package com.min01.crypticfoes.block.model;
 
 import java.util.Optional;
 
-import org.joml.Vector3f;
-
 import com.min01.crypticfoes.block.animation.KeyframeBlockAnimations;
+import com.min01.crypticfoes.misc.SmoothAnimationState;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -12,13 +11,10 @@ import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public abstract class HierarchicalBlockModel<T extends BlockEntity> extends Model
 {
-	private static final Vector3f ANIMATION_VECTOR_CACHE = new Vector3f();
-	
 	public HierarchicalBlockModel()
 	{
 		super(RenderType::entityCutoutNoCull);
@@ -45,17 +41,9 @@ public abstract class HierarchicalBlockModel<T extends BlockEntity> extends Mode
 		});
 	}
 
-	public void animate(AnimationState pAnimationState, AnimationDefinition pAnimationDefinition, float pAgeInTicks)
+	public void animate(SmoothAnimationState state, AnimationDefinition definition, float ageInTicks) 
 	{
-		this.animate(pAnimationState, pAnimationDefinition, pAgeInTicks, 1.0F);
-	}
-
-	public void animate(AnimationState pAnimationState, AnimationDefinition pAnimationDefinition, float pAgeInTicks, float pSpeed) 
-	{
-		pAnimationState.updateTime(pAgeInTicks, pSpeed);
-		pAnimationState.ifStarted(t -> 
-		{
-			KeyframeBlockAnimations.animate(this, pAnimationDefinition, t.getAccumulatedTime(), 1.0F, ANIMATION_VECTOR_CACHE);
-		});
+		state.updateTime(ageInTicks, 1.0F);
+		KeyframeBlockAnimations.animate(this, definition, state.getAccumulatedTime(), state.factor(), SmoothAnimationState.ANIMATION_VECTOR_CACHE);
 	}
 }

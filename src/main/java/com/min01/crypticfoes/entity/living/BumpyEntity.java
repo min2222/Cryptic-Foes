@@ -214,6 +214,7 @@ public class BumpyEntity extends AbstractAnimatableCreature
             	}
         	}
     	}
+		this.movementData.ground.turnY = this.getAnimationState() == 6 ? 60.0F : 90.0F;
     }
 
     @Override
@@ -344,16 +345,6 @@ public class BumpyEntity extends AbstractAnimatableCreature
     		Vec3 pos = this.getRamPos();
             this.getNavigation().moveTo(pos.x, pos.y, pos.z, 2.0F);
     	}
-    }
-    
-    @Override
-    public float maxMoveTurnY()
-    {
-    	if(this.getAnimationState() == 6)
-    	{
-    		return 60.0F;
-    	}
-    	return super.maxMoveTurnY();
     }
     
     @Override

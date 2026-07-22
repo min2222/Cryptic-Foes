@@ -2,6 +2,8 @@ package com.min01.crypticfoes.entity.living;
 
 import java.util.List;
 
+import org.joml.Vector2f;
+
 import com.min01.crypticfoes.entity.AbstractAnimatableMonster;
 import com.min01.crypticfoes.entity.CameraShakeEntity;
 import com.min01.crypticfoes.entity.ai.goal.HowlerPunchGoal;
@@ -51,7 +53,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 public class HowlerEntity extends AbstractAnimatableMonster
@@ -139,7 +140,7 @@ public class HowlerEntity extends AbstractAnimatableMonster
 	public void registerDefaultGoals()
 	{
 		this.goalSelector.addGoal(0, new FloatGoal(this));
-		this.goalSelector.addGoal(0, new RandomStrollGoal(this, 0.5F, this.getMoveInterval(), false)
+		this.goalSelector.addGoal(0, new RandomStrollGoal(this, 0.5F, this.movementData.ground.interval, false)
 		{
 			@Override
 			public boolean canUse()
@@ -150,7 +151,7 @@ public class HowlerEntity extends AbstractAnimatableMonster
 			@Override
 			protected Vec3 getPosition()
 			{
-				Vec2 radius = HowlerEntity.this.getMoveRadius();
+				Vector2f radius = HowlerEntity.this.movementData.ground.radius;
 				return LandRandomPos.getPos(this.mob, (int) radius.x, (int) radius.y);
 			}
 		});

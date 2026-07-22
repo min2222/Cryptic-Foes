@@ -29,7 +29,7 @@ public class HowlerRoarGoal extends AbstractAnimationGoal<HowlerEntity>
 	public void tick() 
 	{
 		super.tick();
-		if(this.mob.getAnimationTick() <= this.getSkillUsingTime() - this.getSkillWarmupTime() && this.mob.getAnimationTick() >= this.getSkillUsingTime() - 70) 
+		if(this.mob.getAnimationTick() <= this.getDuration() - this.getDelay() && this.mob.getAnimationTick() >= this.getDuration() - 70) 
     	{
 			HowlerScreamEntity scream = new HowlerScreamEntity(CrypticEntities.HOWLER_SCREAM.get(), this.mob.level);
 			scream.setOwner(this.mob);
@@ -41,7 +41,7 @@ public class HowlerRoarGoal extends AbstractAnimationGoal<HowlerEntity>
 	}
 	
 	@Override
-	public void performSkill() 
+	public void run() 
 	{
 		this.mob.playSound(CrypticSounds.HOWLER_SCREAM.get(), 4.0F, 1.0F);
 	}
@@ -54,19 +54,19 @@ public class HowlerRoarGoal extends AbstractAnimationGoal<HowlerEntity>
 	}
 
 	@Override
-	public int getSkillUsingTime()
+	public int getDuration()
 	{
 		return 93;
 	}
 	
 	@Override
-	public int getSkillWarmupTime() 
+	public int getDelay() 
 	{
 		return 45;
 	}
 
 	@Override
-	public int getSkillUsingInterval() 
+	public int getInterval() 
 	{
 		return 267;
 	}

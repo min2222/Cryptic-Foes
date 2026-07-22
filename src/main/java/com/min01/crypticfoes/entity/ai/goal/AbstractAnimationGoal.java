@@ -8,8 +8,8 @@ import net.minecraft.world.entity.ai.goal.Goal;
 
 public abstract class AbstractAnimationGoal<T extends Mob & IAnimatable> extends Goal
 {
-	public int skillWarmupDelay;
-	public int nextSkillTickCount;
+	public int delay;
+	public int cooldown;
 	public final T mob;
 	
 	public AbstractAnimationGoal(T mob) 
@@ -27,15 +27,9 @@ public abstract class AbstractAnimationGoal<T extends Mob & IAnimatable> extends
     		{
     			return false;
     		}
-    		else 
-    		{
-    			return this.mob.tickCount >= this.nextSkillTickCount;
-    		}
+			return this.mob.tickCount >= this.cooldown;
     	}
-    	else 
-    	{
-    		return false;
-    	}
+		return false;
     }
     
     @Override
@@ -49,18 +43,22 @@ public abstract class AbstractAnimationGoal<T extends Mob & IAnimatable> extends
     {
     	this.mob.setAggressive(true);
     	this.mob.setAnimationPlaying(true);
-    	this.skillWarmupDelay = this.adjustedTickDelay(this.getSkillWarmupTime());
-    	this.mob.setAnimationTick(this.getSkillUsingTime());
-    	if(this.stopMovingWhenStart())
+    	this.mob.setAnimationTick(this.getDuration());
+    	this.delay = this.adjustedTickDelay(this.getDelay());
+    	if(this.stopOnStart())
     	{
-        	this.mob.setStopMoveTick(this.getSkillUsingTime());
+        	this.mob.setStopMoveTick(this.getDuration());
         	this.mob.getNavigation().stop();
     	}
     }
-    
-    public boolean stopMovingWhenStart()
+	
+    @Override
+    public void tick() 
     {
-    	return true;
+    	if(--this.delay == 0) 
+    	{
+    		this.run();
+    	}
     }
     
 	@Override
@@ -69,30 +67,25 @@ public abstract class AbstractAnimationGoal<T extends Mob & IAnimatable> extends
 		this.mob.setStopMoveTick(0);
 		this.mob.setAggressive(false);
     	this.mob.setAnimationPlaying(false);
-    	this.nextSkillTickCount = this.mob.tickCount + this.getSkillUsingInterval();
+    	this.cooldown = this.mob.tickCount + this.getInterval();
 	}
-	
-    @Override
-    public void tick() 
+    
+    public boolean stopOnStart()
     {
-    	--this.skillWarmupDelay;
-    	if(this.skillWarmupDelay == 0) 
-    	{
-    		this.performSkill();
-    	}
+    	return true;
     }
 
-    public void performSkill()
+    public void run()
     {
     	
     }
 
-    public int getSkillWarmupTime()
+    public int getDelay()
     {
     	return 20;
     }
     
-    public abstract int getSkillUsingTime();
+    public abstract int getDuration();
 
-    public abstract int getSkillUsingInterval();
+    public abstract int getInterval();
 }

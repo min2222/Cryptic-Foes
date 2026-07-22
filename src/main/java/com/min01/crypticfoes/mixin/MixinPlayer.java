@@ -39,7 +39,7 @@ public class MixinPlayer
 	private void eat(Level level, ItemStack stack, CallbackInfoReturnable<ItemStack> cir)
 	{
 		Player player = Player.class.cast(this);
-		if(stack.is(CrypticTags.CrypticItems.BURP_FOODS))
+		if(stack.is(CrypticTags.BURP_FOODS))
 		{
 			cir.cancel();
 

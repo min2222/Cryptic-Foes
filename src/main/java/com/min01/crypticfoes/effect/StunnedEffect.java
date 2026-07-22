@@ -20,7 +20,7 @@ public class StunnedEffect extends MobEffect
 	@Override
 	public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) 
 	{
-		if(pLivingEntity.getType().is(CrypticTags.CrypticEntity.RESIST_TO_STUN) || pLivingEntity.isSpectator())
+		if(pLivingEntity.getType().is(CrypticTags.RESIST_TO_STUN) || pLivingEntity.isSpectator())
 		{
 			return;
 		}

@@ -8,5 +8,5 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 public class CrypticArmorMaterials
 {
-	public static final ArmorMaterial ROLLING = new CrypticArmorMaterial("rolling", new int[]{77, 112, 105, 91}, new int[]{2, 5, 3, 1}, 25, SoundEvents.ARMOR_EQUIP_GOLD, 0.0F, 0.0F, () -> Ingredient.of(CrypticItems.STURDY_SHELL.get()));
+	public static final ArmorMaterial ROLLING = new ArmorMaterialImpl("rolling", new int[]{77, 112, 105, 91}, new int[]{2, 5, 3, 1}, 25, SoundEvents.ARMOR_EQUIP_GOLD, 0.0F, 0.0F, () -> Ingredient.of(CrypticItems.STURDY_SHELL.get()));
 }

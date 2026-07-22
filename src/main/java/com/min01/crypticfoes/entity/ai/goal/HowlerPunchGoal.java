@@ -25,7 +25,7 @@ public class HowlerPunchGoal extends AbstractAnimationGoal<HowlerEntity>
 	}
 	
 	@Override
-	public void performSkill() 
+	public void run() 
 	{
 		if(this.mob.getTarget() != null)
 		{
@@ -37,19 +37,19 @@ public class HowlerPunchGoal extends AbstractAnimationGoal<HowlerEntity>
 	}
 
 	@Override
-	public int getSkillUsingTime()
+	public int getDuration()
 	{
 		return 50;
 	}
 	
 	@Override
-	public int getSkillWarmupTime() 
+	public int getDelay() 
 	{
 		return 24;
 	}
 
 	@Override
-	public int getSkillUsingInterval() 
+	public int getInterval() 
 	{
 		return 10;
 	}

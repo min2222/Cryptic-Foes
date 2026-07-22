@@ -1,6 +1,7 @@
 package com.min01.crypticfoes.entity.ai.control;
 
 import com.min01.crypticfoes.entity.IAnimatable;
+import com.min01.crypticfoes.misc.MovementData;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,11 +19,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class AnimationMoveControl<T extends Mob & IAnimatable> extends MoveControl
 {
 	public final T mob;
+	public final MovementData movementData;
 	
 	public AnimationMoveControl(T pMob) 
 	{
 		super(pMob);
 		this.mob = pMob;
+		this.movementData = pMob.getMovementData();
 	}
 
 	@Override
@@ -71,7 +74,7 @@ public class AnimationMoveControl<T extends Mob & IAnimatable> extends MoveContr
 				return;
 			}
 			float f9 = (float) (Mth.atan2(d1, d0) * (double) (180.0F / (float) Math.PI)) - 90.0F;
-			this.mob.setYRot(this.rotlerp(this.mob.getYRot(), f9, this.mob.maxMoveTurnY()));
+			this.mob.setYRot(this.rotlerp(this.mob.getYRot(), f9, this.movementData.ground.turnY));
 			this.mob.setSpeed((float) (this.speedModifier * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED)));
 			BlockPos blockpos = this.mob.blockPosition();
 			BlockState blockstate = this.mob.level.getBlockState(blockpos);

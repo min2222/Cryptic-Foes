@@ -7,7 +7,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 
-public class CrypticArmorMaterial implements ArmorMaterial
+public class ArmorMaterialImpl implements ArmorMaterial
 {
 	private final String name;
 	private final int[] durability;
@@ -18,7 +18,7 @@ public class CrypticArmorMaterial implements ArmorMaterial
 	private final float knockbackResistance;
 	private final Supplier<Ingredient> repairIngredient;
 
-	public CrypticArmorMaterial(String name, int[] durability, int[] slotProtections, int enchantmentValue, SoundEvent sound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) 
+	public ArmorMaterialImpl(String name, int[] durability, int[] slotProtections, int enchantmentValue, SoundEvent sound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) 
 	{
 		this.name = name;
 		this.durability = durability;

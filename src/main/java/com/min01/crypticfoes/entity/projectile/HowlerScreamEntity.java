@@ -67,7 +67,7 @@ public class HowlerScreamEntity extends ThrowableProjectile
 			List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(scale), t -> !t.isAlliedTo(this.getOwner()) && t != this.getOwner() && !t.hasEffect(CrypticEffects.STUNNED.get()));
 			list.forEach(t -> 
 			{
-				if(!t.getType().is(CrypticTags.CrypticEntity.RESIST_TO_STUN) && !t.hasEffect(CrypticEffects.STUNNED.get()))
+				if(!t.getType().is(CrypticTags.RESIST_TO_STUN) && !t.hasEffect(CrypticEffects.STUNNED.get()))
 				{
 					this.addStunCount();
 					t.addEffect(new MobEffectInstance(CrypticEffects.STUNNED.get(), this.getStunDuration()));
@@ -94,7 +94,7 @@ public class HowlerScreamEntity extends ThrowableProjectile
 		super.onHitBlock(pResult);
 		BlockPos blockPos = pResult.getBlockPos();
 		BlockState state = this.level.getBlockState(blockPos);
-		if(state.is(CrypticTags.CrypticBlocks.BREAKABLE_BY_SCREAM) && !this.level.isClientSide && this.mayInteract(this.level, blockPos) && this.getDeltaMovement().length() > 0.6D) 
+		if(state.is(CrypticTags.BREAKABLE_BY_SCREAM) && !this.level.isClientSide && this.mayInteract(this.level, blockPos) && this.getDeltaMovement().length() > 0.6D) 
 		{
 			this.level.destroyBlock(blockPos, true);
 		}
