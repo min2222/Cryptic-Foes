@@ -1,5 +1,6 @@
 package com.min01.crypticfoes.misc;
 
+import com.min01.crypticfoes.api.impl.ArmorMaterialImpl;
 import com.min01.crypticfoes.item.CrypticItems;
 
 import net.minecraft.sounds.SoundEvents;

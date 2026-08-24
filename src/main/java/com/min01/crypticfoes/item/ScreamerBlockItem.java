@@ -3,8 +3,8 @@ package com.min01.crypticfoes.item;
 import java.util.function.Consumer;
 
 import com.min01.crypticfoes.item.renderer.ScreamerItemRenderer;
-import com.min01.crypticfoes.util.CrypticClientUtil;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -26,7 +26,7 @@ public class ScreamerBlockItem extends BlockItem
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() 
 			{
-				return new ScreamerItemRenderer(CrypticClientUtil.MC.getBlockEntityRenderDispatcher(), CrypticClientUtil.MC.getEntityModels());
+				return new ScreamerItemRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
 			}
 		});
 	}

@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ParticleUtils;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent;
 
 public class AddSilencingParticlePacket 
@@ -30,19 +31,15 @@ public class AddSilencingParticlePacket
 		buf.writeBlockPos(this.blockPos);
 	}
 
-	public static boolean handle(AddSilencingParticlePacket message, Supplier<NetworkEvent.Context> ctx)
+	public static boolean handle(AddSilencingParticlePacket message, Supplier<NetworkEvent.Context> supplier)
 	{
-		ctx.get().enqueueWork(() ->
+		CrypticUtil.handlePacket(supplier, LogicalSide.CLIENT, ctx ->
 		{
-			if(ctx.get().getDirection().getReceptionSide().isClient())
+			CrypticUtil.getClientLevel(t -> 
 			{
-				CrypticUtil.getClientLevel(t -> 
-				{
-		            ParticleUtils.spawnParticlesOnBlockFaces(t, message.blockPos, CrypticParticles.SILENCING.get(), UniformInt.of(3, 5));
-				});
-			}
+	            ParticleUtils.spawnParticlesOnBlockFaces(t, message.blockPos, CrypticParticles.SILENCING.get(), UniformInt.of(3, 5));
+			});
 		});
-		ctx.get().setPacketHandled(true);
 		return true;
 	}
 }

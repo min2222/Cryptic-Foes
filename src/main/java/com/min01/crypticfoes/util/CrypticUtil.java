@@ -1,47 +1,58 @@
 package com.min01.crypticfoes.util;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.joml.Math;
+import org.joml.Vector3d;
 
-import com.min01.crypticfoes.misc.PositionTypes;
-import com.min01.crypticfoes.network.AddSilencingParticlePacket;
-import com.min01.crypticfoes.network.CrypticNetwork;
-import com.min01.crypticfoes.world.CrypticSavedData;
+import com.google.common.base.Predicate;
+import com.min01.crypticfoes.api.util.PositionTypes;
+import com.min01.crypticfoes.mixin.LevelInvoker;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.entity.LevelEntityGetter;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkEvent;
 
 public class CrypticUtil 
 {
-	public static final Method GET_ENTITY = ObfuscationReflectionHelper.findMethod(Level.class, "m_142646_");
-	public static final List<BlockPos> SILENCED_BLOCKS = new ArrayList<>();
-	
 	public static void getClientLevel(Consumer<Level> consumer)
 	{
 		LogicalSidedProvider.CLIENTWORLD.get(LogicalSide.CLIENT).filter(ClientLevel.class::isInstance).ifPresent(level -> 
@@ -50,82 +61,172 @@ public class CrypticUtil
 		});
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static Iterable<Entity> getAllEntities(Level level)
+	public static void handlePacket(Supplier<NetworkEvent.Context> supplier, LogicalSide side, Consumer<NetworkEvent.Context> consumer)
 	{
-		try 
+		NetworkEvent.Context ctx = supplier.get();
+		ctx.enqueueWork(() ->
 		{
-			LevelEntityGetter<Entity> entities = (LevelEntityGetter<Entity>) GET_ENTITY.invoke(level);
-			return entities.getAll();
-		}
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-		}
-		return null;
+			NetworkDirection direction = ctx.getDirection();
+			LogicalSide receptionSide = direction.getReceptionSide();
+			if(side.isClient() && !receptionSide.isClient())
+			{
+				return;
+			}
+			if(side.isServer() && !receptionSide.isServer())
+			{
+				return;
+			}
+			consumer.accept(ctx);
+		});
+		ctx.setPacketHandled(true);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static <T extends Entity> T getEntityByUUID(Level level, UUID uuid)
+	public static LevelEntityGetter<Entity> getEntityGetter(Level level)
 	{
-		try 
+		return ((LevelInvoker) level).crypticfoes$invoke_getEntities();
+	}
+	
+	public static Entity getEntityByUUID(Level level, UUID uuid)
+	{
+		LevelEntityGetter<Entity> getter = getEntityGetter(level);
+		return getter.get(uuid);
+	}
+	
+	public static void flop(LivingEntity entity)
+	{
+		flop(entity, SoundEvents.COD_FLOP, 1.0F, entity.getVoicePitch(), 0.5F);
+	}
+	
+	//copied from AbstractFish
+	public static void flop(LivingEntity entity, SoundEvent sound, float volume, float pitch, float yMotion)
+	{
+        if(!entity.isInWater() && entity.onGround() && entity.verticalCollision) 
+        {
+        	RandomSource random = entity.getRandom();
+        	Vec3 motion = new Vec3((random.nextFloat() * 2.0F - 1.0F) * 0.05F, yMotion, (random.nextFloat() * 2.0F - 1.0F) * 0.05F);
+        	entity.addDeltaMovement(motion);
+        	entity.setOnGround(false);
+        	entity.hasImpulse = true;
+        	entity.playSound(sound, volume, pitch);
+        }
+	}
+	
+    public static void runAway(PathfinderMob mob, Vec3 pos)
+    {
+    	runAway(mob, pos, DefaultRandomPos.getPosAway(mob, 16, 7, pos), 2.0F, mob instanceof TamableAnimal animal ? !animal.isInSittingPose() : true);
+    }
+	
+    public static void runAway(PathfinderMob mob, Vec3 pos, Vec3 awayPos, float speed, boolean canRun)
+    {
+    	if(canRun)
+    	{
+            mob.setTarget(null);
+            mob.setLastHurtByMob(null);
+            if(awayPos != null)
+            {
+                mob.getNavigation().moveTo(awayPos.x, awayPos.y, awayPos.z, speed);
+            }
+    	}
+    }
+
+    //copied from LivingEntity;
+	public static boolean isDamageSourceBlocked(DamageSource source, LivingEntity living, Predicate<Entity> predicate, Predicate<Item> itemPredicate) 
+	{
+		Entity entity = source.getDirectEntity();
+		if(entity instanceof AbstractArrow arrow && arrow.getPierceLevel() > 0) 
 		{
-			LevelEntityGetter<Entity> entities = (LevelEntityGetter<Entity>) GET_ENTITY.invoke(level);
-			return (T) entities.get(uuid);
+			return false;
 		}
-		catch (Exception e) 
+		if(predicate.test(entity) && !source.is(DamageTypeTags.BYPASSES_SHIELD) && isBlocking(living, itemPredicate))
 		{
-			e.printStackTrace();
+			Vec3 sourcePosition = source.getSourcePosition();
+			if(sourcePosition != null)
+			{
+				Vec3 view = living.getViewVector(1.0F);
+				Vec3 to = sourcePosition.vectorTo(living.position()).normalize();
+				to = new Vec3(to.x, 0.0D, to.z);
+				if(to.dot(view) < 0.0D)
+				{
+					return true;
+				}
+			}
 		}
-		return null;
+		return false;
+	}
+    
+    //copied from LivingEntity;
+	public static boolean isBlocking(LivingEntity living, Predicate<Item> predicate)
+	{
+		ItemStack stack = living.getUseItem();
+		if(living.isUsingItem() && !stack.isEmpty()) 
+		{
+			Item item = stack.getItem();
+			if(!predicate.test(item)) 
+			{
+				return false;
+			}
+			else
+			{
+				return item.getUseDuration(stack) - living.getUseItemRemainingTicks() >= 5;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	public static boolean checkWaterSpawnRules(EntityType<?> pType, ServerLevelAccessor pServerLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom) 
+    {
+		return pServerLevel.getBlockState(pPos.below()).is(Blocks.WATER) && pServerLevel.getBlockState(pPos.above()).is(Blocks.WATER);
+    }
+	
+	//call in hurt method;
+	public static void cancelWalkAnim(LivingEntity entity)
+	{
+    	if(!isMoving(entity))
+    	{
+    		entity.walkAnimation.setSpeed(0.0F);
+    	}
 	}
 	
     public static boolean isMoving(Entity entity) 
     {
 		return entity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-6D;
     }
-
-	//called in end of tick() method of entity class;
-	public static void forceTick(Entity entity)
-	{
-		if(entity.level instanceof ServerLevel serverLevel)
-		{
-			serverLevel.getChunkSource().updateChunkForced(entity.chunkPosition(), true);
-		}
-	}
 	
-	public static boolean isDone(ServerPlayer serverPlayer, String name)
+	public static boolean isDone(ServerPlayer player, String name)
 	{
-		Advancement adv = serverPlayer.server.getAdvancements().getAdvancement(ResourceLocation.parse(name));
-		AdvancementProgress progress = serverPlayer.getAdvancements().getOrStartProgress(adv);
+		Advancement advancement = player.server.getAdvancements().getAdvancement(ResourceLocation.parse(name));
+		AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);
 		return progress.isDone();
 	}
 	
-	public static void awardAdvancement(ServerPlayer serverPlayer, String name)
+	public static void awardAdvancement(ServerPlayer player, String name)
 	{
-		Advancement adv = serverPlayer.server.getAdvancements().getAdvancement(ResourceLocation.parse(name));
-		AdvancementProgress progress = serverPlayer.getAdvancements().getOrStartProgress(adv);
+		Advancement advancement = player.server.getAdvancements().getAdvancement(ResourceLocation.parse(name));
+		AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);
 		if(!progress.isDone())
 		{
 			progress.getRemainingCriteria().forEach(t ->
 			{
-				serverPlayer.getAdvancements().award(adv, t);
+				player.getAdvancements().award(advancement, t);
 			});
 		}
 	}
 	
-    public static void disableShield(LivingEntity livingEntity, DamageSource source, int ticks)
+    public static void disableShield(LivingEntity entity, DamageSource source, int ticks)
     {
-    	if(livingEntity.isDamageSourceBlocked(source))
+    	if(entity.isDamageSourceBlocked(source))
     	{
-        	if(livingEntity instanceof Player player)
+        	if(entity instanceof Player player)
         	{
         		player.disableShield(true);
         	}
         	else
         	{
-        		livingEntity.stopUsingItem();
-        		livingEntity.level.broadcastEntityEvent(livingEntity, (byte)30);
+        		entity.stopUsingItem();
+        		entity.level().broadcastEntityEvent(entity, (byte) 30);
         	}
     	}
     }
@@ -133,33 +234,6 @@ public class CrypticUtil
     public static boolean isNight(LevelAccessor level)
     {
     	return level.dayTime() % 24000L >= 13000L;
-    }
-	
-    public static Entity teleportEntityToDimension(Entity entity, ServerLevel serverLevel, BlockPos pos)
-    {
-        if(entity.level.dimension() != serverLevel.dimension())
-        {
-            entity.moveTo(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, entity.getYRot(), 0.0F);
-        }
-        
-        if(entity instanceof ServerPlayer serverPlayer) 
-        {
-        	serverPlayer.teleportTo(serverLevel, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, entity.getYRot(), entity.getXRot());
-            return serverPlayer;
-        }
-
-        entity.unRide();
-        entity.changeDimension(serverLevel);
-        Entity teleportedEntity = entity.getType().create(serverLevel);
-        if(teleportedEntity == null)
-        {
-        	return entity;
-        }
-        teleportedEntity.restoreFrom(entity);
-        teleportedEntity.moveTo(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, entity.getYRot(), entity.getXRot());
-        teleportedEntity.setYHeadRot(entity.getYRot());
-        serverLevel.addDuringTeleport(teleportedEntity);
-    	return teleportedEntity;
     }
     
     public static float rotlerp(float start, float end, float maxStep) 
@@ -169,24 +243,56 @@ public class CrypticUtil
         return Mth.wrapDegrees(start + clampedDelta);
     }
     
-    public static float distanceToXZ(Entity entity, Entity target)
+    public static float horizontalDistanceTo(Entity entity, Entity target)
     {
-        float x = (float)(entity.getX() - target.getX());
-        float z = (float)(entity.getZ() - target.getZ());
-        return Mth.sqrt(x * x + z * z);
+    	return horizontalDistanceTo(entity, target.getX(), target.getZ());
     }
     
-	public static Vec3 getSpreadPosition(RandomSource random, Vec3 startPos, Vec3 range)
+    public static float verticalDistanceTo(Entity entity, Entity target)
+    {
+    	return verticalDistanceTo(entity, target.getY());
+    }
+    
+	public static float horizontalDistanceTo(Entity entity, double x, double z)
 	{
-        double x = startPos.x + (random.nextDouble() - random.nextDouble()) * range.x + 0.5D;
-        double y = startPos.y + (random.nextDouble() - random.nextDouble()) * range.y + 0.5D;
-        double z = startPos.z + (random.nextDouble() - random.nextDouble()) * range.z + 0.5D;
+		double relX = entity.getX() - x;
+		double relZ = entity.getZ() - z;
+		return Mth.sqrt((float) (relX * relX + relZ * relZ));
+	}
+	
+	public static float verticalDistanceTo(Entity entity, double y)
+	{
+		double rel = entity.getY() - y;
+		return Mth.sqrt((float) (rel * rel));
+	}
+    
+	public static float distanceTo(Entity entity, Vec3 pos)
+	{
+		double x = entity.getX() - pos.x;
+		double y = entity.getY() - pos.y;
+		double z = entity.getZ() - pos.z;
+		return Mth.sqrt((float) (x * x + y * y + z * z));
+	}
+	
+	public static Vec3 getRandomPosition(RandomSource random, Vec3 start, Vec3 range)
+	{
+        double x = start.x + (random.nextDouble() - random.nextDouble()) * range.x + 0.5D;
+        double y = start.y + (random.nextDouble() - random.nextDouble()) * range.y + 0.5D;
+        double z = start.z + (random.nextDouble() - random.nextDouble()) * range.z + 0.5D;
         return new Vec3(x, y, z);
 	}
 	
-	public static float percent(float baseValue, float percent)
+	public static Vec3 getRandomPositionAroundAABB(AABB box, RandomSource random, double radius) 
 	{
-		return baseValue * percent / 100.0F;
+		double x = Mth.lerp(random.nextDouble(), box.minX, box.maxX) + (random.nextDouble() - 0.5) * radius;
+		double y = Mth.lerp(random.nextDouble(), box.minY, box.maxY) + (random.nextDouble() - 0.5) * radius;
+		double z = Mth.lerp(random.nextDouble(), box.minZ, box.maxZ) + (random.nextDouble() - 0.5) * radius;
+		return new Vec3(x, y, z);
+	}
+	
+	public static double percent(double baseValue, double percent)
+	{
+		return baseValue * percent / 100.0D;
 	}
 	
 	public static boolean isModLoaded(String modid)
@@ -212,120 +318,86 @@ public class CrypticUtil
         return mutablePos.immutable();
     }
 	
-	public static void dashToward(Entity entity, Vec3 scale)
+	//commonly used for dash, need to call every tick;
+	public static void lookAtDirection(Entity entity, Anchor anchor)
 	{
-        float x = (float) Math.cos(Math.toRadians(entity.getYHeadRot() + 90));
-        float z = (float) Math.sin(Math.toRadians(entity.getYHeadRot() + 90));
-        entity.push(x * scale.x, scale.y, z * scale.z);
+		entity.lookAt(anchor, entity.position().add(entity.getDeltaMovement().scale(100.0F)));
 	}
 	
-	public static void dashBackward(Entity entity, Vec3 scale)
+	public static void dashToward(Entity entity, double xz, double y)
 	{
-        float x = (float) Math.cos(Math.toRadians(entity.getYHeadRot() - 90));
-        float z = (float) Math.sin(Math.toRadians(entity.getYHeadRot() - 90));
-        entity.push(x * scale.x, scale.y, z * scale.z);
+		dashToward(entity, new Vector3d(xz, y, xz));
 	}
 	
-	public static float distanceTo(Entity entity, Vec3 pos)
+	public static void dashToward(Entity entity, Vector3d scale)
 	{
-		float x = (float)(entity.getX() - pos.x);
-		float y = (float)(entity.getY() - pos.y);
-		float z = (float)(entity.getZ() - pos.z);
-		return Mth.sqrt(x * x + y * y + z * z);
+        dash(entity.getYHeadRot(), 90.0D, scale);
+        entity.push(scale.x, scale.y, scale.z);
 	}
 	
-	public static Vec2 lookAt(Vec3 startPos, Vec3 pos)
+	public static void dashBackward(Entity entity, double xz, double y)
 	{
-		Vec3 vec3 = startPos;
-		double d0 = pos.x - vec3.x;
-		double d1 = pos.y - vec3.y;
-		double d2 = pos.z - vec3.z;
-		double d3 = Math.sqrt(d0 * d0 + d2 * d2);
-		float xRot = Mth.wrapDegrees((float)(-(Mth.atan2(d1, d3) * (double)(180.0F / (float)Math.PI))));
-		float yRot = Mth.wrapDegrees((float)(Mth.atan2(d2, d0) * (double)(180.0F / (float)Math.PI)) - 90.0F);
-	    return new Vec2(xRot, yRot);
+		dashBackward(entity, new Vector3d(xz, y, xz));
 	}
 	
-	public static Vec3 getLookPos(Vec2 rotation, Vec3 position, double left, double up, double forwards) 
+	public static void dashBackward(Entity entity, Vector3d scale)
 	{
-		Vec2 vec2 = rotation;
-		Vec3 vec3 = position;
-		float f = Mth.cos((vec2.y + 90.0F) * ((float)Math.PI / 180.0F));
-		float f1 = Mth.sin((vec2.y + 90.0F) * ((float)Math.PI / 180.0F));
-		float f2 = Mth.cos(-vec2.x * ((float)Math.PI / 180.0F));
-		float f3 = Mth.sin(-vec2.x * ((float)Math.PI / 180.0F));
-		float f4 = Mth.cos((-vec2.x + 90.0F) * ((float)Math.PI / 180.0F));
-		float f5 = Mth.sin((-vec2.x + 90.0F) * ((float)Math.PI / 180.0F));
-		Vec3 vec31 = new Vec3((double)(f * f2), (double)f3, (double)(f1 * f2));
-		Vec3 vec32 = new Vec3((double)(f * f4), (double)f5, (double)(f1 * f4));
-		Vec3 vec33 = vec31.cross(vec32).scale(-1.0D);
-		double d0 = vec31.x * forwards + vec32.x * up + vec33.x * left;
-		double d1 = vec31.y * forwards + vec32.y * up + vec33.y * left;
-		double d2 = vec31.z * forwards + vec32.z * up + vec33.z * left;
-		return new Vec3(vec3.x + d0, vec3.y + d1, vec3.z + d2);
+        dash(entity.getYHeadRot(), -90.0D, scale);
+        entity.push(scale.x, scale.y, scale.z);
 	}
 	
-	public static Vec3 getVelocityTowards(Vec3 from, Vec3 to, float speed)
+	public static void dash(double yRot, double degrees, Vector3d scale)
 	{
-		Vec3 motion = to.subtract(from).normalize();
-		return motion.scale(speed);
+		double x = Math.cos(Math.toRadians(yRot + degrees));
+        double z = Math.sin(Math.toRadians(yRot + degrees));
+        scale.mul(x, 1.0D, z);
 	}
 	
-    public static float distanceToY(BlockPos blockPos, BlockPos targetPos)
-    {
-        float y = (float)(blockPos.getY() - targetPos.getY());
-        return Mth.sqrt(y * y);
-    }
-    
-    public static float distanceToY(Entity entity, BlockPos pos)
-    {
-        float y = (float)(entity.getY() - pos.getY());
-        return Mth.sqrt(y * y);
-    }
-    
-	public static void setBlockSilence(Level level, BlockPos pos)
+	public static Vec2 lookAt(Vec3 start, Vec3 end)
 	{
-		CrypticSavedData data = CrypticSavedData.get(level);
-		if(data != null)
-		{
-			data.setBlockSilence(pos);
-			CrypticNetwork.sendToAll(new AddSilencingParticlePacket(pos));
-		}
+		double x = end.x - start.x;
+		double y = end.y - start.y;
+		double z = end.z - start.z;
+		double root = Math.sqrt(x * x + z * z);
+		double xRot = Mth.wrapDegrees((-(Mth.atan2(y, root) * (180.0F / Math.PI))));
+		double yRot = Mth.wrapDegrees((Mth.atan2(z, x) * (180.0F / Math.PI)) - 90.0F);
+	    return new Vec2((float) xRot, (float) yRot);
 	}
 	
-	public static void removeSilencedBlocks(Level level)
+	public static Vec3 getViewVector(Vec3 start, float pXRot, float pYRot, double left, double up, double forward) 
 	{
-		CrypticSavedData data = CrypticSavedData.get(level);
-		if(data != null)
-		{
-			data.getSilencedBlocks().removeIf(t -> level.getBlockState(t).isAir());
-		}
-		else
-		{
-			SILENCED_BLOCKS.removeIf(t -> level.getBlockState(t).isAir());
-		}
+	    float cosYawRad = Mth.cos(Math.toRadians(pYRot + 90.0F));
+	    float sinYawRad = Mth.sin(Math.toRadians(pYRot + 90.0F));
+	    float cosPitch = Mth.cos(Math.toRadians(-pXRot));
+	    float sinPitch = Mth.sin(Math.toRadians(-pXRot));
+	    float cosPitchOffset = Mth.cos(Math.toRadians(-pXRot + 90.0F));
+	    float sinPitchOffset = Mth.sin(Math.toRadians(-pXRot + 90.0F));
+	    
+	    Vec3 forwardDir = new Vec3(cosYawRad * cosPitch, sinPitch, sinYawRad * cosPitch);
+	    Vec3 upDir = new Vec3(cosYawRad * cosPitchOffset, sinPitchOffset, sinYawRad * cosPitchOffset);
+	    Vec3 leftDir = forwardDir.cross(upDir).scale(-1.0D);
+	    
+	    double offsetX = forwardDir.x * forward + upDir.x * up + leftDir.x * left;
+	    double offsetY = forwardDir.y * forward + upDir.y * up + leftDir.y * left;
+	    double offsetZ = forwardDir.z * forward + upDir.z * up + leftDir.z * left;
+	    
+	    return start.add(offsetX, offsetY, offsetZ);
 	}
 	
-	public static void removeSilencedBlock(Level level, BlockPos pos)
+	public static Vec3 getVectorTowards(Vec3 start, Vec3 end, double speed)
 	{
-		CrypticSavedData data = CrypticSavedData.get(level);
-		if(data != null)
-		{
-			data.getSilencedBlocks().removeIf(t -> t.equals(pos));
-		}
-		else
-		{
-			SILENCED_BLOCKS.removeIf(t -> t.equals(pos));
-		}
+		return end.subtract(start).normalize().scale(speed);
 	}
 	
-	public static boolean isBlockSilenced(Level level, BlockPos pos)
+	public static void writeVec3(FriendlyByteBuf buf, Vec3 vec3)
 	{
-		CrypticSavedData data = CrypticSavedData.get(level);
-		if(data != null)
-		{
-			return data.isBlockSilenced(pos);
-		}
-		return SILENCED_BLOCKS.contains(pos);
+		buf.writeDouble(vec3.x);
+		buf.writeDouble(vec3.y);
+		buf.writeDouble(vec3.z);
+	}
+	
+	public static Vec3 readVec3(FriendlyByteBuf buf)
+	{
+		return new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
 	}
 }

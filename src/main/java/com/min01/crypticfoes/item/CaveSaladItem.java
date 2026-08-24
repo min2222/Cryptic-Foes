@@ -1,6 +1,8 @@
 package com.min01.crypticfoes.item;
 
+import com.min01.crypticfoes.config.CrypticConfig;
 import com.min01.crypticfoes.misc.CrypticFoods;
+import com.min01.crypticfoes.util.CrypticUtil;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -8,7 +10,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.ModList;
 
 public class CaveSaladItem extends Item
 {
@@ -36,7 +37,7 @@ public class CaveSaladItem extends Item
 	@Override
 	public int getMaxStackSize(ItemStack stack) 
 	{
-		if(ModList.get().isLoaded("farmersdelight"))
+		if(CrypticUtil.isModLoaded("farmersdelight") && CrypticConfig.enableFarmersDelightCompat.get())
 		{
 			return 16;
 		}

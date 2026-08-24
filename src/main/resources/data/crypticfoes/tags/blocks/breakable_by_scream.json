@@ -1,4 +1,5 @@
 {
+	"__comment": "all blocks that howler's scream able to break upon hit.",
 	"values": [
 		"#forge:glass_panes",
 		"#forge:stained_glass",

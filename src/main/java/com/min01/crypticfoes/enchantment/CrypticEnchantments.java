@@ -22,16 +22,16 @@ public class CrypticEnchantments
 	public static final RegistryObject<Enchantment> ACCELERATE = ENCHANTMENTS.register("accelerate", () -> new AccelerateEnchantment());
 	public static final RegistryObject<Enchantment> MOBILITY = ENCHANTMENTS.register("mobility", () -> new MobilityEnchantment());
 	
-	public static void addAllEnchantsToCreativeTab(CreativeModeTab.Output output, EnchantmentCategory enchantmentCategory)
+	public static void addAllEnchantments(CreativeModeTab.Output output, EnchantmentCategory category)
 	{
-		for(RegistryObject<Enchantment> enchantObject : ENCHANTMENTS.getEntries())
+		for(RegistryObject<Enchantment> object : ENCHANTMENTS.getEntries())
 		{
-			if(enchantObject.isPresent())
+			if(object.isPresent())
 			{
-				Enchantment enchant = enchantObject.get();
-				if(enchant.category == enchantmentCategory)
+				Enchantment enchantment = object.get();
+				if(enchantment.category == category)
 				{
-					EnchantmentInstance instance = new EnchantmentInstance(enchant, enchant.getMaxLevel());
+					EnchantmentInstance instance = new EnchantmentInstance(enchantment, enchantment.getMaxLevel());
 					output.accept(EnchantedBookItem.createForEnchantment(instance));
 				}
 			}

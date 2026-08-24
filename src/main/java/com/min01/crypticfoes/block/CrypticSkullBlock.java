@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+//TODO custom shader when wearing;
 public class CrypticSkullBlock extends SkullBlock
 {
 	protected static final VoxelShape HOLWER_SHAPE = Block.box(2.0D, 0.0D, 1.5D, 14.0D, 10.0D, 14.5D);

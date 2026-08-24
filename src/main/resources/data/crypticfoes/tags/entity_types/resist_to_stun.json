@@ -1,4 +1,5 @@
 {
+	"__comment": "all entities that immune to stun effect.",
 	"values": [
 		"crypticfoes:howler"
 	]

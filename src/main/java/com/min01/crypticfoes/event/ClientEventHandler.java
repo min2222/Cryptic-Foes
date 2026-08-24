@@ -25,9 +25,7 @@ import com.min01.crypticfoes.particle.DustPillarParticle;
 import com.min01.crypticfoes.particle.HowlerShockwaveParticle;
 import com.min01.crypticfoes.particle.SilencingParticle;
 import com.min01.crypticfoes.particle.StunnedParticle;
-import com.min01.crypticfoes.shader.CrypticShaders;
 
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
@@ -35,7 +33,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterEntitySpectatorShadersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
@@ -51,8 +48,6 @@ public class ClientEventHandler
 	{
 		event.enqueueWork(() ->
 		{
-	        BlockEntityRenderers.register(CrypticBlocks.CRYPTIC_SKULL_BLOCK_ENTITY.get(), CrypticSkullRenderer::new);
-	        BlockEntityRenderers.register(CrypticBlocks.SCREAMER_BLOCK_ENTITY.get(), ScreamerRenderer::new);
 	        ItemProperties.register(CrypticItems.MONSTROUS_HORN.get(), ResourceLocation.parse("charge"), (pStack, pLevel, pEntity, pSeed) ->
 	        {
 	        	if(pEntity != null && pEntity.isUsingItem())
@@ -88,6 +83,13 @@ public class ClientEventHandler
 		}, CrypticItems.BALL.get());
 	}
 	
+    @SubscribeEvent
+    public static void onRegisterBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event)
+    {
+    	event.registerBlockEntityRenderer(CrypticBlocks.CRYPTIC_SKULL_BLOCK_ENTITY.get(), CrypticSkullRenderer::new);
+    	event.registerBlockEntityRenderer(CrypticBlocks.SCREAMER_BLOCK_ENTITY.get(), ScreamerRenderer::new);
+    }
+    
 	@SubscribeEvent
 	public static void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event)
 	{
@@ -119,12 +121,6 @@ public class ClientEventHandler
     	
     	event.registerLayerDefinition(BallModel.LAYER_LOCATION, BallModel::createBodyLayer);
     }
-    
-	@SubscribeEvent
-	public static void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event)
-	{
-		event.registerReloadListener(new CrypticShaders());
-	}
     
 	@SubscribeEvent
 	public static void onRegisterParticleProviders(RegisterParticleProvidersEvent event)

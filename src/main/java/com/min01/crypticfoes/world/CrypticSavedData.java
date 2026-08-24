@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.min01.crypticfoes.network.CrypticNetwork;
-import com.min01.crypticfoes.network.UpdateSilencedBlocksPacket;
+import com.min01.crypticfoes.network.SilenceBlockPacket;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -65,7 +65,7 @@ public class CrypticSavedData extends SavedData
 	public void setBlockSilence(BlockPos pos)
 	{
 		this.blocks.add(pos);
-		CrypticNetwork.sendToAll(new UpdateSilencedBlocksPacket(pos));
+		CrypticNetwork.sendToAll(new SilenceBlockPacket(pos));
 		this.setDirty();
 	}
 	

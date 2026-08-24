@@ -16,11 +16,10 @@ import net.minecraft.world.phys.AABB;
 
 public class CrypticClientUtil 
 {
-	public static final Minecraft MC = Minecraft.getInstance();
-	
 	public static boolean isFirstPersonPlayer(Entity entity)
 	{
-		return entity.equals(MC.cameraEntity) && MC.options.getCameraType().isFirstPerson();
+		Minecraft minecraft = Minecraft.getInstance();
+		return entity.equals(minecraft.cameraEntity) && minecraft.options.getCameraType().isFirstPerson();
 	}
     
     public static void drawBox(AABB boundingBox, PoseStack stack, VertexConsumer consumer, Vector4f color, int light) 

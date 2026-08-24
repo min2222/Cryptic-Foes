@@ -1,45 +1,29 @@
 package com.min01.crypticfoes.event;
 
 import com.min01.crypticfoes.CrypticFoes;
-import com.min01.crypticfoes.advancements.CrypticCriteriaTriggers;
+import com.min01.crypticfoes.api.entity.AbstractAnimatableMonster;
 import com.min01.crypticfoes.capabilties.IRollingCapability;
 import com.min01.crypticfoes.capabilties.RollingCapabilityImpl;
 import com.min01.crypticfoes.effect.CrypticEffects;
-import com.min01.crypticfoes.entity.AbstractAnimatableMonster;
 import com.min01.crypticfoes.entity.living.BumpyEntity;
-import com.min01.crypticfoes.entity.living.HowlerEntity;
-import com.min01.crypticfoes.network.CrypticNetwork;
-import com.min01.crypticfoes.network.UpdateStunnedEffectPacket;
-import com.min01.crypticfoes.sound.CrypticSounds;
 import com.min01.crypticfoes.util.CrypticUtil;
 
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.event.PlayLevelSoundEvent;
-import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
-import net.minecraftforge.event.TickEvent.Type;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
-import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.living.ShieldBlockEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -55,24 +39,7 @@ public class EventHandlerForge
 		Holder<SoundEvent> sound = event.getSound();
 		Level level = event.getLevel();
 		BlockPos blockPos = BlockPos.containing(event.getPosition());
-		if(CrypticUtil.isBlockSilenced(level, blockPos))
-		{
-			event.setCanceled(true);
-		}
-		else if(sound != null);
-		{
-			for(Entity entity : CrypticUtil.getAllEntities(level))
-			{
-				if(sound.get() != SoundEvents.BELL_BLOCK || !blockPos.closerToCenterThan(entity.position(), 40) || !(entity instanceof HowlerEntity howler) || !howler.isHowlerSleeping() || howler.getAnimationState() != 1 || howler.level.dimension() != level.dimension())
-				{
-					continue;
-				}
-				if(!CrypticUtil.isBlockSilenced(level, blockPos))
-				{
-		    		howler.awake();
-				}
-			}
-		}
+		//TODO silencing blend and howler awake;
 	}
 	
 	@SubscribeEvent
@@ -81,17 +48,7 @@ public class EventHandlerForge
 		Holder<SoundEvent> sound = event.getSound();
 		Level level = event.getLevel();
 		BlockPos blockPos = event.getEntity().blockPosition();
-		if(sound != null);
-		{
-			for(Entity entity : CrypticUtil.getAllEntities(level))
-			{
-				if(!sound.get().getLocation().toString().contains("goat_horn") || !blockPos.closerToCenterThan(entity.position(), 40) || !(entity instanceof HowlerEntity howler) || !howler.isHowlerSleeping() || howler.getAnimationState() != 1 || howler.level.dimension() != level.dimension())
-				{
-					continue;
-				}
-	    		howler.awake();
-			}
-		}
+		//TODO howler awake;
 	}
 	
 	@SubscribeEvent(priority = EventPriority.LOWEST)
@@ -102,10 +59,7 @@ public class EventHandlerForge
 		Entity entity = source.getEntity();
 		if(entity instanceof ServerPlayer player && living instanceof AbstractAnimatableMonster)
 		{
-			if(!CrypticUtil.isDone(player, "minecraft:adventure/kill_a_mob"))
-			{
-				CrypticUtil.awardAdvancement(player, "minecraft:adventure/kill_a_mob");
-			}
+			CrypticUtil.awardAdvancement(player, "minecraft:adventure/kill_a_mob");
 		}
 	}
 	
@@ -123,89 +77,28 @@ public class EventHandlerForge
 	@SubscribeEvent
 	public static void onPlayerTick(PlayerTickEvent event)
 	{
-		if(event.player.level.isClientSide || event.phase != Phase.END)
-		{
-			return;
-		}
 		Player player = event.player;
-		player.getCapability(RollingCapabilityImpl.ROLLING).ifPresent(IRollingCapability::tick);
-	}
-	
-	@SubscribeEvent
-	public static void onLevelTick(LevelTickEvent event)
-	{
-		if(event.phase == Phase.END && event.type == Type.LEVEL)
-		{
-			CrypticUtil.removeSilencedBlocks(event.level);
-		}
+		IRollingCapability cap = player.getCapability(RollingCapabilityImpl.ROLLING).orElse(new RollingCapabilityImpl());
+		cap.tick(player);
 	}
 	
 	@SubscribeEvent
 	public static void onLivingKnockback(LivingKnockBackEvent event)
 	{
 		LivingEntity entity = event.getEntity();
-		entity.getCapability(RollingCapabilityImpl.ROLLING).ifPresent(t -> 
-		{
-			if(t.isRolling())
-			{
-				event.setCanceled(true);
-			}
-		});
+		//TODO prevent in rolling state;
 	}
 	
 	@SubscribeEvent
 	public static void onLivingDamage(LivingDamageEvent event)
 	{
 		LivingEntity entity = event.getEntity();
-		entity.getCapability(RollingCapabilityImpl.ROLLING).ifPresent(t -> 
-		{
-			if(t.isRolling())
-			{
-				event.setAmount(event.getAmount() * 0.7F);
-			}
-		});
+		//TODO decrease amount in rolling state;
 		if(entity.hasEffect(CrypticEffects.STUNNED.get()))
 		{
 			entity.removeEffect(CrypticEffects.STUNNED.get());
-			if(!entity.level.isClientSide)
-	    	{
-	    		CrypticNetwork.sendToAll(new UpdateStunnedEffectPacket(entity.getUUID(), 0, 0, true));
-	    	}
 		}
 	}
-	
-    @SubscribeEvent
-    public static void onMobEffectAdded(MobEffectEvent.Added event) 
-    {
-    	LivingEntity living = event.getEntity();
-    	MobEffectInstance instance = event.getEffectInstance();
-    	if(instance != null && instance.getEffect() == CrypticEffects.STUNNED.get() && !living.level.isClientSide)
-    	{
-    		CrypticNetwork.sendToAll(new UpdateStunnedEffectPacket(living.getUUID(), instance.getAmplifier(), instance.getDuration(), false));
-    	}
-    }
-    
-    @SubscribeEvent
-    public static void onMobEffectRemove(MobEffectEvent.Remove event) 
-    {
-    	LivingEntity living = event.getEntity();
-    	MobEffectInstance instance = event.getEffectInstance();
-    	if(instance != null && instance.getEffect() == CrypticEffects.STUNNED.get() && !living.level.isClientSide)
-    	{
-    		CrypticNetwork.sendToAll(new UpdateStunnedEffectPacket(living.getUUID(), instance.getAmplifier(), instance.getDuration(), true));
-    	}
-    }
-    
-    @SubscribeEvent
-    public static void onMobEffectExpired(MobEffectEvent.Expired event) 
-    {
-    	LivingEntity living = event.getEntity();
-    	MobEffectInstance instance = event.getEffectInstance();
-    	if(instance != null && instance.getEffect() == CrypticEffects.STUNNED.get() && !living.level.isClientSide)
-    	{
-    		CrypticNetwork.sendToAll(new UpdateStunnedEffectPacket(living.getUUID(), instance.getAmplifier(), instance.getDuration(), true));
-    	}
-    }
 	
 	@SubscribeEvent
 	public static void onRightClickItem(PlayerInteractEvent.RightClickItem event)
@@ -215,13 +108,7 @@ public class EventHandlerForge
 		{
 			event.setCanceled(true);
 		}
-		entity.getCapability(RollingCapabilityImpl.ROLLING).ifPresent(t -> 
-		{
-			if(t.isRolling())
-			{
-				event.setCanceled(true);
-			}
-		});
+		//TODO prevent in rolling state;
 	}
 	
 	@SubscribeEvent
@@ -235,38 +122,7 @@ public class EventHandlerForge
 		{
 			event.setCanceled(true);
 		}
-		player.getCapability(RollingCapabilityImpl.ROLLING).ifPresent(t -> 
-		{
-			if(t.isRolling())
-			{
-				event.setCanceled(true);
-			}
-		});
-		if(CrypticUtil.isBlockSilenced(level, pos))
-		{
-			if(player instanceof ServerPlayer serverPlayer)
-			{
-				CrypticCriteriaTriggers.ITEM_USED_ON_SILENCED_BLOCK.trigger(serverPlayer, pos, stack);
-			}
-			if(stack.canPerformAction(ToolActions.AXE_WAX_OFF))
-			{
-				CrypticUtil.removeSilencedBlock(level, pos);
-				BlockState state = level.getBlockState(pos);
-				if(player instanceof ServerPlayer serverPlayer)
-				{
-					CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, stack);
-				}
-				level.playSound(player, pos, CrypticSounds.SILENCING_BLEND_OFF.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-				level.levelEvent(player, 3004, pos, 0);
-				level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, state));
-				stack.hurtAndBreak(1, player, entity ->
-				{
-					entity.broadcastBreakEvent(event.getHand());
-				});
-				player.swing(event.getHand());
-				event.setCanceled(true);
-				event.setCancellationResult(InteractionResult.sidedSuccess(player.level.isClientSide));
-			}
-		}
+		//TODO prevent in rolling state;
+		//TODO silencing blend scrapping with axe;
 	}
 }

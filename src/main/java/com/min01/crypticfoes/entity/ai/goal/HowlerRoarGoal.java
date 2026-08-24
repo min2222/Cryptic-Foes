@@ -1,5 +1,6 @@
 package com.min01.crypticfoes.entity.ai.goal;
 
+import com.min01.crypticfoes.api.ai.goal.AbstractAnimationGoal;
 import com.min01.crypticfoes.entity.CrypticEntities;
 import com.min01.crypticfoes.entity.living.HowlerEntity;
 import com.min01.crypticfoes.entity.projectile.HowlerScreamEntity;
@@ -33,7 +34,7 @@ public class HowlerRoarGoal extends AbstractAnimationGoal<HowlerEntity>
     	{
 			HowlerScreamEntity scream = new HowlerScreamEntity(CrypticEntities.HOWLER_SCREAM.get(), this.mob.level);
 			scream.setOwner(this.mob);
-			scream.setPos(this.mob.modelPositions.getModelPos("head"));
+			scream.setPos(this.mob.modelPartPos.getPos("head"));
 			scream.shootFromRotation(this.mob, this.mob.getXRot(), this.mob.getYHeadRot(), 0.0F, 0.8F, 1.0F);
 			scream.setNoGravity(true);
 			this.mob.level.addFreshEntity(scream);

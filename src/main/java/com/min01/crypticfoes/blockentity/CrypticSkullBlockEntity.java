@@ -1,7 +1,7 @@
 package com.min01.crypticfoes.blockentity;
 
+import com.min01.crypticfoes.api.animation.LerpingAnimationState;
 import com.min01.crypticfoes.block.CrypticBlocks;
-import com.min01.crypticfoes.misc.SmoothAnimationState;
 import com.min01.crypticfoes.sound.CrypticSounds;
 
 import net.minecraft.core.BlockPos;
@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class CrypticSkullBlockEntity extends SkullBlockEntity
 {
 	public int tickCount;
-	public final SmoothAnimationState blinkAnimationState = new SmoothAnimationState();
+	public final LerpingAnimationState blinkAnimationState = new LerpingAnimationState();
 	
 	public CrypticSkullBlockEntity(BlockPos pPos, BlockState pBlockState)
 	{

@@ -2,11 +2,11 @@ package com.min01.crypticfoes.blockentity;
 
 import java.util.List;
 
+import com.min01.crypticfoes.api.animation.LerpingAnimationState;
 import com.min01.crypticfoes.block.CrypticBlocks;
 import com.min01.crypticfoes.block.ScreamerBlock;
 import com.min01.crypticfoes.effect.CrypticEffects;
 import com.min01.crypticfoes.entity.living.HowlerEntity;
-import com.min01.crypticfoes.misc.SmoothAnimationState;
 import com.min01.crypticfoes.particle.CrypticParticles;
 import com.min01.crypticfoes.sound.CrypticSounds;
 import com.min01.crypticfoes.util.CrypticUtil;
@@ -26,13 +26,14 @@ import net.minecraft.world.phys.Vec3;
 public class ScreamerBlockEntity extends BlockEntity
 {
 	public int tickCount;
-	public final SmoothAnimationState screamAnimationState = new SmoothAnimationState();
+	public final LerpingAnimationState screamAnimationState = new LerpingAnimationState();
 	
 	public ScreamerBlockEntity(BlockPos pPos, BlockState pBlockState) 
 	{
 		super(CrypticBlocks.SCREAMER_BLOCK_ENTITY.get(), pPos, pBlockState);
 	}
 	
+	//TODO rework this;
 	public static void update(Level level, BlockPos pos, BlockState state, ScreamerBlockEntity block)
 	{
 		boolean activate = state.getValue(ScreamerBlock.ACTIVATE);
@@ -59,7 +60,7 @@ public class ScreamerBlockEntity extends BlockEntity
 		    	List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, new AABB(-6.0F, 0.0F, -6.0F, 6.0F, 6.0F, 6.0F).move(pos), EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(t -> !(t instanceof HowlerEntity)));
 		    	list.forEach(t -> 
 		    	{
-		    		Vec3 motion = CrypticUtil.getVelocityTowards(Vec3.atBottomCenterOf(pos), t.position().add(0, 1, 0), 1.0F);
+		    		Vec3 motion = CrypticUtil.getVectorTowards(Vec3.atBottomCenterOf(pos), t.position().add(0, 1, 0), 1.0F);
 		    		t.setDeltaMovement(motion.x, motion.y, motion.z);
 					t.hurtMarked = true;
 					if(charged)

@@ -2,17 +2,16 @@ package com.min01.crypticfoes.entity.living;
 
 import java.util.List;
 
-import org.joml.Vector2f;
-
-import com.min01.crypticfoes.entity.AbstractAnimatableMonster;
-import com.min01.crypticfoes.entity.CameraShakeEntity;
+import com.min01.crypticfoes.api.ai.goal.AnimationRandomStrollGoal;
+import com.min01.crypticfoes.api.ai.goal.LookAtTargetGoal;
+import com.min01.crypticfoes.api.ai.goal.MoveToTargetGoal;
+import com.min01.crypticfoes.api.animation.LerpingAnimationState;
+import com.min01.crypticfoes.api.entity.AbstractAnimatableMonster;
+import com.min01.crypticfoes.api.entity.CameraShakeEntity;
+import com.min01.crypticfoes.api.util.PositionTypes;
 import com.min01.crypticfoes.entity.ai.goal.HowlerPunchGoal;
 import com.min01.crypticfoes.entity.ai.goal.HowlerRoarGoal;
-import com.min01.crypticfoes.entity.ai.goal.LookAtTargetGoal;
-import com.min01.crypticfoes.entity.ai.goal.MoveToTargetGoal;
 import com.min01.crypticfoes.item.CrypticItems;
-import com.min01.crypticfoes.misc.PositionTypes;
-import com.min01.crypticfoes.misc.SmoothAnimationState;
 import com.min01.crypticfoes.particle.CrypticParticles;
 import com.min01.crypticfoes.sound.CrypticSounds;
 import com.min01.crypticfoes.util.CrypticUtil;
@@ -27,6 +26,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
@@ -34,18 +34,11 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -55,24 +48,25 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+//FIXME rework this;
 public class HowlerEntity extends AbstractAnimatableMonster
 {
-	public static final EntityDataAccessor<Boolean> IS_SLEEPING = SynchedEntityData.defineId(HowlerEntity.class, EntityDataSerializers.BOOLEAN);
-	public static final EntityDataAccessor<Boolean> IS_FALLING = SynchedEntityData.defineId(HowlerEntity.class, EntityDataSerializers.BOOLEAN);
-	public static final EntityDataAccessor<BlockPos> SLEEP_POS = SynchedEntityData.defineId(HowlerEntity.class, EntityDataSerializers.BLOCK_POS);
+	private static final EntityDataAccessor<Boolean> IS_SLEEPING = SynchedEntityData.defineId(HowlerEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> IS_FALLING = SynchedEntityData.defineId(HowlerEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<BlockPos> SLEEP_POS = SynchedEntityData.defineId(HowlerEntity.class, EntityDataSerializers.BLOCK_POS);
 
-	public final SmoothAnimationState idleAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState walkAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState sleepAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState awakeAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState fallAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState landAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState roarAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState blinkAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState punchAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState flyAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState flyStartAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState flyEndAnimationState = new SmoothAnimationState();
+	public final LerpingAnimationState idleAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState walkAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState sleepAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState awakeAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState fallAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState landAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState roarAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState blinkAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState punchAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState flyAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState flyStartAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState flyEndAnimationState = new LerpingAnimationState();
 	
 	public int ambientTick;
 	public int targetTick = 200;
@@ -81,7 +75,7 @@ public class HowlerEntity extends AbstractAnimatableMonster
 	{
 		super(pEntityType, pLevel);
 		this.animationEntries.addWalkEntry(this.walkAnimationState, 2.5F);
-		this.modelPositions.addModelPos("head", Vec3.ZERO);
+		this.modelPartPos.addPos("head", Vec3.ZERO);
 	}
 	
     public static AttributeSupplier.Builder createAttributes()
@@ -99,6 +93,8 @@ public class HowlerEntity extends AbstractAnimatableMonster
     protected void registerGoals() 
     {
     	super.registerGoals();
+		this.randomStrollGoal = new AnimationRandomStrollGoal<>(this, 0.5F, 120, false);
+		
         this.goalSelector.addGoal(0, new MoveToTargetGoal<>(this));
         this.goalSelector.addGoal(0, new LookAtTargetGoal<>(this));
         this.goalSelector.addGoal(0, new HowlerPunchGoal(this));
@@ -108,20 +104,20 @@ public class HowlerEntity extends AbstractAnimatableMonster
         	@Override
         	protected void findTarget() 
         	{
-                this.target = this.mob.level.getNearestEntity(this.mob.level.getEntitiesOfClass(this.targetType, this.getTargetSearchArea(this.getFollowDistance()), (p_148152_) -> 
+                this.target = this.mob.level.getNearestEntity(this.mob.level.getEntitiesOfClass(this.targetType, this.getTargetSearchArea(this.getFollowDistance()), (t) -> 
                 {
                     return true;
-                }), TargetingConditions.DEFAULT, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
+                }), this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
         	}
         	
         	@Override
-        	protected AABB getTargetSearchArea(double p_26069_)
+        	protected AABB getTargetSearchArea(double pTargetDistance)
         	{
         		if(((HowlerEntity) this.mob).isHowlerSleeping())
         		{
             		return this.mob.getBoundingBox().inflate(15.0D, this.mob.level.getMaxBuildHeight(), 15.0D);
         		}
-        		return super.getTargetSearchArea(p_26069_);
+        		return super.getTargetSearchArea(pTargetDistance);
         	}
         });
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
@@ -135,51 +131,6 @@ public class HowlerEntity extends AbstractAnimatableMonster
     	this.entityData.define(IS_FALLING, false);
     	this.entityData.define(SLEEP_POS, BlockPos.ZERO);
     }
-    
-    @Override
-	public void registerDefaultGoals()
-	{
-		this.goalSelector.addGoal(0, new FloatGoal(this));
-		this.goalSelector.addGoal(0, new RandomStrollGoal(this, 0.5F, this.movementData.ground.interval, false)
-		{
-			@Override
-			public boolean canUse()
-			{
-				return super.canUse() && HowlerEntity.this.canMoveAround();
-			}
-			
-			@Override
-			protected Vec3 getPosition()
-			{
-				Vector2f radius = HowlerEntity.this.movementData.ground.radius;
-				return LandRandomPos.getPos(this.mob, (int) radius.x, (int) radius.y);
-			}
-		});
-		this.goalSelector.addGoal(0, new RandomLookAroundGoal(this)
-		{
-			@Override
-			public boolean canUse()
-			{
-				return super.canUse() && HowlerEntity.this.canLookAround();
-			}
-		});
-		this.goalSelector.addGoal(0, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F)
-		{
-			@Override
-			public boolean canUse()
-			{
-				return super.canUse() && HowlerEntity.this.canLookAround();
-			}
-		});
-		this.goalSelector.addGoal(0, new LookAtPlayerGoal(this, Mob.class, 8.0F)
-		{
-			@Override
-			public boolean canUse()
-			{
-				return super.canUse() && HowlerEntity.this.canLookAround();
-			}
-		});
-	}
     
     @Override
     public void tick() 
@@ -221,11 +172,9 @@ public class HowlerEntity extends AbstractAnimatableMonster
         		if(this.targetTick >= 200 && !this.level.canSeeSky(this.blockPosition()) && this.getAnimationState() == 0 && this.onGround() && this.level.getBlockState(this.getOnPos().above()).isAir())
         		{
         			BlockPos ceilingPos = CrypticUtil.getPosition(this.level, this.position(), PositionTypes.CEILING);
-        			if(!this.level.canSeeSky(ceilingPos) && CrypticUtil.distanceToY(this, ceilingPos) >= 8.0F)
+        			if(!this.level.canSeeSky(ceilingPos) && CrypticUtil.verticalDistanceTo(this, ceilingPos.getY()) >= 8.0F)
         			{
             			this.setSleepPos(ceilingPos);
-            			this.setStopMoveTick(Integer.MAX_VALUE);
-            			this.setStopLookTick(Integer.MAX_VALUE);
             			this.setHowlerSleeping(true);
         			}
         		}
@@ -242,8 +191,6 @@ public class HowlerEntity extends AbstractAnimatableMonster
         		else if(this.getAnimationState() == 3 && this.getAnimationTick() <= 0)
         		{
         			this.setAnimationState(0);
-        			this.setStopMoveTick(0);
-        			this.setStopLookTick(0);
         		}
         	}
     	}
@@ -404,7 +351,7 @@ public class HowlerEntity extends AbstractAnimatableMonster
     	List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(3.0F), t -> !(t instanceof HowlerEntity));
     	list.forEach(t -> 
     	{
-    		Vec3 motion = CrypticUtil.getVelocityTowards(this.position(), t.position().add(0, 1, 0), 1.0F);
+    		Vec3 motion = CrypticUtil.getVectorTowards(this.position(), t.position().add(0, 1, 0), 1.0F);
     		t.push(motion.x, motion.y, motion.z);
 			t.hurtMarked = true;
     	});
@@ -426,7 +373,9 @@ public class HowlerEntity extends AbstractAnimatableMonster
     	Vec3 pos = Vec3.atBottomCenterOf(pPos);
     	BlockPos ceilingPos = CrypticUtil.getPosition(pLevel, pos, PositionTypes.CEILING);
     	BlockPos groundPos = CrypticUtil.getPosition(pLevel,  pos, PositionTypes.GROUND);
-    	return !pLevel.getBiome(pPos).is(Biomes.DEEP_DARK) && pPos.getY() < 0 && CrypticUtil.distanceToY(pPos, ceilingPos) >= 8.0F && !pLevel.canSeeSky(ceilingPos) && !pLevel.canSeeSky(groundPos) && pLevel.getDifficulty() != Difficulty.PEACEFUL && isDarkEnoughToSpawn(pLevel, pPos, pRandom) && checkMobSpawnRules(pType, pLevel, pSpawnType, pPos, pRandom);
+    	float rel = pPos.getY() - ceilingPos.getY();
+    	float dist = Mth.sqrt((float) (rel * rel));
+    	return !pLevel.getBiome(pPos).is(Biomes.DEEP_DARK) && pPos.getY() < 0 && dist >= 8.0F && !pLevel.canSeeSky(ceilingPos) && !pLevel.canSeeSky(groundPos) && pLevel.getDifficulty() != Difficulty.PEACEFUL && isDarkEnoughToSpawn(pLevel, pPos, pRandom) && checkMobSpawnRules(pType, pLevel, pSpawnType, pPos, pRandom);
     }
     
     public double horizontalDist(BlockPos pos, double x, double z) 

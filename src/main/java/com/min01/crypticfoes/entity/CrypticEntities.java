@@ -1,6 +1,7 @@
 package com.min01.crypticfoes.entity;
 
 import com.min01.crypticfoes.CrypticFoes;
+import com.min01.crypticfoes.api.entity.CameraShakeEntity;
 import com.min01.crypticfoes.entity.living.BumpyEntity;
 import com.min01.crypticfoes.entity.living.HowlerEntity;
 import com.min01.crypticfoes.entity.projectile.BallEntity;

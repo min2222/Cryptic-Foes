@@ -44,7 +44,7 @@ public class CrypticCreativeTabs
     			output.accept(CrypticItems.ROLLING_UPGRADE_SMITHING_TEMPLATE.get());
     			output.accept(CrypticItems.WEIGHT_BLOCK.get());
     			output.accept(CrypticItems.BALL.get());
-    			CrypticEnchantments.addAllEnchantsToCreativeTab(output, CrypticEnchantments.ROLLING_CHESTPLATE);
+    			CrypticEnchantments.addAllEnchantments(output, CrypticEnchantments.ROLLING_CHESTPLATE);
     		}).build());
     
     public static ItemStack createPainting(CreativeModeTab.ItemDisplayParameters enabledFeatures, ResourceKey<PaintingVariant> key)

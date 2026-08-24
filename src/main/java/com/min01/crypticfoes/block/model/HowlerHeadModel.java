@@ -73,10 +73,10 @@ public class HowlerHeadModel extends CrypticSkullModelBase
 	}
 	
 	@Override
-	public void setupAnim(CrypticSkullBlockEntity blockEntity, float ageInTicks) 
+	public void setupAnim(CrypticSkullBlockEntity blockEntity, float pAgeInTicks)
 	{
 		this.root().getAllParts().forEach(ModelPart::resetPose);
-		this.animate(blockEntity.blinkAnimationState, HowlerAnimation.HOWLER_BLINK, ageInTicks);
+		this.animate(blockEntity.blinkAnimationState, HowlerAnimation.HOWLER_BLINK, pAgeInTicks);
 	}
 	
 	@Override

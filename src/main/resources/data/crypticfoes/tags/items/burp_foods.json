@@ -1,4 +1,5 @@
 {
+	"__comment": "all items that provide burp effect when eaten.",
 	"values": [
 		"crypticfoes:cave_salad"
 	]

@@ -17,12 +17,10 @@ public class CrypticNetwork
 	public static void registerMessages()
 	{
 		int id = 0;
-		CHANNEL.registerMessage(id++, UpdateModelPositionPacket.class, UpdateModelPositionPacket::write, UpdateModelPositionPacket::read, UpdateModelPositionPacket::handle);
-		CHANNEL.registerMessage(id++, AddSilencingParticlePacket.class, AddSilencingParticlePacket::write, AddSilencingParticlePacket::read, AddSilencingParticlePacket::handle);
-		CHANNEL.registerMessage(id++, UpdateSilencedBlocksPacket.class, UpdateSilencedBlocksPacket::write, UpdateSilencedBlocksPacket::read, UpdateSilencedBlocksPacket::handle);
-		CHANNEL.registerMessage(id++, UpdateStunnedEffectPacket.class, UpdateStunnedEffectPacket::write, UpdateStunnedEffectPacket::read, UpdateStunnedEffectPacket::handle);
-		CHANNEL.registerMessage(id++, UpdateRollingCapabilityPacket.class, UpdateRollingCapabilityPacket::write, UpdateRollingCapabilityPacket::read, UpdateRollingCapabilityPacket::handle);
-		CHANNEL.registerMessage(id++, UpdateRollingSpeedPacket.class, UpdateRollingSpeedPacket::write, UpdateRollingSpeedPacket::read, UpdateRollingSpeedPacket::handle);
+		CHANNEL.registerMessage(id, UpdateRollingCapabilityPacket.class, UpdateRollingCapabilityPacket::write, UpdateRollingCapabilityPacket::read, UpdateRollingCapabilityPacket::handle);
+		CHANNEL.registerMessage(id, AddSilencingParticlePacket.class, AddSilencingParticlePacket::write, AddSilencingParticlePacket::read, AddSilencingParticlePacket::handle);
+		CHANNEL.registerMessage(id, SilenceBlockPacket.class, SilenceBlockPacket::write, SilenceBlockPacket::read, SilenceBlockPacket::handle);
+		CHANNEL.registerMessage(id, UpdateModelPartPosPacket.class, UpdateModelPartPosPacket::write, UpdateModelPartPosPacket::read, UpdateModelPartPosPacket::handle);
 	}
 	
     public static <MSG> void sendToServer(MSG message) 
@@ -30,16 +28,16 @@ public class CrypticNetwork
     	CHANNEL.sendToServer(message);
     }
     
-    public static <MSG> void sendNonLocal(MSG msg, ServerPlayer player) 
-    {
-        CHANNEL.sendTo(msg, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-    }
-    
     public static <MSG> void sendToAll(MSG message)
     {
     	for(ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) 
     	{
-    		CHANNEL.sendTo(message, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+    		sendToPlayer(message, player);
     	}
+    }
+    
+    public static <MSG> void sendToPlayer(MSG msg, ServerPlayer player) 
+    {
+        CHANNEL.sendTo(msg, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 }

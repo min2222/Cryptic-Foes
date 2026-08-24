@@ -1,25 +1,11 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '[6.0,6.2)', changing: true
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
-}
 plugins {
+    id 'eclipse'
+    id 'idea'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
 	id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+	id 'org.spongepowered.mixin' version '0.7.+'
 }
-
-apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'java'
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
 
 version = mod_version
 group = mod_group_id
@@ -30,7 +16,7 @@ base {
 
 mixin {
     add sourceSets.main, "crypticfoes.refmap.json"
-    config "crypticfoes.mixin.json"
+    config "crypticfoes.mixins.json"
 }
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
@@ -141,8 +127,8 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
-	
-	maven {
+    
+    maven {
         url "https://cursemaven.com"
         content {
             includeGroup "curse.maven"
@@ -157,12 +143,13 @@ dependencies {
     // If the group id is "net.minecraft" and the artifact id is one of ["client", "server", "joined"],
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.4"))
+	compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.4"))
     implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.5.4")) 
     {
         jarJar.ranged(it, "[0.5.4,)")
     }
 	annotationProcessor "org.spongepowered:mixin:0.8.7:processor"
+	
 	compileOnly fg.deobf("curse.maven:farmers-delight-398521:6917255")
 	compileOnly fg.deobf("curse.maven:gallery-1173553:6321203")
 	compileOnly fg.deobf("curse.maven:blueprint-382216:6408581")
@@ -204,14 +191,6 @@ tasks.named('processResources', ProcessResources).configure {
     }
 }
 
-jar {
-    archiveClassifier = 'slim'
-}
-
-tasks.named('jarJar') {
-    archiveClassifier = ''
-}
-
 // Example for how to get properties into the manifest for reading at runtime.
 tasks.named('jar', Jar).configure {
     manifest {
@@ -251,4 +230,12 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+jar {
+    archiveClassifier = 'slim'
+}
+
+tasks.named('jarJar') {
+    archiveClassifier = ''
 }

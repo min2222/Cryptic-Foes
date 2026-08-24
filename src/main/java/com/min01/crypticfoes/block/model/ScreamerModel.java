@@ -1,11 +1,13 @@
 package com.min01.crypticfoes.block.model;
 
 import com.min01.crypticfoes.CrypticFoes;
+import com.min01.crypticfoes.api.animation.IHierarchicalModel;
 import com.min01.crypticfoes.block.animation.ScreamerAnimation;
 import com.min01.crypticfoes.blockentity.ScreamerBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -14,15 +16,17 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
-public class ScreamerModel extends HierarchicalBlockModel<ScreamerBlockEntity>
+public class ScreamerModel extends Model implements IHierarchicalModel<ScreamerBlockEntity>
 {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "screamer"), "main");
 	private final ModelPart root;
 
 	public ScreamerModel(ModelPart root)
 	{
+		super(RenderType::entityCutoutNoCull);
 		this.root = root.getChild("root");
 	}
 

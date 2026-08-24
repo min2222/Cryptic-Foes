@@ -3,12 +3,12 @@ package com.min01.crypticfoes.entity.living;
 import java.util.Comparator;
 import java.util.List;
 
-import com.min01.crypticfoes.entity.AbstractAnimatableCreature;
-import com.min01.crypticfoes.entity.ai.control.AnimationBodyRotationControl;
-import com.min01.crypticfoes.entity.ai.goal.LookAtTargetGoal;
-import com.min01.crypticfoes.entity.ai.goal.MoveToTargetGoal;
+import com.min01.crypticfoes.api.ai.goal.LookAtTargetGoal;
+import com.min01.crypticfoes.api.ai.goal.MoveToTargetGoal;
+import com.min01.crypticfoes.api.animation.LerpingAnimationState;
+import com.min01.crypticfoes.api.entity.AbstractAnimatableCreature;
+import com.min01.crypticfoes.api.entity.MoveProperty.MoveState;
 import com.min01.crypticfoes.misc.CrypticEntityDataSerializers;
-import com.min01.crypticfoes.misc.SmoothAnimationState;
 import com.min01.crypticfoes.util.CrypticUtil;
 
 import net.minecraft.core.BlockPos;
@@ -33,28 +33,28 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
+//FIXME rework this;
 public class BumpyEntity extends AbstractAnimatableCreature
 {
-	public static final EntityDataAccessor<Integer> HIT_TIME = SynchedEntityData.defineId(BumpyEntity.class, EntityDataSerializers.INT);
-	public static final EntityDataAccessor<Boolean> IS_RAMMING = SynchedEntityData.defineId(BumpyEntity.class, EntityDataSerializers.BOOLEAN);
-	public static final EntityDataAccessor<Vec3> RAM_POS = SynchedEntityData.defineId(BumpyEntity.class, CrypticEntityDataSerializers.VEC3.get());
+	private static final EntityDataAccessor<Integer> HIT_TIME = SynchedEntityData.defineId(BumpyEntity.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Boolean> IS_RAMMING = SynchedEntityData.defineId(BumpyEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Vec3> RAM_POS = SynchedEntityData.defineId(BumpyEntity.class, CrypticEntityDataSerializers.VEC3.get());
 	
-	public final SmoothAnimationState idleAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState walkAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState blockingAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState bumpAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState roar1AnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState roar2AnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState rollStart1AnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState rollStart2AnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState rollAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState rollEndAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState stunnedStartAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState stunnedIdleAnimationState = new SmoothAnimationState();
-	public final SmoothAnimationState stunnedEndAnimationState = new SmoothAnimationState(0.5F, true);
+	public final LerpingAnimationState idleAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState walkAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState blockingAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState bumpAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState roar1AnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState roar2AnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState rollStart1AnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState rollStart2AnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState rollAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState rollEndAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState stunnedStartAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState stunnedIdleAnimationState = new LerpingAnimationState();
+	public final LerpingAnimationState stunnedEndAnimationState = new LerpingAnimationState().snapRotation();
 
 	public int bumpCooldown;
 	public int blockTime;
@@ -141,6 +141,7 @@ public class BumpyEntity extends AbstractAnimatableCreature
     	}
     	else
     	{
+    		this.property.turn(MoveState.WALK, 0.0F, this.getAnimationState() == 6 ? 60.0F : 90.0F);
         	if(this.getAnimationState() == 6)
         	{
         		if(this.getTarget() == null || !this.getTarget().isAlive())
@@ -150,8 +151,6 @@ public class BumpyEntity extends AbstractAnimatableCreature
         			this.setHitTime(0);
         			this.setAnimationState(7);
         			this.setAnimationTick(12);
-        			this.setStopMoveTick(this.getAnimationState());
-        			this.setStopLookTick(this.getAnimationState());
         			this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.2F);
         		}
         		else
@@ -175,7 +174,7 @@ public class BumpyEntity extends AbstractAnimatableCreature
         			{
             			if(this.getRamPos().equals(Vec3.ZERO))
             			{
-            				this.setRamPos(CrypticUtil.getLookPos(new Vec2(this.getXRot(), this.yHeadRot), this.position(), 0, 0, 12.0F));
+            				this.setRamPos(CrypticUtil.getViewVector(this.position(), this.getXRot(), this.yHeadRot, 0, 0, 12.0F));
             			}
             			else
             			{
@@ -214,7 +213,6 @@ public class BumpyEntity extends AbstractAnimatableCreature
             	}
         	}
     	}
-		this.movementData.ground.turnY = this.getAnimationState() == 6 ? 60.0F : 90.0F;
     }
 
     @Override
@@ -262,8 +260,6 @@ public class BumpyEntity extends AbstractAnimatableCreature
 			this.setAnimationState(8);
 			this.setAnimationTick(20);
 			this.setDeltaMovement(Vec3.ZERO);
-			this.setStopMoveTick(this.getAnimationTick());
-			this.setStopLookTick(this.getAnimationTick());
 		}
     }
     
@@ -273,7 +269,6 @@ public class BumpyEntity extends AbstractAnimatableCreature
 		this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25F);
 		this.playSound(SoundEvents.NOTE_BLOCK_BELL.get(), 5.0F, 1.0F);
 		this.setAnimationTick(40);
-		this.setStopMoveTick(this.getAnimationTick());
 		this.getNavigation().stop();
 		if(this.getTarget() != null && this.getTarget().isAlive())
 		{
@@ -293,8 +288,6 @@ public class BumpyEntity extends AbstractAnimatableCreature
         	{
         		this.setAnimationState(1);
         		this.setAnimationTick(34);
-        		this.setStopMoveTick(this.getAnimationTick());
-        		this.setStopLookTick(this.getAnimationTick());
         		this.getNavigation().stop();
         		this.bumpCooldown = 100;
         	}
@@ -309,15 +302,11 @@ public class BumpyEntity extends AbstractAnimatableCreature
         	{
         		this.setAnimationState(1);
         		this.setAnimationTick(34);
-        		this.setStopMoveTick(this.getAnimationTick());
-        		this.setStopLookTick(this.getAnimationTick());
         		this.getNavigation().stop();
         		this.bumpCooldown = 100;
         		
         		bumpy.setAnimationState(-1);
         		bumpy.setAnimationTick(4);
-        		bumpy.setStopMoveTick(bumpy.getAnimationTick());
-        		bumpy.setStopLookTick(bumpy.getAnimationTick());
         		bumpy.getNavigation().stop();
         		bumpy.bumpCooldown = 100;
         	}
@@ -368,8 +357,6 @@ public class BumpyEntity extends AbstractAnimatableCreature
     	{
     		this.setAnimationState(1);
     		this.setAnimationTick(34);
-    		this.setStopMoveTick(this.getAnimationTick());
-    		this.setStopLookTick(this.getAnimationTick());
     		this.getNavigation().stop();
     		return false;
     	}
@@ -392,16 +379,12 @@ public class BumpyEntity extends AbstractAnimatableCreature
     	{
     		this.setAnimationState(9);
     		this.setAnimationTick(100);
-    		this.setStopMoveTick(this.getAnimationTick());
-    		this.setStopLookTick(this.getAnimationTick());
     		return false;
     	}
     	if(animationState == 9)
     	{
     		this.setAnimationState(10);
     		this.setAnimationTick(25);
-    		this.setStopMoveTick(this.getAnimationTick());
-    		this.setStopLookTick(this.getAnimationTick());
     		return false;
     	}
     	return super.onAnimationEnd(animationState);
@@ -478,7 +461,7 @@ public class BumpyEntity extends AbstractAnimatableCreature
     	return this.entityData.get(RAM_POS);
     }
     
-    public class BumpyBodyRotationControl extends AnimationBodyRotationControl<BumpyEntity>
+    public class BumpyBodyRotationControl extends BodyRotationControl
     {
 		public BumpyBodyRotationControl(BumpyEntity pMob) 
 		{

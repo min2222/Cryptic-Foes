@@ -2,13 +2,12 @@ package com.min01.crypticfoes.item;
 
 import java.util.function.Consumer;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.min01.crypticfoes.item.model.RollingArmorModel;
 import com.min01.crypticfoes.misc.CrypticArmorMaterials;
-import com.min01.crypticfoes.util.CrypticClientUtil;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -30,10 +29,9 @@ public class RollingChestplateItem extends ArmorItem
 		consumer.accept(new IClientItemExtensions() 
 		{
 			@Override
-			@NotNull
 			public HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) 
 			{
-				RollingArmorModel<?> armorModel = new RollingArmorModel<>(CrypticClientUtil.MC.getEntityModels().bakeLayer(RollingArmorModel.LAYER_LOCATION));
+				RollingArmorModel<?> armorModel = new RollingArmorModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(RollingArmorModel.LAYER_LOCATION));
 				armorModel.Body.visible = equipmentSlot == EquipmentSlot.CHEST;
 				return armorModel;
 			}

@@ -1,5 +1,6 @@
 package com.min01.crypticfoes.entity.ai.goal;
 
+import com.min01.crypticfoes.api.ai.goal.AbstractAnimationGoal;
 import com.min01.crypticfoes.entity.living.HowlerEntity;
 import com.min01.crypticfoes.sound.CrypticSounds;
 

@@ -2,6 +2,7 @@ package com.min01.crypticfoes;
 
 import com.min01.crypticfoes.block.CrypticBlocks;
 import com.min01.crypticfoes.capabilties.CrypticCapabilities;
+import com.min01.crypticfoes.config.CrypticConfig;
 import com.min01.crypticfoes.effect.CrypticEffects;
 import com.min01.crypticfoes.enchantment.CrypticEnchantments;
 import com.min01.crypticfoes.entity.CrypticEntities;
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(CrypticFoes.MODID)
@@ -42,6 +44,7 @@ public class CrypticFoes
 		CrypticEnchantments.ENCHANTMENTS.register(bus);
 		
 		CrypticNetwork.registerMessages();
+		ctx.registerConfig(Type.COMMON, CrypticConfig.CONFIG_SPEC, "crypticfoes.toml");
 		MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, CrypticCapabilities::onAttachEntityCapabilities);
 	}
 }

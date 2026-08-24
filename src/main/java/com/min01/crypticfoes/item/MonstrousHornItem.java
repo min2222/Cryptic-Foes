@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 
+//FIXME rework this;
 public class MonstrousHornItem extends Item
 {
 	public MonstrousHornItem()
@@ -77,6 +78,7 @@ public class MonstrousHornItem extends Item
 							scream.shootFromRotation(pEntity, pEntity.getXRot(), pEntity.getYRot(), 0.0F, 0.5F + (charge * 0.25F), 1.0F);
 							scream.setNoGravity(true);
 							scream.setStunDuration(charge * 20);
+							//FIXME fix float usage;
 							scream.setRange(0.06F - (charge * 0.0005F));
 							pLevel.addFreshEntity(scream);
 							setHornChargeTick(pStack, chargeTick + 1);
