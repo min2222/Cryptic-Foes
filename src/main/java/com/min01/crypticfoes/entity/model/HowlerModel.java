@@ -1,5 +1,9 @@
 package com.min01.crypticfoes.entity.model;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import com.min01.crypticfoes.CrypticFoes;
 import com.min01.crypticfoes.entity.animation.HowlerAnimation;
 import com.min01.crypticfoes.entity.living.HowlerEntity;
@@ -21,12 +25,14 @@ import net.minecraft.resources.ResourceLocation;
 public class HowlerModel extends HierarchicalModel<HowlerEntity>
 {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(CrypticFoes.MODID, "howler"), "main");
+	private static final int MAX_CACHED_DESCENDANTS = 256;
 	private final ModelPart root;
 	private final ModelPart howlersleeppivot;
 	private final ModelPart howler;
 	private final ModelPart body;
 	private final ModelPart body_no_hands;
 	private final ModelPart head;
+	private final Map<String, Optional<ModelPart>> descendantCache = new HashMap<>();
 
 	public HowlerModel(ModelPart root) 
 	{
@@ -129,6 +135,21 @@ public class HowlerModel extends HierarchicalModel<HowlerEntity>
 	public ModelPart root() 
 	{
 		return this.root;
+	}
+
+	@Override
+	public Optional<ModelPart> getAnyDescendantWithName(String pName) 
+	{
+		Optional<ModelPart> optional = this.descendantCache.get(pName);
+		if(optional == null)
+		{
+			optional = super.getAnyDescendantWithName(pName);
+			if(this.descendantCache.size() < MAX_CACHED_DESCENDANTS)
+			{
+				this.descendantCache.put(pName, optional);
+			}
+		}
+		return optional;
 	}
 
 	@Override
